@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v3.1">
+<meta name="generator" content="Inventari de casa v3.2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -543,15 +543,86 @@ details.ccol.solo>summary h3::after{display:none}
 .hdone{flex:none;font-size:12px;font-weight:700;color:var(--muted);padding:0 6px}
 .hempty{padding:30px 10px;text-align:center;color:var(--muted);font-size:14px}
 .hcl{margin:0;font-size:16px;font-weight:700;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow-wrap:anywhere}
+
+/* ===== v3.2: xat NAU · NOA ===== */
+.toprow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-areas:"t c h" "s s s";align-items:center;column-gap:10px}
+.toprow .ttl{display:contents}
+.toprow .ttl h1{grid-area:t;min-width:0}
+.toprow .ttl #sub{grid-area:s}
+.toprow .chbtn{grid-area:c;justify-self:center}
+.toprow .hbtn:not(.chbtn){grid-area:h;justify-self:end}
+.chbtn svg{color:var(--accent)}
+.hn.cbadge{background:#e5484d;color:#fff;box-shadow:0 0 0 2px var(--bg)}
+@media (prefers-reduced-motion:no-preference){.hn.cbadge{animation:cpulse 1.8s ease-in-out infinite}}
+@keyframes cpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@media (max-width:600px){.top h1{font-size:17px;line-height:1.15}.top h1 .ver{font-size:11px;padding:1px 6px}}
+.chdlg[open]{display:flex;flex-direction:column;width:min(520px,calc(100vw - 24px));height:min(780px,calc(100dvh - 24px));max-height:calc(100dvh - 24px)}
+.chwrap{display:flex;flex-direction:column;min-height:0;flex:1}
+.chhead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:2px solid var(--line);background:linear-gradient(160deg,#0f3a35 0%,#0c0c0c 80%)}
+.chico{width:40px;height:40px;border-radius:14px;background:linear-gradient(140deg,#8af7eb,#2fc9b7);display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+.chtt{flex:1;min-width:0}
+.chtt h2{margin:0;font-size:19px}
+.chtt small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chbody{position:relative;flex:1;min-height:0;display:flex}
+.chlist{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:12px 12px 8px;display:flex;flex-direction:column;gap:3px;background:radial-gradient(120% 60% at 50% 0%,#0a1a18 0%,#050505 70%)}
+.chempty{margin:auto;text-align:center;color:var(--muted);font-size:15px;padding:20px}
+.chempty b{display:block;font-size:34px;margin-bottom:6px}
+.chday{display:flex;justify-content:center;margin:10px 0 6px}
+.chday span{font-size:12px;font-weight:700;color:var(--muted);background:var(--surface2);border:1px solid var(--line);border-radius:999px;padding:3px 12px;text-transform:capitalize}
+.cm{display:flex;align-items:flex-end;gap:8px;max-width:100%}
+.cm.me{flex-direction:row-reverse}
+.cm.grp{margin-top:0}
+.cm:not(.grp){margin-top:8px}
+.cm-av{flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:.02em;color:#04110f;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.cm-av.nau{background:linear-gradient(140deg,#8af7eb,#2fc9b7)}
+.cm-av.noa{background:linear-gradient(140deg,#ffb3d9,#ff7eb6);color:#2a0a1a}
+.cm-av.ghost{visibility:hidden}
+.cm-b{max-width:min(78%,420px);min-width:0;display:flex;flex-direction:column}
+.cm.me .cm-b{align-items:flex-end}
+.cm-n{font-size:12px;font-weight:800;margin:0 8px 2px}
+.cm-n.nau{color:var(--accent)}
+.cm-n.noa{color:#ff9ccb}
+.cm-t{padding:8px 12px 6px;border-radius:18px;font-size:15.5px;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
+.cm.ot .cm-t{background:var(--surface2);border:1px solid var(--line);border-bottom-left-radius:6px}
+.cm.me .cm-t{background:linear-gradient(140deg,#5ff0df,#2fc9b7);color:#03201c;border-bottom-right-radius:6px;font-weight:500}
+.cm.grp.ot .cm-t{border-top-left-radius:6px}
+.cm.grp.me .cm-t{border-top-right-radius:6px}
+.cm-t a{color:inherit;text-decoration:underline}
+.cm-t.big{font-size:40px;line-height:1.1;padding:6px 12px 4px;background:none!important;border:0!important}
+.cm-m{display:block;margin-top:3px;font-size:11px;opacity:.65;text-align:right;white-space:nowrap}
+.cm-m .tk{margin-left:4px}
+.cm-m .tk.seen{color:#0a5c53;opacity:1;font-weight:800}
+.cm.ot .cm-m .tk{display:none}
+.chjump{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font:inherit;font-size:13px;font-weight:800;padding:7px 14px;border-radius:999px;border:0;background:#e5484d;color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.6)}
+.chemoji{border-top:2px solid var(--line);background:var(--surface);display:flex;flex-direction:column;height:min(250px,36dvh);flex:none}
+.chtabs{display:flex;gap:4px;padding:6px 8px 4px;overflow-x:auto;flex:none;border-bottom:1px solid var(--line)}
+.chtab{font:inherit;font-size:21px;line-height:1;padding:6px 10px;border-radius:10px;border:2px solid transparent;background:none;cursor:pointer;flex:none}
+.chtab[aria-selected="true"]{background:var(--surface2);border-color:var(--accent)}
+.chgrid{flex:1;min-height:0;overflow-y:auto;padding:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:2px;align-content:start}
+.chgrid button{font:inherit;font-size:26px;line-height:1;padding:7px 0;border:0;border-radius:10px;background:none;cursor:pointer}
+.chgrid button:hover,.chgrid button:focus-visible{background:var(--surface2)}
+.chgrid .chnone{grid-column:1/-1;color:var(--muted);font-size:13px;padding:14px 4px;text-align:center}
+.fdlg form.chform{flex-direction:row;align-items:flex-end;gap:8px;padding:10px;border-top:2px solid var(--line);background:var(--surface);flex:none}
+.chem{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface2);font-size:22px;line-height:1;cursor:pointer;padding:0}
+.chem[aria-expanded="true"]{border-color:var(--accent);background:rgba(79,227,210,.14)}
+.fdlg .chform textarea{flex:1;min-width:0;min-height:44px;max-height:120px;height:44px;resize:none;border-radius:22px;padding:10px 16px;line-height:1.3;overflow-y:auto}
+.chsend{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:linear-gradient(140deg,#8af7eb,#2fc9b7);color:#03201c;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.chsend:disabled{opacity:.4;cursor:default}
+.chsend:active:not(:disabled){transform:scale(.94)}
+.chem:focus-visible,.chsend:focus-visible{outline:3px solid #fff;outline-offset:2px}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="toprow">
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v3.1</span></h1>
+      <h1>Inventari de casa <span class="ver">v3.2</span></h1>
       <p id="sub"></p>
     </div>
+    <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6A8.4 8.4 0 0 1 12.5 3H13a8.5 8.5 0 0 1 8 8z"/></svg>
+      <span>Xat</span><b id="chatN" class="hn cbadge" hidden aria-live="polite"></b>
+    </button>
     <button id="histBtn" class="hbtn" type="button" aria-haspopup="dialog" aria-controls="hdlg" title="Historial de canvis: desfés el que has fet">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
       <span>Desfés</span><b id="histN" class="hn" hidden></b>
@@ -743,6 +814,28 @@ details.ccol.solo>summary h3::after{display:none}
       <button type="button" class="copt" id="sOut"><span class="cico" aria-hidden="true">🚪</span><span class="ctxt"><b>Tanca la sessió</b><small>En aquest dispositiu</small></span><span class="carr" aria-hidden="true">›</span></button>
     </div>
     <div class="factions"><button type="button" class="btn" id="sClose">Tanca</button></div>
+  </div>
+</dialog>
+<dialog id="chdlg" class="fdlg chdlg nofit" aria-labelledby="chTitle">
+  <div class="chwrap">
+    <div class="chhead">
+      <span class="chico" aria-hidden="true">💬</span>
+      <div class="chtt"><h2 id="chTitle">Xat</h2><small id="chSub"></small></div>
+      <button type="button" class="btn" id="chClose">Tanca</button>
+    </div>
+    <div class="chbody">
+      <div id="chList" class="chlist" aria-live="polite"></div>
+      <button type="button" id="chJump" class="chjump" hidden>↓ Missatges nous</button>
+    </div>
+    <div id="chEmoji" class="chemoji" hidden>
+      <div id="chTabs" class="chtabs" role="tablist" aria-label="Categories d'emoticones"></div>
+      <div id="chGrid" class="chgrid"></div>
+    </div>
+    <form id="chForm" class="chform" autocomplete="off">
+      <button type="button" id="chEmBtn" class="chem" aria-label="Emoticones" aria-expanded="false">😊</button>
+      <textarea id="chIn" rows="1" maxlength="1000" placeholder="Escriu un missatge…" aria-label="Missatge"></textarea>
+      <button type="submit" id="chSend" class="chsend" aria-label="Envia el missatge"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M3.4 20.4 21 12 3.4 3.6 3.3 10l12.6 2-12.6 2z"/></svg></button>
+    </form>
   </div>
 </dialog>
 <dialog id="hdlg" class="fdlg hdlg nofit" aria-labelledby="hTitle">
@@ -2365,6 +2458,194 @@ $("hcYes").onclick = async () => {
   if(h && !h.undone) await histUndo(h);
 };
 
+
+/* =====================================================================
+   v3.2 · Xat entre NAU (arnaubalsellsc4) i NOA (ainhoaguerreroalejo2)
+   chat/{id}        -> {ts, from, text}
+   chatread/{nau|noa} -> {ts}   (últim missatge vist per cada persona)
+   El xat NO passa mai pel registre de «Desfés».
+   ===================================================================== */
+const CHAT_NAME = {"arnaubalsellsc4@gmail.com":"NAU", "ainhoaguerreroalejo2@gmail.com":"NOA"};
+const chatName = e => CHAT_NAME[String(e || "").toLowerCase()] || String(e || "?").split("@")[0].toUpperCase();
+let CHAT = [], chatLoaded = false, chatReadLoaded = false, chatReads = {}, chatSeen = new Set(), chatBoot = 0, chatNew = 0;
+const chatMe = () => cloudUser ? String(cloudUser.email).toLowerCase() : "";
+const chatMyKey = () => chatName(chatMe()).toLowerCase();
+const chatOtherKey = () => { const o = ALLOWED.map(e => chatName(e).toLowerCase()).find(k => k !== chatMyKey()); return o || ""; };
+const chatMyRead = () => +(chatReads[chatMyKey()] || 0);
+function chatUnread(){
+  if(!cloudUser || !chatLoaded || !chatReadLoaded) return 0;
+  const t = chatMyRead(), me = chatMe();
+  return CHAT.filter(m => m.from !== me && m.ts > t).length;
+}
+function chatBadge(){
+  const n = chatUnread(), b = $("chatN");
+  b.hidden = !n; b.textContent = n > 99 ? "99+" : n;
+  $("chatBtn").title = n ? "Xat · " + n + (n > 1 ? " missatges sense llegir" : " missatge sense llegir") : "Xat entre NAU i NOA";
+  document.title = (n ? "(" + n + ") " : "") + "Inventari de casa";
+}
+function chatReset(){
+  CHAT = []; chatLoaded = false; chatReadLoaded = false; chatReads = {}; chatSeen = new Set(); chatBoot = 0; chatNew = 0;
+  if($("chdlg").open) $("chdlg").close();
+  chatBadge();
+}
+const __cloudAuth32 = cloudAuth;
+cloudAuth = function(u){ chatReset(); __cloudAuth32(u); };
+
+/* ---- dades que arriben del núvol ---- */
+function cloudChat(docs){
+  const first = !chatLoaded;
+  CHAT = docs.map(d => ({id: d.id, ts: +d.ts || 0, from: String(d.from || "").toLowerCase(), text: String(d.text == null ? "" : d.text), pending: !!d.pending}))
+    .sort((a, b) => (a.ts - b.ts) || a.id.localeCompare(b.id));
+  chatLoaded = true;
+  const open = $("chdlg").open, me = chatMe();
+  if(first){ chatBoot = Date.now() - 30000; CHAT.forEach(m => chatSeen.add(m.id)); }
+  else {
+    const fresh = CHAT.filter(m => !chatSeen.has(m.id));
+    fresh.forEach(m => chatSeen.add(m.id));
+    const inc = fresh.filter(m => m.from !== me && m.ts > chatBoot);
+    if(inc.length && !open){
+      const m = inc[inc.length - 1];
+      toast("💬 " + chatName(m.from) + ": " + (m.text.length > 70 ? m.text.slice(0, 70) + "…" : m.text));
+    }
+    if(open) chatNew += inc.length;
+  }
+  chatBadge();
+  if(open){ chatRender(); chatMarkRead(); }
+}
+function cloudChatRead(docs){
+  docs.forEach(d => { chatReads[d.id] = Math.max(+chatReads[d.id] || 0, +d.ts || 0); });
+  chatReadLoaded = true;
+  chatBadge();
+  if($("chdlg").open){ chatMarkRead(); chatRender(); }
+}
+function chatMarkRead(){
+  if(!cloudUser || !chatLoaded || !$("chdlg").open || !window.cloud || !CHAT.length) return;
+  const mx = CHAT[CHAT.length - 1].ts;
+  if(mx > chatMyRead()){
+    chatReads[chatMyKey()] = mx; chatBadge();
+    cloud.batch([{t:"set", col:"chatread", id:chatMyKey(), data:{ts:mx}}]).catch(() => {});
+  }
+}
+
+/* ---- pintar els missatges ---- */
+const CH_EMOJI_ONLY = /^(?:\p{Extended_Pictographic}|\p{Emoji_Modifier}|\u200d|\ufe0f|\s)+$/u;
+function chatLinks(t){ return esc(t).replace(/(https?:\/\/[^\s<]+)/g, u => '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + u + '</a>'); }
+function chatDay(ts){
+  const d = new Date(ts), t = new Date(), y = new Date(Date.now() - 864e5);
+  if(d.toDateString() === t.toDateString()) return "Avui";
+  if(d.toDateString() === y.toDateString()) return "Ahir";
+  return d.toLocaleDateString("ca", {weekday:"long", day:"numeric", month:"long"});
+}
+const chatHM = ts => new Date(ts).toLocaleTimeString("ca", {hour:"2-digit", minute:"2-digit"});
+function chatRender(forceBottom){
+  const ul = $("chList"), me = chatMe();
+  const dist = ul.scrollHeight - ul.scrollTop - ul.clientHeight;
+  const stick = !!forceBottom || dist < 90 || !ul.children.length;
+  if(!CHAT.length){
+    ul.innerHTML = '<div class="chempty"><b>👋</b>Encara no hi ha missatges.<br>Escriu el primer!</div>';
+    return;
+  }
+  const otherRead = +(chatReads[chatOtherKey()] || 0);
+  let h = "", lastDay = "";
+  CHAT.forEach((m, i) => {
+    const day = new Date(m.ts).toDateString();
+    if(day !== lastDay){ h += '<div class="chday"><span>' + esc(chatDay(m.ts)) + '</span></div>'; lastDay = day; }
+    const prev = CHAT[i - 1], mine = m.from === me, who = chatName(m.from), k = who.toLowerCase();
+    const grp = !!prev && new Date(prev.ts).toDateString() === day && prev.from === m.from && m.ts - prev.ts < 300000;
+    const big = CH_EMOJI_ONLY.test(m.text) && (m.text.match(/\p{Extended_Pictographic}/gu) || []).length <= 3;
+    const tick = mine ? '<span class="tk' + (otherRead >= m.ts ? ' seen' : '') + '" title="' + (m.pending ? 'Enviant…' : otherRead >= m.ts ? 'Vist' : 'Enviat') + '">' + (m.pending ? "🕓" : otherRead >= m.ts ? "✓✓" : "✓") + '</span>' : "";
+    h += '<div class="cm ' + (mine ? "me" : "ot") + (grp ? " grp" : "") + '">'
+      + '<span class="cm-av ' + k + (grp ? " ghost" : "") + '" aria-hidden="true">' + esc(who) + '</span>'
+      + '<div class="cm-b">' + (grp ? "" : '<span class="cm-n ' + k + '">' + esc(who) + '</span>')
+      + '<div class="cm-t' + (big ? " big" : "") + '">' + chatLinks(m.text) + '<span class="cm-m">' + chatHM(m.ts) + tick + '</span></div></div></div>';
+  });
+  ul.innerHTML = h;
+  if(stick){ ul.scrollTop = ul.scrollHeight; chatNew = 0; $("chJump").hidden = true; }
+  else if(chatNew > 0){ $("chJump").hidden = false; }
+}
+$("chList").addEventListener("scroll", () => {
+  const u = $("chList");
+  if(u.scrollHeight - u.scrollTop - u.clientHeight < 90){ chatNew = 0; $("chJump").hidden = true; }
+}, {passive: true});
+$("chJump").onclick = () => { const u = $("chList"); u.scrollTop = u.scrollHeight; chatNew = 0; $("chJump").hidden = true; };
+
+/* ---- enviar ---- */
+function chatGrow(){ const t = $("chIn"); t.style.height = "44px"; t.style.height = Math.min(120, Math.max(44, t.scrollHeight)) + "px"; }
+function chatSyncSend(){ $("chSend").disabled = !$("chIn").value.trim(); }
+function chatSend(){
+  const ta = $("chIn"), text = ta.value.trim();
+  if(!text || !cloudUser || !window.cloud) return;
+  ta.value = ""; chatGrow(); chatSyncSend();
+  $("chEmoji").hidden = true; $("chEmBtn").setAttribute("aria-expanded", "false");
+  cloud.batch([{t:"set", col:"chat", id:cloud.newId(), data:{ts:Date.now(), from:chatMe(), text}}]).catch(cloudErr);
+  const u = $("chList"); u.scrollTop = u.scrollHeight;
+  ta.focus();
+}
+$("chForm").onsubmit = e => { e.preventDefault(); chatSend(); };
+$("chIn").addEventListener("input", () => { chatGrow(); chatSyncSend(); });
+$("chIn").addEventListener("keydown", e => {
+  if(e.key === "Enter" && !e.shiftKey && !isTouch && !e.isComposing){ e.preventDefault(); chatSend(); }
+});
+
+/* ---- emoticones ---- */
+const EMO = [
+  ["😊", "Cares", "😀 😃 😄 😁 😆 😅 😂 🤣 🥲 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😋 😛 😜 🤪 😝 🤗 🤭 🤔 🤨 😐 😑 😶 🙄 😏 😣 😥 😮 🤐 😯 😪 😫 🥱 😴 😎 🤓 🥳 🤩 😢 😭 😤 😠 😡 🤯 😳 🥵 🥶 😱 😨 😰 🤒 🤕 🥴 🤢 😷 🤠 😈 💀 👻 🤖"],
+  ["👍", "Mans", "👍 👎 👌 🤌 ✌️ 🤞 🤟 🤘 🤙 👈 👉 👆 👇 ☝️ 👋 🤚 🖐️ ✋ 👏 🙌 🤝 🙏 💪 🫶 🫡 🤷 🙋 🙆 🙅 🤦 💃 🕺"],
+  ["❤️", "Cors i festa", "❤️ 🧡 💛 💚 💙 💜 🖤 🤍 🤎 💔 ❣️ 💕 💞 💓 💗 💖 💘 💝 ✨ ⭐ 🌟 💫 🔥 💯 ✅ ❌ ⚠️ ❓ ❗ 🎉 🎊 🎁 🎂 🥂 🍾 🏆 🥇"],
+  ["🏠", "Casa", "🏠 🛋️ 🛏️ 🚽 🛁 🚿 🍳 🍽️ 🧽 🧺 🧰 🔌 💡 🔑 🚪 🪑 📦 🛒 🧹 🪴 🔧 🔨 🪜 🧴 🧻 🧼 🪣 🗑️ 📺 📱 💻 🖥️ 🎮 ⏰ 📅 📷"],
+  ["🍕", "Menjar", "🍕 🍔 🍟 🌭 🌮 🌯 🍝 🍣 🍜 🥗 🥘 🍳 🥐 🥖 🧀 🥩 🍗 🍰 🍪 🍫 🍿 ☕ 🍵 🍺 🍷 🥤 🍎 🍌 🍇 🍉 🍓 🥑"],
+  ["🚗", "Viatges", "🚗 🚙 🚲 🛵 ✈️ 🚆 🚌 ⛽ 🅿️ 📍 🗺️ 🧭 🏔️ ⛰️ ❄️ ⛷️ 🏖️ 🌞 ☀️ ⛅ 🌧️ ⛈️ 🌈 🌙 🐶 🐱 🐾 🌿 🌸"]
+];
+const emoRecent = () => { try { return JSON.parse(localStorage.getItem("inv_emoji_recent") || "[]").slice(0, 24); } catch(e){ return []; } };
+let emoTab = 1;
+function emoRender(){
+  const tabs = [["🕘", "Recents"]].concat(EMO.map(t => [t[0], t[1]]));
+  $("chTabs").innerHTML = tabs.map((t, i) => '<button type="button" class="chtab" role="tab" aria-selected="' + (i === emoTab) + '" title="' + esc(t[1]) + '" data-t="' + i + '">' + t[0] + '</button>').join("");
+  const list = emoTab === 0 ? emoRecent() : EMO[emoTab - 1][2].split(" ");
+  $("chGrid").innerHTML = list.length ? list.map(e => '<button type="button" data-e="' + e + '" aria-label="' + e + '">' + e + '</button>').join("") : '<p class="chnone">Aquí sortiran les emoticones que facis servir més.</p>';
+  $("chGrid").scrollTop = 0;
+}
+$("chTabs").addEventListener("click", e => { const b = e.target.closest(".chtab"); if(!b) return; emoTab = +b.dataset.t; emoRender(); });
+$("chGrid").addEventListener("click", e => {
+  const b = e.target.closest("button[data-e]"); if(!b) return;
+  const em = b.dataset.e, ta = $("chIn"), a = ta.selectionStart == null ? ta.value.length : ta.selectionStart, z = ta.selectionEnd == null ? a : ta.selectionEnd;
+  if(ta.value.length + em.length > ta.maxLength) return;
+  ta.value = ta.value.slice(0, a) + em + ta.value.slice(z);
+  const p = a + em.length; ta.setSelectionRange(p, p);
+  chatGrow(); chatSyncSend();
+  try { const r = [em].concat(emoRecent().filter(x => x !== em)).slice(0, 24); localStorage.setItem("inv_emoji_recent", JSON.stringify(r)); } catch(_){}
+  if(!isTouch) ta.focus();
+});
+$("chEmBtn").onclick = () => {
+  const open = $("chEmoji").hidden;
+  $("chEmoji").hidden = !open; $("chEmBtn").setAttribute("aria-expanded", String(open));
+  if(open){ if(emoTab === 0 && !emoRecent().length) emoTab = 1; emoRender(); }
+  const u = $("chList"); u.scrollTop = u.scrollHeight;
+};
+
+/* ---- obrir / tancar ---- */
+function chatFit(){
+  const d = $("chdlg"), vv = window.visualViewport;
+  if(!d.open || !vv){ d.style.height = d.style.top = d.style.bottom = d.style.margin = ""; return; }
+  if(vv.height < innerHeight - 120){ /* teclat obert al mòbil */
+    d.style.margin = "0 auto"; d.style.top = (vv.offsetTop + 8) + "px"; d.style.bottom = "auto"; d.style.height = Math.min(780, vv.height - 16) + "px";
+  } else { d.style.height = d.style.top = d.style.bottom = d.style.margin = ""; }
+}
+if(window.visualViewport){ visualViewport.addEventListener("resize", chatFit); visualViewport.addEventListener("scroll", chatFit); }
+$("chatBtn").onclick = () => {
+  if(!cloudUser){ toast("Cal iniciar sessió per fer servir el xat."); return; }
+  $("chSub").textContent = "Ets " + chatName(chatMe()) + " · amb " + chatName(ALLOWED.find(e => e.toLowerCase() !== chatMe()) || "");
+  chatNew = 0; $("chJump").hidden = true;
+  $("chEmoji").hidden = true; $("chEmBtn").setAttribute("aria-expanded", "false");
+  $("chdlg").showModal(); chatFit();
+  $("chList").innerHTML = ""; chatRender(true); chatMarkRead(); chatGrow(); chatSyncSend();
+  const u = $("chList"); u.scrollTop = u.scrollHeight;
+  if(!isTouch) $("chIn").focus();
+};
+$("chClose").onclick = () => $("chdlg").close();
+$("chdlg").addEventListener("close", () => { $("chEmoji").hidden = true; chatFit(); chatMarkRead(); chatBadge(); });
+chatBadge();
+
 gate("wait", "Connectant…");
 cloudSetStatus();
 
@@ -2420,6 +2701,9 @@ try {
       s => cloudPhotos(s.docChanges().map(c => ({type: c.type, id: c.doc.id, data: c.type === "removed" ? null : c.doc.data()}))), err));
     unsubs.push(F.onSnapshot(ref("meta", "state"), s => cloudMeta(s.exists() ? s.data() : null), err));
     unsubs.push(F.onSnapshot(F.query(F.collection(db, "hist"), F.orderBy("ts", "desc")), s => cloudHist(s.docs.map(d => Object.assign({id: d.id}, d.data()))), err));
+    unsubs.push(F.onSnapshot(F.query(F.collection(db, "chat"), F.orderBy("ts", "desc"), F.limit(300)), {includeMetadataChanges: true},
+      s => cloudChat(s.docs.map(d => Object.assign({id: d.id}, d.data(), {pending: d.metadata.hasPendingWrites}))), err));
+    unsubs.push(F.onSnapshot(F.collection(db, "chatread"), s => cloudChatRead(s.docs.map(d => ({id: d.id, ts: d.data().ts}))), err));
     unsubs.push(F.onSnapshot(F.collection(db, "items"), {includeMetadataChanges: true},
       s => cloudItems(s.docs.map(d => ({id: d.id, data: d.data()})), {changed: s.docChanges().length > 0, pending: s.metadata.hasPendingWrites, cache: s.metadata.fromCache}), err));
   });
