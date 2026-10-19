@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v3.8">
+<meta name="generator" content="Inventari de casa v3.9">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -802,7 +802,7 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v3.8</span></h1>
+      <h1>Inventari de casa <span class="ver">v3.9</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -871,9 +871,9 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
     </div>
     <input id="fNewLoc" class="fnewin" placeholder="Nom de la nova ubicació" maxlength="40" aria-label="Nova ubicació" autocomplete="off" hidden="">
     <div class="fmulti"><span class="flab">També és a <small>· compta a cada ubicació</small></span><div class="fchips" id="fLocs2"></div></div>
-    <label>Zona principal<select id="fCat"></select></label>
+    <label>Zona principal <small style="font-weight:500">· on surt a «Totes»</small><select id="fCat"></select></label>
     <div id="fNewCat" class="frow fnew" hidden=""><label>Icona<select id="fIcon"><option>🏠</option><option>🍳</option><option>🍽️</option><option>🛋️</option><option>🛏️</option><option>🚽</option><option>🧺</option><option>🧽</option><option>💻</option><option>🧰</option><option>🔌</option><option>🚗</option><option>🌿</option><option>🌞</option><option>👶</option><option>🐾</option><option>🎮</option><option>📚</option><option>🧳</option><option>🏊</option><option>🏋️</option><option>🍷</option><option>📦</option></select></label><label>Nova zona<input id="fCatName" maxlength="30" placeholder="Per exemple: Terrassa" autocomplete="off"></label></div>
-    <div class="fmulti"><span class="flab">Altres zones <small>· opcional, només compta a la principal</small></span><div class="fchips" id="fCats2"></div></div>
+    <div class="fmulti"><span class="flab">També és a <small>· altres zones · compta a cadascuna i surt en filtrar-la</small></span><div class="fchips" id="fCats2"></div></div>
     <label id="fNoteL" hidden="">Nota<input id="fNote" maxlength="200"></label>
     <div class="fphoto"><span class="flab">Foto <small style="font-weight:500">· qualsevol foto o captura</small></span>
       <div class="fpbtns">
@@ -1144,7 +1144,7 @@ const qtyBadge = q => typeof q==="number" ? "×"+q : String(q);
 const locsOf = c => (Array.isArray(c.locs) && c.locs.length ? c.locs : [c.loc]);
 const catsOf = c => (Array.isArray(c.cats) && c.cats.length ? c.cats : [c.cat]);
 const zonesOf = c => catsOf(c).map(id => (CATS.find(z=>z.id===id)||{}).label).filter(Boolean);
-const zonesTxt = c => { const z = zonesOf(c); return z.length > 1 ? z[0] + " (també: " + z.slice(1).join(", ") + ")" : (z[0] || ""); };
+const zonesTxt = c => zonesOf(c).join(" · ");
 const locsTxt = (c, sep) => locsOf(c).join(sep || " · ");
 function fixItem(c){
   if(!c || typeof c !== "object") return c;
@@ -1202,7 +1202,7 @@ const qHit = i => qText(SEARCH[i]);
 
 /* Filtres: cada grup compta amb els altres filtres aplicats */
 const matches = (c,i,skip) => live(c)
-  && (skip==="cat" || state.cat==="all" || c.cat===state.cat)
+  && (skip==="cat" || state.cat==="all" || catsOf(c).includes(state.cat))
   && (skip==="loc" || state.loc==="all" || c.locs.includes(state.loc))
   && (skip==="review" || !state.review || needsReview(c))
   && (!state.q || qHit(i));
@@ -1217,7 +1217,7 @@ const CFGR = {toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatV
 function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
 function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
 const totLoc = l => DATA.filter(c => live(c) && c.locs.includes(l)).length;
-const totCat = id => DATA.filter(c => live(c) && c.cat === id).length;
+const totCat = id => DATA.filter(c => live(c) && catsOf(c).includes(id)).length;
 function renderLocs(){
   const box = $("locs"); box.innerHTML = "";
   const GLOBE = '<span class="globe" aria-hidden="true"><svg viewBox="0 0 34 34" fill="none" stroke="rgba(2,26,23,.55)" stroke-width="1.3">'
@@ -1320,20 +1320,27 @@ nous.forEach(c=>{ fixItem(c); DATA.push(c); SEARCH.push(searchText(c)); });
 const edits = load("inv_edits", {});
 Object.entries(edits).forEach(([k,p])=>{ const i = +k; if(DATA[i] && i < BASE_N){ Object.assign(DATA[i], p); fixItem(DATA[i]); } });
 DATA.forEach((c,i)=>{ SEARCH[i] = searchText(c); });
+/* v3.9: la targeta d'un article existeix a cada zona on és; a «Totes» només es mostra a la zona principal */
+function dropCards(i){
+  sections.forEach(s => { s.cards = s.cards.filter(li => { if(+li.dataset.i === i){ li.remove(); return false; } return true; }); });
+}
+function placeCards(i){
+  const c = DATA[i], tmp = document.createElement("ul");
+  catsOf(c).forEach(zid => {
+    const sec = sections.find(s => s.cat.id === zid); if(!sec) return;
+    tmp.innerHTML = card(c, i);
+    const li = tmp.firstElementChild, next = sec.cards.find(x => +x.dataset.i > i);
+    sec.grid.insertBefore(li, next || null);
+    sec.cards.splice(next ? sec.cards.indexOf(next) : sec.cards.length, 0, li);
+  });
+}
 function saveItem(i, patch){
   Object.assign(DATA[i], patch); if("cats" in patch && !patch.cats) delete DATA[i].cats; fixItem(DATA[i]); SEARCH[i] = searchText(DATA[i]);
   const ok = cloudSaveItem(DATA[i]);
   if(!ok) toast("No s'ha pogut desar la foto.");
   refreshLocs();
   /* torna a pintar la targeta, a la seva categoria */
-  const old = document.querySelector('#out li.card[data-i="'+i+'"]');
-  sections.forEach(s=>{ s.cards = s.cards.filter(li=>li!==old); });
-  if(old) old.remove();
-  const sec = sections.find(s=>s.cat.id===DATA[i].cat);
-  const tmp = document.createElement("ul"); tmp.innerHTML = card(DATA[i], i);
-  const li = tmp.firstElementChild, next = sec.cards.find(x=>+x.dataset.i > i);
-  sec.grid.insertBefore(li, next||null);
-  sec.cards.splice(next ? sec.cards.indexOf(next) : sec.cards.length, 0, li);
+  dropCards(i); placeCards(i);
   updateSub(); render();
 }
 const CORRECTE = {estado:"ok", fiab:"alta", pend:0};
@@ -1424,7 +1431,7 @@ function renderPend(sec){
 }
 function buildSection(cat){
     const out = $("out");
-    const items = DATA.map((c,i)=>({c,i})).filter(({c})=>c.cat===cat.id);
+    const items = DATA.map((c,i)=>({c,i})).filter(({c})=>catsOf(c).includes(cat.id));
     const s = document.createElement("section");
     s.innerHTML = '<h2><span aria-hidden="true">'+cat.icon+'</span>'+esc(cat.label)+'<span class="n"></span>'
       +'<button type="button" class="sbtn pend-btn" aria-expanded="false" aria-controls="pend-'+cat.id+'">Pendents <span class="pn"></span></button>'
@@ -1641,8 +1648,7 @@ $("fForm").onsubmit = e => {
   const i = DATA.length - 1; if(formCtx.key) afterPend();
   if(formCtx.key && !formCtx.free) toast("«" + c.item + "» creat a " + zoneOf(c) + " · " + locsTxt(c, ", ") + ". Ja no és pendent ✓");
   if(formCtx.free) toast("Article «" + c.item + "» creat a " + zoneOf(c) + " · " + locsTxt(c, ", ") + ".");
-  const sec = sections.find(s=>s.cat.id===c.cat);
-  sec.grid.insertAdjacentHTML("beforeend", card(c, i)); sec.cards.push(sec.grid.lastElementChild);
+  placeCards(i);
   updateSub(); render(); $("fdlg").close();
 };
 
@@ -1652,7 +1658,7 @@ function render(){
   sections.forEach(sec=>{
     let n = 0;
     sec.cards.forEach(li=>{
-      const i = +li.dataset.i, ok = matches(DATA[i], i);
+      const i = +li.dataset.i, ok = matches(DATA[i], i) && (state.cat === "all" ? sec.cat.id === DATA[i].cat : sec.cat.id === state.cat);
       li.hidden = !ok;
       if(ok){ n++; order.push(i); }
     });
@@ -1674,11 +1680,13 @@ function renderCheck(){
   const q = state.q, solo = state.cat !== "all";
   let tot = 0, fet = 0;
   let shown = 0;
+  const seen = new Set();
   const cols = CATS.filter(cat=>state.cat==="all" || state.cat===cat.id).map(cat=>{
-    const arts = DATA.map((c,i)=>({c,i})).filter(({c,i})=>c.cat===cat.id && matches(c,i));
+    const arts = DATA.map((c,i)=>({c,i})).filter(({c,i})=>catsOf(c).includes(cat.id) && matches(c,i));
     const pend = state.loc==="all" && !state.review ? pendRows(cat.id).filter(r=>have[r.key]!=="art" && (!q || qText(norm(r.name)))) : [];
     const ok = arts.length + pend.filter(r=>have[r.key]).length, all = arts.length + pend.length;
-    tot += all; fet += ok;
+    arts.forEach(({i}) => seen.add(i));
+    tot += pend.length; fet += pend.filter(r=>have[r.key]).length;
     if(!all) return "";
     shown++;
     return '<details class="ccol'+(solo?' solo':'')+'" data-cat="'+cat.id+'"'+(solo || !checkClosed.has(cat.id) ? ' open' : '')+'><summary><h3><span aria-hidden="true">'+cat.icon+'</span>'+esc(cat.label)+'<span class="n">'+ok+' / '+all+'</span></h3></summary><ul>'
@@ -1687,6 +1695,7 @@ function renderCheck(){
       + pend.filter(r=>have[r.key]).map(r=>'<li><label><input type="checkbox" checked data-cat="'+cat.id+'" data-k="'+r.key+'"><span>'+esc(r.name)+'</span></label><span class="cmeta">Marcat</span>'+pdel(cat.id, r)+'</li>').join("")
       + '</ul></details>';
   }).join("");
+  tot += seen.size; fet += seen.size;
   $("checkview").innerHTML = '<div class="chead"><h2>☑ Check <span class="n">'+fet+' de '+tot+' tinguts</span></h2><button type="button" class="sbtn pnew" id="pNewBtn">＋ Crear pendent</button>'+(!solo && shown > 1 ? '<button type="button" class="cfold" data-f="close">▸ Plega-les</button><button type="button" class="cfold" data-f="open">▾ Obre-les</button>' : '')+VIEWS+'</div>'
     + (cols ? '<div class="cgrid'+(shown===1?' solo':'')+'">'+cols+'</div>' : '<p class="empty-msg">Cap article coincideix amb els filtres.</p>');
   document.querySelectorAll("#checkview .views button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===view)));
@@ -1924,7 +1933,7 @@ function aiAsk(text){
   const extra = words.filter(w => !(zone && (norm(zone.label).includes(w) || norm(zone.short).includes(w))) && !(loc && norm(loc).includes(w)) && !/^(articl|product|coses?|tot|totes|resum|total)/.test(w));
   if(!extra.length && (zone || loc || /total|resum|quant|articl/.test(t))){
     const d = aiMsg("bot", "Tens "+all.length+" articles"+(zone?" a "+zone.label:"")+(loc?" a "+loc:"")+" ("+all.filter(i=>DATA[i].photos.length).length+" amb foto)."
-      + (!zone && !loc ? "\n\n"+CATS.map(z=>z.icon+" "+z.label+": "+DATA.filter(c=>live(c) && c.cat===z.id).length).join("\n") : ""));
+      + (!zone && !loc ? "\n\n"+CATS.map(z=>z.icon+" "+z.label+": "+DATA.filter(c=>live(c) && catsOf(c).includes(z.id)).length).join("\n") : ""));
     if(zone || loc) aiItems(d, all.slice(0,15));
     return;
   }
@@ -2021,9 +2030,7 @@ function deleteItem(i){
   cloudDeleteItem(c);
   /* si venia de Pendents, torna a ser pendent */
   if(c.pkey && have[c.pkey]){ delete have[c.pkey]; store("inv_tinc", have); }
-  const li = document.querySelector('#out li.card[data-i="'+i+'"]');
-  sections.forEach(s => { s.cards = s.cards.filter(x => x !== li); });
-  if(li) li.remove();
+  dropCards(i);
   refreshLocs(); updateSub();
   const sec = sections.find(s => s.cat.id === c.cat); if(sec) renderPend(sec);
   render();
@@ -3324,8 +3331,7 @@ function rCreate(nt, t0, n0){
     c.ord = Date.now();
     if(!cloudSaveItem(c)) return "⚠️ No s'ha pogut desar.";
     DATA.push(c); SEARCH.push(searchText(c)); refreshLocs();
-    const i = DATA.length - 1, sec = sections.find(s => s.cat.id === c.cat);
-    if(sec){ sec.grid.insertAdjacentHTML("beforeend", card(c, i)); sec.cards.push(sec.grid.lastElementChild); }
+    placeCards(DATA.length - 1);
     updateSub(); render();
     return "✓ Article «" + name + "» creat (sense foto: la pots afegir des de la fitxa).";
   });
@@ -3428,7 +3434,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "3.8";
+const APP_VER = "3.9";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null, phLoaded = false;
 const __cloudPhotos34 = cloudPhotos;
@@ -3908,7 +3914,7 @@ function cfgSummaryHtml(){
   const s = invStats(), pct = Math.min(100, s.bytes / FREE_BYTES * 100), cls = pct >= 85 ? "bad" : pct >= 60 ? "warn" : "ok";
   const box = (v, l) => '<div class="cfstat"><b>' + v + '</b><small>' + l + '</small></div>';
   const orph = orphanPhotos();
-  return '<div class="cfg"><h3>📊 Resum</h3><p class="cfn">El % de cada ubicació i de cada zona és el tant per cent d\'articles que hi ha guardats allà respecte al total.</p>'
+  return '<div class="cfg"><h3>📊 Resum</h3><p class="cfn">El % de cada ubicació i de cada zona és el tant per cent d\'articles que hi ha guardats allà respecte al total. Un article que és a dues zones (o ubicacions) compta a totes dues.</p>'
     + '<div class="cfstats">' + box(s.tot, "articles") + box(s.units, "unitats") + box(s.withPh, "amb foto") + box(s.rev, "per revisar") + box(s.pend, "pendents") + box(LOCS.length, LOCS.length === 1 ? "ubicació" : "ubicacions") + '</div>'
     + '<div class="cfspace"><span>💾 Espai al núvol (aprox.): <b>' + mbTxt(s.bytes) + ' MB</b> de 1024 MB (' + pct.toFixed(1).replace(".", ",") + ' %)</span>'
     + '<span class="cfbar" aria-hidden="true"><i class="' + cls + '" style="width:' + Math.max(1, pct).toFixed(1) + '%"></i></span>'
