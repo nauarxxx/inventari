@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v3.5">
+<meta name="generator" content="Inventari de casa v3.6">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -753,6 +753,25 @@ body.vm-mobile .cfdlg.bkconf[open]{width:min(430px,calc(100vw - 24px))}
 .cfdlg .cform h2{color:#ff6b6b}
 .cfdlg .hcl{background:#120000;border-color:#5a1010;color:#fff}
 .cfdlg .fhint{color:#c9a0a0}
+/* ===== v3.6: fitxa (ubicació i Elimina) i selector d'ubicació ===== */
+.lrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+button.loc{border:0;font:inherit;font-weight:700;font-size:14px;cursor:pointer;max-width:62%;text-align:left;line-height:1.2;-webkit-tap-highlight-color:transparent}
+button.loc::after{content:"✎";margin-left:2px;font-size:12px;opacity:.7;flex:none}
+button.loc:active{transform:scale(.97)}
+button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.delbtn{flex:none;font:inherit;font-size:14px;font-weight:800;padding:5px 13px;border-radius:999px;border:2px solid #e5484d;background:rgba(229,72,77,.12);color:#ff8a8d;cursor:pointer;white-space:nowrap}
+.delbtn:hover{background:#e5484d;color:#fff}
+.delbtn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.lplist{display:flex;flex-direction:column;gap:6px;max-height:min(40dvh,320px);overflow-y:auto}
+.lpi{font:inherit;color:var(--ink);text-align:left;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);cursor:pointer}
+.lpi.on{border-color:var(--accent);background:rgba(79,227,210,.12)}
+.lpk{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--accent-ink)}
+.lpi.on .lpk{background:var(--accent);border-color:var(--accent)}
+.lpn{flex:1;min-width:0;font-weight:700;overflow-wrap:anywhere}
+.lpi em{flex:none;font-style:normal;font-size:11px;font-weight:700;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 8px}
+.lpnew{display:flex;gap:8px}
+.lpnew input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--surface2);color:var(--ink)}
+#lpSave:disabled{opacity:.4}
 /* ===== v3.5: so de WALL-E ===== */
 .wtest{align-self:flex-start;font:inherit;font-size:14px;font-weight:800;padding:9px 16px;border-radius:999px;border:2px solid #ff3b3b;background:#140000;color:#fff;cursor:pointer}
 .wtest:hover{background:#2a0000}
@@ -772,7 +791,7 @@ body.vm-mobile .cfdlg.bkconf[open]{width:min(430px,calc(100vw - 24px))}
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v3.5</span></h1>
+      <h1>Inventari de casa <span class="ver">v3.6</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -822,7 +841,7 @@ body.vm-mobile .cfdlg.bkconf[open]{width:min(430px,calc(100vw - 24px))}
   <form id="aiForm" class="aiform"><textarea id="aiIn" rows="1" placeholder="Ex.: on és la raclette?" aria-label="Pregunta sobre els productes"></textarea><button class="btn primary" type="submit" id="aiSend">Envia</button></form>
 </div>
 <main>
-<div id="emptyCloud" class="empty-msg ecloud" hidden><p><b>L'inventari del núvol és buit.</b><br>Importa el fitxer de la v2.8 (o una còpia .json) per pujar-hi tots els articles i fotos.</p><button class="btn primary" id="eImp" type="button">⬆️ Importa el fitxer</button></div>
+<div id="emptyCloud" class="empty-msg ecloud" hidden><p><b>L'inventari del núvol és buit.</b><br>Importa un fitxer (.html o .json) per pujar-hi tots els articles i fotos.</p><button class="btn primary" id="eImp" type="button">⬆️ Importa el fitxer</button></div>
 
   <div id="checkview"></div>
   <div id="out"></div>
@@ -922,6 +941,16 @@ body.vm-mobile .cfdlg.bkconf[open]{width:min(430px,calc(100vw - 24px))}
     </div>
   </div>
 </dialog>
+<dialog id="lpdlg" class="fdlg" aria-labelledby="lpTitle">
+  <div class="cform">
+    <h2 id="lpTitle">📍 On és?</h2>
+    <p class="hcl" id="lpName"></p>
+    <p class="fhint">Marca on és l'article. Pot estar a més d'una ubicació i comptarà a totes.</p>
+    <div id="lpList" class="lplist"></div>
+    <div class="lpnew"><input id="lpNew" maxlength="40" placeholder="Nova ubicació…" aria-label="Nova ubicació" autocomplete="off"><button type="button" class="btn" id="lpAdd">＋ Afegeix</button></div>
+    <div class="factions"><button type="button" class="btn" id="lpCancel">Cancel·la</button><button type="button" class="btn primary" id="lpSave">Desa</button></div>
+  </div>
+</dialog>
 <dialog id="xdlg" class="fdlg" aria-labelledby="xTitle">
   <div class="cform">
     <h2 id="xTitle">Eliminar l'article?</h2>
@@ -934,10 +963,9 @@ body.vm-mobile .cfdlg.bkconf[open]{width:min(430px,calc(100vw - 24px))}
   <button class="btn close" id="dClose" type="button">Tanca</button>
   <div class="stage" id="stage">
     <div class="box" id="box">
-      <button class="ddel" id="dDel" type="button" aria-label="Elimina aquest article" title="Elimina aquest article">✕</button>
       <div class="ph" id="dPhoto"></div>
       <div class="info">
-        <span class="loc" id="dLoc"></span>
+        <div class="lrow"><button type="button" class="loc" id="dLoc" aria-label="Canvia la ubicació" title="Toca per canviar la ubicació"></button><button type="button" class="delbtn" id="dDel" aria-label="Elimina aquest article" title="Elimina aquest article">🗑️ Elimina</button></div>
         <h2 id="dTitle"></h2>
         <div id="dWhy" class="why"></div>
         <dl class="row">
@@ -976,8 +1004,7 @@ body.vm-mobile .cfdlg.bkconf[open]{width:min(430px,calc(100vw - 24px))}
     <h2 id="sTitle">☁️ Núvol</h2>
     <p class="fhint" id="sInfo"></p>
     <div class="copts">
-      <button type="button" class="copt" id="sExp"><span class="cico" aria-hidden="true">⬇️</span><span class="ctxt"><b>Exporta una còpia</b><small>Descarrega un .json amb tots els articles, fotos i pendents</small></span><span class="carr" aria-hidden="true">›</span></button>
-      <button type="button" class="copt" id="sImp"><span class="cico" aria-hidden="true">⬆️</span><span class="ctxt"><b>Importa un fitxer</b><small>v2.8 (.html) o una còpia (.json). Substitueix tot el que hi ha al núvol</small></span><span class="carr" aria-hidden="true">›</span></button>
+      <button type="button" class="copt" id="sExp"><span class="cico" aria-hidden="true">⬇️</span><span class="ctxt"><b>Exporta una còpia (.html)</b><small>Descarrega un fitxer .html amb tots els articles i fotos</small></span><span class="carr" aria-hidden="true">›</span></button>
       <button type="button" class="copt" id="sOut"><span class="cico" aria-hidden="true">🚪</span><span class="ctxt"><b>Tanca la sessió</b><small>En aquest dispositiu</small></span><span class="carr" aria-hidden="true">›</span></button>
     </div>
     <div class="factions"><button type="button" class="btn" id="sClose">Tanca</button></div>
@@ -1173,8 +1200,8 @@ const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c))
 const GOAL = 100; /* objectiu: 100 articles = 100% */
 const pctOf = (n, g) => Math.min(100, Math.round(n / (g || GOAL) * 100));
 /* v3.3: valors per defecte (els de la v3.2) i límits dels ajustos */
-const CFGD = {goal:100, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000};
-const CFGR = {hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000]};
+const CFGD = {goal:100, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
+const CFGR = {hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
 function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
 function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
 function goalOf(g, id){ const m = cfgRaw()[g], v = m && typeof m === "object" ? Math.round(+m[id]) : NaN; return v >= 1 && v <= 99999 ? v : CFGD.goal; }
@@ -1798,7 +1825,7 @@ box.addEventListener("pointerup", e => {
 });
 document.addEventListener("keydown", e => {
   if(e.target.closest && e.target.closest("#aiPanel")) return;
-  if(!$("dlg").classList.contains("open") || $("fdlg").open || $("xdlg").open || $("sdlg").open) return;
+  if(!$("dlg").classList.contains("open") || $("fdlg").open || $("xdlg").open || $("sdlg").open || $("lpdlg").open) return;
   if(e.key === "Escape") closeDlg();
   if(e.key === "ArrowLeft") go(-1);
   if(e.key === "ArrowRight") go(1);
@@ -2215,20 +2242,23 @@ const cloudAllowed = e => ALLOWED.includes(String(e || "").toLowerCase());
 const BASE_CATS = CATS.length - userCats.length;
 const PH = new Map(), PHR = new Map();
 let RAW = new Map(), cloudLoaded = false, cloudUser = null, itemsCache = true, itemsPending = false, cloudFail = null, importing = false;
+let everServer = false, srvDown = false, inflight = 0, hadOfflinePending = false, connT = 0;
+/* sense connexió: el navegador ho diu, o Firebase només serveix dades guardades al dispositiu, o no ha arribat mai al servidor */
+const netOffline = () => !navigator.onLine || srvDown || (everServer && itemsCache);
 
 /* ---- estat del botó ---- */
 function cloudSetStatus(){
   const b = $("saveBtn"); b.classList.remove("sync-ok", "sync-wait", "sync-off", "sync-err", "dirty");
   let t, c;
+  const pend = inflight > 0 || itemsPending || pendKeys.size > 0;
   if(cloudFail){ t = "⚠️ Error de connexió"; c = "sync-err"; }
   else if(!cloudUser){ t = "☁️ Connectant…"; c = ""; }
-  else if(!navigator.onLine){ t = itemsPending ? "📴 Sense connexió · es desarà" : "📴 Sense connexió"; c = "sync-off"; }
-  else if(itemsPending || pendKeys.size){ t = "⏳ Desant…"; c = "sync-wait"; }
+  else if(netOffline()){ t = pend ? "📴 Sense connexió · canvis pendents" : "📴 Sense connexió"; c = "sync-off"; }
+  else if(pend){ t = "⏳ Desant…"; c = "sync-wait"; }
   else if(!cloudLoaded){ t = "⏳ Carregant…"; c = "sync-wait"; }
   else { t = "☁️ Sincronitzat"; c = "sync-ok"; }
   b.textContent = t; if(c) b.classList.add(c);
 }
-addEventListener("online", cloudSetStatus); addEventListener("offline", cloudSetStatus);
 function cloudErr(e){
   console.error(e);
   const code = e && e.code || "";
@@ -2297,6 +2327,7 @@ function cloudMeta(m){
 }
 function cloudItems(docs, meta){
   itemsCache = meta.cache; itemsPending = meta.pending;
+  if(!meta.cache){ everServer = true; srvDown = false; clearTimeout(connT); }
   if(!meta.cache || docs.length) cloudLoaded = true;
   cloudSetStatus();
   if(!meta.changed && !(cloudLoaded && !DATA.length)) return;
@@ -2382,10 +2413,11 @@ function gate(mode, msg){
   document.body.classList.toggle("lock", mode !== "ok" || $("dlg").classList.contains("open"));
 }
 function cloudAuth(u){
-  cloudUser = null; cloudLoaded = false;
+  cloudUser = null; cloudLoaded = false; everServer = false; srvDown = false; clearTimeout(connT);
   if(!u){ gate("in", "Inicia sessió amb el teu compte de Google per veure i editar l'inventari."); cloudSetStatus(); return; }
   if(!cloudAllowed(u.email)){ gate("denied", "El compte " + u.email + " no té accés a aquest inventari."); cloudSetStatus(); return; }
   cloudUser = u; gate("ok"); cloudSetStatus(); render();
+  connT = setTimeout(() => { if(!everServer){ srvDown = true; cloudSetStatus(); } }, 8000);
 }
 function cloudReady(){ gate("wait", "Comprovant la sessió…"); }
 function cloudBootFail(e){
@@ -2413,21 +2445,17 @@ $("saveBtn").onclick = () => {
 $("sClose").onclick = () => $("sdlg").close();
 $("sOut").onclick = () => { $("sdlg").close(); cloud.signOut(); };
 $("sExp").onclick = () => { $("sdlg").close(); cloudExport(); };
-$("sImp").onclick = () => { $("sdlg").close(); $("impIn").click(); };
 $("eImp").onclick = () => $("impIn").click();
-function cloudExport(){
-  const items = DATA.filter(live).map(c => { const o = cleanItem(c); o.photos = c.photos.slice(); return o; });
-  const keys = {}; KEYS_CLOUD.forEach(k => { if(STATE[k] !== undefined) keys[k] = STATE[k]; });
-  const blob = new Blob([JSON.stringify({app:"inventari-casa", version:"3.0", exportedAt:new Date().toISOString(), items, keys})], {type:"application/json"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = "inventari_copia_" + new Date().toISOString().slice(0, 10) + ".json";
-  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 10000);
-  toast("Còpia descarregada: " + items.length + " articles.");
-}
 function parseBackup(text){
   text = String(text).replace(/^\uFEFF/, "");
   let items, keys = {};
-  if(/^\s*\{/.test(text)){
+  const m0 = text.indexOf('id="inv-data"');
+  if(m0 >= 0){
+    /* còpia exportada en .html (v3.6+): les dades són dins d'un bloc JSON */
+    const a0 = text.indexOf(">", m0) + 1, b0 = text.indexOf("<" + "/script>", a0);
+    if(a0 <= 0 || b0 < 0) throw new Error("Còpia incompleta");
+    const j = JSON.parse(text.slice(a0, b0)); items = j.items; keys = j.keys || {};
+  } else if(/^\s*\{/.test(text)){
     const j = JSON.parse(text); items = j.items; keys = j.keys || {};
   } else {
     const d0 = text.indexOf("\nconst DATA = "); if(d0 < 0) throw new Error("No és un fitxer de l'inventari");
@@ -2876,7 +2904,7 @@ chatBadge();
    Els ajustos es desen a Firestore (meta/state · camp inv_cfg) i surten a ↶ Desfés.
    ===================================================================== */
 let CHAT_MAX = 300;
-const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E"};
+const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E"};
 const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap";
 const cfgDeep = o => o == null ? null : JSON.parse(JSON.stringify(o));
 const fmtSec = ms => String(Math.round(ms / 100) / 10).replace(".", ",") + " s";
@@ -2915,7 +2943,7 @@ function cfgLabels(b, a){
 }
 function cfgClean(o){
   const r = {};
-  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap"].forEach(k => {
+  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver"].forEach(k => {
     const v = o && o[k];
     if(typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] && v !== CFGD[k]) r[k] = v;
   });
@@ -3006,6 +3034,7 @@ function cfgRender(){
   h += '</div><div class="cfg"><h3>🔊 So de WALL-E</h3><p class="cfn">Sona quan obres l\'assistent de productes (no en el mode d\'ordres). Fitxer: <b>Walle.mp3</b>.</p>';
   h += row("Volum de WALL-E", "Entre 0 i 100 · 0 = en silenci · per defecte " + CFGD.wvol, 'data-t="wvol" min="0" max="100" step="1"', cfgGet("wvol"), "%");
   h += row("Repetició mínima", "Entre 0,5 i 10 s · per defecte " + String(CFGD.wgap / 1000).replace(".", ","), 'data-t="wgap" min="0.5" max="10" step="0.1"', cfgGet("wgap") / 1000, "s");
+  h += row("Versió de l'àudio", "Entre 1 i 999 · per defecte 1 · puja-la quan canviïs Walle.mp3 a GitHub", 'data-t="wver" min="1" max="999" step="1"', cfgGet("wver"), "versió");
   h += '<button type="button" class="wtest" id="wTest">▶ Prova el so</button>';
   h += '</div><div class="cfg"><h3>📱 Aquest dispositiu</h3><p class="cfn">Vista amb què s\'obre l\'inventari en aquest aparell.</p><div class="cfseg" id="cfView">'
     + [["grid", "▦ Imatges"], ["list", "☰ Llista"], ["check", "☑ Check"]].map(v => '<button type="button" data-v="' + v[0] + '" aria-pressed="' + (view === v[0]) + '">' + v[1] + '</button>').join("")
@@ -3196,7 +3225,8 @@ function rGoal(nt, t0){
 }
 function rTimes(nt){
   let k, name;
-  if(/wall[\s-]?e|\bvolum\b/.test(nt)){ k = "wvol"; name = "el volum de WALL-E"; }
+  if(/versio.*(audio|wall)|(audio|wall).*versio/.test(nt)){ k = "wver"; name = "la versió de l'àudio de WALL-E"; }
+  else if(/wall[\s-]?e|\bvolum\b/.test(nt)){ k = "wvol"; name = "el volum de WALL-E"; }
   else if(/triple\s+(?:toc|clic|click)/.test(nt)){ k = "tap"; name = "el temps del triple toc"; }
   else if(/doble\s+(?:toc|clic|click)/.test(nt)){ k = "dbl"; name = "el temps del doble toc"; }
   else if(/mantenir|mantingui|mantenint|premut/.test(nt)){ k = "hold"; name = "el temps de mantenir premut"; }
@@ -3380,7 +3410,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "3.5";
+const APP_VER = "3.6";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null, phLoaded = false;
 const __cloudPhotos34 = cloudPhotos;
@@ -3661,11 +3691,13 @@ vmApply();
    ===================================================================== */
 const WALLE_SRC = "Walle.mp3";
 let wAudio = null, wBad = false, wLast = 0, wCtx = null;
+let wVer = 0;
 function walleWarm(){
+  if(wAudio && wVer !== cfgGet("wver")){ wAudio = null; wBad = false; }
   /* es crea dins d'un toc de l'usuari, perquè el navegador deixi sonar després */
   if(wAudio || wBad) return;
   try {
-    wAudio = new Audio(WALLE_SRC); wAudio.preload = "auto"; wAudio.playsInline = true;
+    wVer = cfgGet("wver"); wAudio = new Audio(WALLE_SRC + "?v=" + wVer); wAudio.preload = "auto"; wAudio.playsInline = true;
     wAudio.addEventListener("error", () => { wBad = true; });
     wAudio.load();
   } catch(e){ wBad = true; wAudio = null; }
@@ -3711,6 +3743,125 @@ function walleSay(force){
   } catch(e){ wBad = true; walleSynth(v); }
 }
 
+/* =====================================================================
+   v3.6 · Canvi d'ubicació des de la fitxa, treball sense connexió,
+   exportació en .html i versió de l'àudio de WALL-E
+   ===================================================================== */
+/* ---- 📍 canviar la ubicació des del botó blau de la fitxa ---- */
+let lpSel = [], lpId = null;
+function lpRender(){
+  const all = [...new Set([...LOCS, ...lpSel])];
+  $("lpList").innerHTML = all.map(l => {
+    const on = lpSel.includes(l);
+    return '<button type="button" class="lpi' + (on ? ' on' : '') + '" data-l="' + esc(l) + '" aria-pressed="' + on + '"><span class="lpk" aria-hidden="true">' + (on ? '✓' : '') + '</span><span class="lpn">' + esc(l) + '</span>'
+      + (on && lpSel.length > 1 && lpSel[0] === l ? '<em>principal</em>' : '') + '</button>';
+  }).join("");
+  $("lpSave").disabled = !lpSel.length;
+}
+$("dLoc").onclick = () => {
+  const c = DATA[cur]; if(!c) return;
+  lpId = c.id; lpSel = locsOf(c).slice();
+  $("lpName").textContent = c.item; $("lpNew").value = "";
+  lpRender(); $("lpdlg").showModal();
+};
+$("lpList").addEventListener("click", e => {
+  const b = e.target.closest(".lpi"); if(!b) return;
+  const l = b.dataset.l, k = lpSel.indexOf(l);
+  if(k >= 0) lpSel.splice(k, 1); else lpSel.push(l);
+  lpRender();
+});
+function lpAdd(){
+  const name = $("lpNew").value.trim().replace(/\s+/g, " ");
+  if(!name){ $("lpNew").focus(); return; }
+  const dup = [...new Set([...LOCS, ...lpSel])].find(l => norm(l) === norm(name));
+  const l = dup || name;
+  if(!lpSel.includes(l)) lpSel.push(l);
+  $("lpNew").value = ""; lpRender();
+}
+$("lpAdd").onclick = lpAdd;
+$("lpNew").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); lpAdd(); } });
+$("lpCancel").onclick = () => $("lpdlg").close();
+$("lpSave").onclick = () => {
+  const L = lpSel.slice(), i = DATA.findIndex(x => x.id === lpId && live(x));
+  $("lpdlg").close();
+  if(i < 0){ toast("Aquest article ja no existeix."); return; }
+  const c = DATA[i];
+  if(!L.length || stable(L) === stable(locsOf(c))) return;
+  const fresh = L.filter(l => !LOCS.includes(l) && !userLocs.includes(l));
+  if(fresh.length){ userLocs.push(...fresh); store("inv_locs", userLocs); }
+  saveItem(i, {loc:L[0], locs:L});
+  toast("📍 «" + c.item + "» ara és a " + L.join(", ") + ".");
+  if(order.includes(i)){ pos = order.indexOf(i); cur = i; idx = 0; showDlg(); }
+  else { toast("📍 «" + c.item + "» ara és a " + L.join(", ") + ". Ja no coincideix amb el filtre actual."); afterReview(); }
+};
+
+/* ---- 📴 treball sense connexió ---- */
+function cloudPend(d){
+  const was = inflight;
+  inflight = Math.max(0, inflight + d);
+  if(d > 0 && netOffline()) hadOfflinePending = true;
+  if(inflight === 0 && was > 0 && hadOfflinePending && !netOffline()){
+    hadOfflinePending = false;
+    toast("✓ Connexió recuperada: els canvis fets sense connexió ja són al núvol.");
+  }
+  cloudSetStatus();
+}
+addEventListener("offline", () => {
+  cloudSetStatus();
+  if(cloudUser) toast("📴 Sense connexió. Pots seguir fent canvis: es sincronitzaran quan tornis a tenir internet.");
+});
+addEventListener("online", () => {
+  cloudSetStatus();
+  if(cloudUser && (inflight > 0 || itemsPending)) toast("🌐 Connexió recuperada. Sincronitzant els canvis…");
+});
+if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
+  addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+}
+
+/* ---- ⬇️ exportar la còpia en format .html (es pot obrir en qualsevol navegador i es pot tornar a importar) ---- */
+async function cloudExport(){
+  if(!DATA.filter(live).length){ toast("No hi ha cap article per exportar."); return; }
+  toast("Preparant el fitxer…");
+  try {
+    const list = DATA.filter(live);
+    const items = list.map(c => { const o = cleanItem(c); o.photos = c.photos.slice(); return o; });
+    const keys = {}; KEYS_CLOUD.forEach(k => { if(STATE[k] !== undefined) keys[k] = STATE[k]; });
+    const now = new Date();
+    const payload = JSON.stringify({app:"inventari-casa", version:APP_VER, exportedAt:now.toISOString(), items, keys}).replace(/</g, "\\u003c");
+    const nPh = list.reduce((n, c) => n + c.photos.length, 0);
+    const when = now.toLocaleDateString("ca", {day:"2-digit", month:"2-digit", year:"numeric"}) + " " + now.toLocaleTimeString("ca", {hour:"2-digit", minute:"2-digit"});
+    let body = "";
+    for(const z of CATS){
+      const its = list.filter(c => catsOf(c)[0] === z.id);
+      if(!its.length) continue;
+      body += '<section><h2>' + z.icon + ' ' + esc(z.label) + ' <span>' + its.length + '</span></h2><div class="xg">';
+      for(const c of its){
+        const t = c.photos.length ? await thumbOf(c.photos[0]) : "";
+        const s = norm(c.item + " " + c.desc + " " + c.note + " " + locsOf(c).join(" ") + " " + zonesOf(c).join(" "));
+        body += '<article class="xc" data-s="' + esc(s) + '"><div class="xp">' + (t ? '<img alt="' + esc(c.item) + '" src="' + t + '">' : '📦') + '<b>' + esc(qtyBadge(c.qty)) + '</b></div>'
+          + '<div class="xi"><h3>' + esc(c.item) + '</h3><p class="xl">📍 ' + esc(locsOf(c).join(" · ")) + (catsOf(c).length > 1 ? ' · 🏠 ' + esc(zonesOf(c).join(", ")) : '') + '</p>'
+          + (c.desc ? '<p>' + esc(c.desc) + '</p>' : '') + (c.note ? '<p class="xn">' + esc(c.note) + '</p>' : '') + '</div></article>';
+      }
+      body += '</div></section>';
+    }
+    const css = 'body{margin:0;background:#000;color:#fff;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}header{padding:16px 14px 10px;border-bottom:2px solid #3a3a3a}h1{margin:0;font-size:22px}header p{margin:4px 0 10px;color:#c2c2c2;font-size:14px}'
+      + 'input{width:100%;box-sizing:border-box;font:inherit;padding:11px 14px;border-radius:12px;border:2px solid #3a3a3a;background:#0c0c0c;color:#fff}main{padding:6px 14px 40px}section{margin-top:22px}section h2{font-size:19px;margin:0 0 10px}section h2 span{font-size:14px;font-weight:500;color:#c2c2c2}'
+      + '.xg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}.xc{background:#0c0c0c;border:2px solid #3a3a3a;border-radius:14px;overflow:hidden}.xc[hidden],section[hidden]{display:none}'
+      + '.xp{position:relative;aspect-ratio:4/3;background:#000;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}.xp img{width:100%;height:100%;object-fit:cover}.xp b{position:absolute;left:8px;top:8px;background:#fff;color:#000;font-size:13px;padding:1px 9px;border-radius:999px}'
+      + '.xi{padding:9px 11px 11px}.xi h3{margin:0 0 3px;font-size:15px}.xi p{margin:2px 0;font-size:13px;color:#c2c2c2}.xi .xl{color:#4fe3d2;font-weight:700}.xi .xn{color:#ffd166}';
+    const js = '(function(){var q=document.getElementById("q");q.oninput=function(){var v=q.value.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"");document.querySelectorAll(".xc").forEach(function(c){c.hidden=!!v&&c.dataset.s.indexOf(v)<0});document.querySelectorAll("section").forEach(function(s){s.hidden=!s.querySelector(".xc:not([hidden])")})}})();';
+    const html = '<!DOCTYPE html>\n<html lang="ca"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Inventari de casa · còpia ' + esc(when) + '</title><style>' + css + '</style></head><body>'
+      + '<header><h1>📦 Inventari de casa</h1><p>Còpia del ' + esc(when) + ' · ' + list.length + ' articles · ' + nPh + ' fotos · v' + APP_VER + '</p><input id="q" type="search" placeholder="Cerca a la còpia…" autocomplete="off"></header>'
+      + '<main>' + body + '</main>'
+      + '<script type="application/json" id="inv-data">' + payload + '<' + '/script><script>' + js + '<' + '/script></body></html>';
+    const blob = new Blob([html], {type:"text/html"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "inventari_copia_" + now.toISOString().slice(0, 10) + ".html";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+    toast("✓ Còpia descarregada (.html): " + list.length + " articles i " + nPh + " fotos.");
+  } catch(e){ console.error(e); toast("⚠️ No s'ha pogut preparar el fitxer."); }
+}
+
 gate("wait", "Connectant…");
 cloudSetStatus();
 
@@ -3735,7 +3886,7 @@ try {
   const app = initializeApp(cfg);
   const auth = A.getAuth(app);
   let db;
-  try { db = F.initializeFirestore(app, {ignoreUndefinedProperties: true, localCache: F.persistentLocalCache({tabManager: F.persistentMultipleTabManager()})}); }
+  try { db = F.initializeFirestore(app, {ignoreUndefinedProperties: true, localCache: F.persistentLocalCache({cacheSizeBytes: 262144000, tabManager: F.persistentMultipleTabManager()})}); }
   catch(e){ db = F.initializeFirestore(app, {ignoreUndefinedProperties: true}); }
   const ref = (c, id) => F.doc(db, c, id);
   window.cloud = {
@@ -3744,6 +3895,10 @@ try {
     newId(){ return F.doc(F.collection(db, "items")).id; },
     getBackup(bid){ return F.getDocs(F.query(F.collection(db, "bkdata"), F.where("b", "==", bid))).then(s => s.docs.map(d => ({id: d.id, data: d.data()}))); },
     async batch(ops, onProg){
+      if(window.cloudPend) window.cloudPend(1);
+      try { return await this._batch(ops, onProg); } finally { if(window.cloudPend) window.cloudPend(-1); }
+    },
+    async _batch(ops, onProg){
       let b = F.writeBatch(db), n = 0, bytes = 0, done = 0;
       const flush = async () => { if(!n) return; const k = n; await b.commit(); done += k; if(onProg) onProg(done, ops.length); b = F.writeBatch(db); n = 0; bytes = 0; };
       for(const o of ops){
