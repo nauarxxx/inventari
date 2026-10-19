@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v3.2">
+<meta name="generator" content="Inventari de casa v3.3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -357,8 +357,8 @@ body:not(.list) #out .ph.empty{font-size:11px;padding:8px}
 /* ---- v2.6: mantenir premut 1 s per veure la foto ---- */
 #out .card-btn,#checkview li,#out .card-btn img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
 #out li.card{transition:transform .15s}
-#out li.card.holding{transform:scale(.95);transition:transform 1s ease-in;box-shadow:0 0 0 3px rgba(79,227,210,.45)}
-#checkview li.holding{background:rgba(79,227,210,.12);transition:background 1s}
+#out li.card.holding{transform:scale(.95);transition:transform var(--hold,1s) ease-in;box-shadow:0 0 0 3px rgba(79,227,210,.45)}
+#checkview li.holding{background:rgba(79,227,210,.12);transition:background var(--hold,1s)}
 .box .ph:not(.empty){cursor:zoom-in}
 /* ---- v2.6: visor de fotos ---- */
 .lbx{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
@@ -610,13 +610,89 @@ details.ccol.solo>summary h3::after{display:none}
 .chsend:disabled{opacity:.4;cursor:default}
 .chsend:active:not(:disabled){transform:scale(.94)}
 .chem:focus-visible,.chsend:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+/* ===== v3.3: ajustos ⚙️ i assistent d'ordres 🔴 ===== */
+.toprow{grid-template-areas:"g c h" "t t t" "s s s"}
+.toprow .cfgbtn{grid-area:g;justify-self:start}
+.toprow .ttl h1{margin-top:10px}
+@media (max-width:600px){.top h1{font-size:20px}}
+/* efecte moneda */
+.persp{display:block;width:100%;height:100%;perspective:700px}
+.coin{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .9s cubic-bezier(.25,.8,.25,1)}
+.flipbtn.flipped .coin{transform:rotateY(540deg)}
+.face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face.back{transform:rotateY(180deg)}
+.flipbtn.hop{animation:coinhop .9s ease-in-out}
+@keyframes coinhop{0%{transform:translateY(0) scale(1)}35%{transform:translateY(-12px) scale(1.14)}100%{transform:translateY(0) scale(1)}}
+@media (prefers-reduced-motion:reduce){.coin{transition:none}.flipbtn.hop{animation:none}}
+/* botó d'ajustos: negre en repòs, vermell quan es desbloqueja */
+.cfgbtn{width:40px;height:40px;padding:0;border:0;background:none;cursor:pointer;color:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;border-radius:50%}
+.cfgbtn .face{background:#000;border:2px solid var(--line)}
+.cfgbtn .face.front{color:var(--muted)}
+.cfgbtn .face.back{border-color:#ff3b3b;color:#ff3b3b;box-shadow:0 0 14px rgba(255,59,59,.55)}
+.cfgbtn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+/* robot de l'assistent: cares de la moneda */
+.aifab{background:transparent!important;border:0!important;box-shadow:none!important;color:var(--accent-ink);touch-action:manipulation}
+.aifab .face{box-shadow:0 4px 14px rgba(0,0,0,.6)}
+.aifab .face.front{background:var(--accent);color:var(--accent-ink)}
+.aifab[aria-expanded="true"] .face.front{background:#fff}
+.aifab .face.back{background:#e5252a;color:#1a0000;--accent:#e5252a;box-shadow:0 4px 18px rgba(229,37,42,.55)}
+/* panell de l'assistent d'ordres: negre i vermell */
+.rpanel{border-color:#ff3b3b;background:#050000;box-shadow:0 10px 30px rgba(255,0,0,.25),0 0 0 1px #4a0000}
+.rpanel .aihead{border-bottom-color:#ff3b3b;background:linear-gradient(160deg,#3a0000,#050000 80%)}
+.rpanel .aihead h2{color:#ff6b6b}
+.rpanel .sbtn{border-color:#ff3b3b;color:#ff6b6b;background:#140000}
+.rpanel .aimsg.me{background:#e5252a;color:#fff}
+.rpanel .aimsg.bot{background:#120000;border:1px solid #5a1010}
+.rpanel .aiform{border-top-color:#ff3b3b}
+.rpanel .aiform textarea{background:#0d0000;border-color:#5a1010}
+.rpanel .aiform textarea:focus{border-color:#ff3b3b;outline:0}
+.rpanel .btn.primary{background:#e5252a;border-color:#e5252a;color:#fff}
+.rpanel .aires button{border-color:#5a1010;background:#0d0000}
+.rconf{display:flex;gap:8px;margin-top:10px;white-space:normal}
+.rconf button{flex:1;font:inherit;font-size:14px;font-weight:800;padding:9px 12px;border-radius:999px;border:2px solid #5a1010;background:#140000;color:#fff;cursor:pointer}
+.rconf button.rok{background:#e5252a;border-color:#e5252a}
+.rconf button:disabled{opacity:.4;cursor:default}
+/* finestra d'ajustos: negre i vermell */
+.cfdlg{border-color:#ff3b3b;background:#050000;color:#fff;box-shadow:0 0 0 1px #4a0000,0 12px 40px rgba(255,0,0,.25)}
+.cfdlg::backdrop{background:rgba(20,0,0,.9)}
+.cfdlg[open]{display:flex;flex-direction:column;width:min(560px,calc(100vw - 24px));height:min(800px,calc(100dvh - 24px));max-height:calc(100dvh - 24px)}
+.cfwrap{display:flex;flex-direction:column;min-height:0;flex:1}
+.cfhead{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:2px solid #ff3b3b;background:linear-gradient(160deg,#3a0000 0%,#050000 80%)}
+.cfico{width:40px;height:40px;border-radius:14px;background:#000;border:2px solid #ff3b3b;display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+.cftt{flex:1;min-width:0}
+.cftt h2{margin:0;font-size:19px;color:#ff6b6b}
+.cftt small{display:block;font-size:12px;color:#c9a0a0}
+.cfdlg .btn{background:#140000;border-color:#5a1010;color:#fff}
+.cfdlg .btn.primary{background:#e5252a;border-color:#e5252a;color:#fff}
+.cfbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:6px 14px 14px;display:flex;flex-direction:column;gap:6px}
+.cfg{display:flex;flex-direction:column;gap:6px;padding-top:10px}
+.cfg h3{margin:0;font-size:16px;color:#ff6b6b;border-bottom:1px solid #4a0000;padding-bottom:6px}
+.cfn{margin:0;font-size:12.5px;color:#c9a0a0}
+.fdlg label.cfrow{flex-direction:row;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border-radius:12px;background:#0d0000;border:1px solid #3a0a0a;color:#fff;font-weight:600;cursor:pointer}
+.cfrow .cft{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.cfrow .cft b{font-size:14.5px;font-weight:700;overflow-wrap:anywhere}
+.cfrow .cft small{font-size:11.5px;color:#c9a0a0;font-weight:500}
+.cfrow .cfin{flex:none;display:flex;align-items:center;gap:6px}
+.cfrow .cfin i{font-style:normal;font-size:12px;color:#c9a0a0;min-width:52px}
+.fdlg .cfrow input{width:92px;text-align:right;background:#000;border:2px solid #5a1010;color:#fff;border-radius:10px;padding:8px 10px}
+.fdlg .cfrow input:focus{outline:0;border-color:#ff3b3b;box-shadow:0 0 0 3px rgba(255,59,59,.25)}
+.fdlg .cfrow input.bad{border-color:#ff3b3b;background:#2a0000}
+.cfseg{display:flex;border:2px solid #5a1010;border-radius:999px;overflow:hidden;align-self:flex-start}
+.cfseg button{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;background:#0d0000;color:#fff;border:0;cursor:pointer}
+.cfseg button+button{border-left:2px solid #5a1010}
+.cfseg button[aria-pressed="true"]{background:#e5252a;color:#fff}
+.cffoot{display:flex;gap:10px;justify-content:space-between;padding:10px 14px;border-top:2px solid #ff3b3b;background:#0a0000}
+.cffoot .btn{white-space:nowrap}
+.cffoot .btn.primary{flex:1}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="toprow">
+    <button id="cfgBtn" class="cfgbtn flipbtn" type="button" aria-label="Ajustos" aria-haspopup="dialog" aria-controls="cfdlg" title="Ajustos"><span class="persp"><span class="coin"><span class="face front"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="face back"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></span></span></button>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v3.2</span></h1>
+      <h1>Inventari de casa <span class="ver">v3.3</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -639,16 +715,27 @@ details.ccol.solo>summary h3::after{display:none}
 <button id="totop" class="btn totop" type="button" hidden="">↑ Filtres</button>
 <button id="saveBtn" class="btn savebtn" type="button" aria-haspopup="dialog" aria-controls="sdlg">☁️ Connectant…</button>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden=""></div>
-<button id="aiFab" class="btn aifab" type="button" aria-label="Obre l'assistent de productes" aria-expanded="false" aria-controls="aiPanel"><svg viewBox="0 0 64 64" width="38" height="38" fill="currentColor" aria-hidden="true">
-<rect x="11" y="9" width="17" height="12" rx="5"></rect><rect x="36" y="9" width="17" height="12" rx="5"></rect>
+<button id="aiFab" class="btn aifab flipbtn" type="button" aria-label="Obre l'assistent de productes" aria-expanded="false" aria-controls="aiPanel"><span class="persp"><span class="coin"><span class="face front"><svg viewBox="0 0 64 64" width="38" height="38" fill="currentColor" aria-hidden="true"><rect x="11" y="9" width="17" height="12" rx="5"></rect><rect x="36" y="9" width="17" height="12" rx="5"></rect>
 <circle cx="20" cy="15" r="3.2" fill="var(--accent)"></circle><circle cx="44" cy="15" r="3.2" fill="var(--accent)"></circle>
 <rect x="27" y="13" width="10" height="3" rx="1.5"></rect><rect x="30" y="20" width="4" height="9"></rect>
 <rect x="15" y="28" width="34" height="21" rx="2.5"></rect><rect x="19" y="32" width="26" height="6" rx="1" fill="var(--accent)"></rect>
 <rect x="6" y="33" width="10" height="5" rx="2"></rect><rect x="48" y="33" width="10" height="5" rx="2"></rect>
 <rect x="3" y="31" width="5" height="9" rx="1.5"></rect><rect x="56" y="31" width="5" height="9" rx="1.5"></rect>
-<path d="M8 51h16l3 8H5z"></path><path d="M40 51h16l3 8H37z"></path><rect x="22" y="48" width="20" height="4" rx="1"></rect>
-</svg></button>
+<path d="M8 51h16l3 8H5z"></path><path d="M40 51h16l3 8H37z"></path><rect x="22" y="48" width="20" height="4" rx="1"></rect></svg></span><span class="face back"><svg viewBox="0 0 64 64" width="38" height="38" fill="currentColor" aria-hidden="true"><rect x="11" y="9" width="17" height="12" rx="5"></rect><rect x="36" y="9" width="17" height="12" rx="5"></rect>
+<circle cx="21" cy="17" r="3" fill="var(--accent)"></circle><circle cx="43" cy="17" r="3" fill="var(--accent)"></circle>
+<path d="M9 6 31 6 31 17Z" fill="var(--accent)"></path><path d="M55 6 33 6 33 17Z" fill="var(--accent)"></path>
+<path d="M9 5.5 30 14.5M55 5.5 34 14.5" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" fill="none"></path>
+<rect x="27" y="13" width="10" height="3" rx="1.5"></rect><rect x="30" y="20" width="4" height="9"></rect>
+<rect x="15" y="28" width="34" height="21" rx="2.5"></rect><rect x="19" y="32" width="26" height="6" rx="1" fill="var(--accent)"></rect>
+<rect x="6" y="33" width="10" height="5" rx="2"></rect><rect x="48" y="33" width="10" height="5" rx="2"></rect>
+<rect x="3" y="31" width="5" height="9" rx="1.5"></rect><rect x="56" y="31" width="5" height="9" rx="1.5"></rect>
+<path d="M8 51h16l3 8H5z"></path><path d="M40 51h16l3 8H37z"></path><rect x="22" y="48" width="20" height="4" rx="1"></rect></svg></span></span></span></button>
 <button id="createFab" class="crfab" type="button" aria-label="Crea un article, una ubicació o una zona" aria-haspopup="dialog" aria-controls="cdlg" title="Crea">+</button>
+<div id="rPanel" class="aipanel rpanel" role="dialog" aria-label="Assistent d'ordres" hidden>
+  <div class="aihead"><h2>🤖 Assistent d'ordres</h2><button type="button" class="sbtn" id="rClose" aria-label="Tanca l'assistent d'ordres">✕</button></div>
+  <div id="rMsgs" class="aimsgs" aria-live="polite"></div>
+  <form id="rForm" class="aiform"><textarea id="rIn" rows="1" placeholder="Ex.: posa l'objectiu de Cunit a 150" aria-label="Ordre per a l'assistent"></textarea><button class="btn primary" type="submit" id="rSend">Envia</button></form>
+</div>
 <div id="aiPanel" class="aipanel" role="dialog" aria-label="Assistent" hidden="">
   <div class="aihead"><h2>Pregunta'm pels productes</h2><button type="button" class="sbtn" id="aiClose" aria-label="Tanca l'assistent">✕</button></div>
   <div id="aiMsgs" class="aimsgs" aria-live="polite"></div>
@@ -816,6 +903,17 @@ details.ccol.solo>summary h3::after{display:none}
     <div class="factions"><button type="button" class="btn" id="sClose">Tanca</button></div>
   </div>
 </dialog>
+<dialog id="cfdlg" class="fdlg cfdlg nofit" aria-labelledby="cfTitle">
+  <div class="cfwrap">
+    <div class="cfhead">
+      <span class="cfico" aria-hidden="true">⚙️</span>
+      <div class="cftt"><h2 id="cfTitle">Ajustos</h2><small>Tots els valors són numèrics · es comparteixen entre dispositius</small></div>
+      <button type="button" class="btn" id="cfClose">Tanca</button>
+    </div>
+    <div id="cfBody" class="cfbody"></div>
+    <div class="cffoot"><button type="button" class="btn" id="cfReset">↺ Per defecte</button><button type="button" class="btn primary" id="cfSave">Desa els ajustos</button></div>
+  </div>
+</dialog>
 <dialog id="chdlg" class="fdlg chdlg nofit" aria-labelledby="chTitle">
   <div class="chwrap">
     <div class="chhead">
@@ -841,7 +939,7 @@ details.ccol.solo>summary h3::after{display:none}
 <dialog id="hdlg" class="fdlg hdlg nofit" aria-labelledby="hTitle">
   <div class="hwrap">
     <div class="hhead"><h2 id="hTitle">↶ Historial de canvis</h2><button type="button" class="btn" id="hClose">Tanca</button></div>
-    <p class="fhint">Els més recents a dalt. Toca <b>↶ Desfés</b> per tornar enrere un canvi. És el mateix historial a tots els dispositius (últims 100).</p>
+    <p class="fhint">Els més recents a dalt. Toca <b>↶ Desfés</b> per tornar enrere un canvi. És el mateix historial a tots els dispositius (últims <b id="hMaxN">100</b>).</p>
     <ul id="hList" class="hlist"></ul>
   </div>
 </dialog>
@@ -967,7 +1065,14 @@ const matches = (c,i,skip) => live(c)
 const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c)).length;
 
 const GOAL = 100; /* objectiu: 100 articles = 100% */
-const pctOf = n => Math.min(100, Math.round(n / GOAL * 100));
+const pctOf = (n, g) => Math.min(100, Math.round(n / (g || GOAL) * 100));
+/* v3.3: valors per defecte (els de la v3.2) i límits dels ajustos */
+const CFGD = {goal:100, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300};
+const CFGR = {hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000]};
+function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
+function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
+function goalOf(g, id){ const m = cfgRaw()[g], v = m && typeof m === "object" ? Math.round(+m[id]) : NaN; return v >= 1 && v <= 99999 ? v : CFGD.goal; }
+const goalLoc = l => goalOf("locGoal", l), goalCat = id => goalOf("catGoal", id);
 const totLoc = l => DATA.filter(c => live(c) && c.locs.includes(l)).length;
 const totCat = id => DATA.filter(c => live(c) && c.cat === id).length;
 function renderLocs(){
@@ -985,12 +1090,12 @@ function renderLocs(){
   box.appendChild(all);
   const grid = document.createElement("div"); grid.className = "lp-grid";
   LOCS.forEach(l => {
-    const n = totLoc(l), p = pctOf(n), b = document.createElement("button");
+    const n = totLoc(l), g = goalLoc(l), p = pctOf(n, g), b = document.createElement("button");
     b.type = "button"; b.className = "lp-loc"; b.setAttribute("aria-pressed", String(state.loc===l));
-    b.title = n + " articles de " + GOAL + " (" + p + "%)";
+    b.title = n + " articles de " + g + " (" + p + "%)";
     b.innerHTML = '<span class="lp-bar'+(p>=100?' full':'')+'" aria-hidden="true"><i style="width:'+p+'%"></i></span>'
       + '<span class="lp-top"><span class="lp-pin" aria-hidden="true">📍</span><span class="lp-name">'+esc(l)+'</span><span class="lp-c">'+n+'</span></span>'
-      + '<span class="lp-pct">'+p+'% · objectiu '+GOAL+'</span>';
+      + '<span class="lp-pct">'+p+'% · objectiu '+g+'</span>';
     b.onclick = () => { state.loc = (state.loc===l ? "all" : l); render(); };
     grid.appendChild(b);
   });
@@ -1005,14 +1110,14 @@ function renderChips(){
     const b = document.createElement("button");
     b.type="button"; b.className="chip"+(cls?" "+cls:""); b.setAttribute("aria-pressed", String(pressed));
     if(num && typeof num === "object"){
-      b.classList.add("has-prog"); const p = pctOf(num.t);
-      b.title = num.t + " articles de " + GOAL + " (" + p + "%)";
-      b.innerHTML = '<span class="vfill'+(p>=100?' full':'')+'" aria-hidden="true" style="height:'+p+'%"></span>' + label + '<span class="n">'+num.t+'/'+GOAL+'</span>';
+      b.classList.add("has-prog"); const p = pctOf(num.t, num.g);
+      b.title = num.t + " articles de " + (num.g || GOAL) + " (" + p + "%)";
+      b.innerHTML = '<span class="vfill'+(p>=100?' full':'')+'" aria-hidden="true" style="height:'+p+'%"></span>' + label + '<span class="n">'+num.t+'/'+(num.g || GOAL)+'</span>';
     } else b.innerHTML = label + '<span class="n">'+num+'</span>';
     b.onclick = fn; box.appendChild(b);
   };
   add('<span class="ic" aria-hidden="true">📦</span><span class="lb">Totes</span>', n(()=>true), state.cat==="all" && !state.review, "", ()=>{state.cat="all"; state.review=false; render();});
-  CATS.forEach(c=>add('<span class="ic" aria-hidden="true">'+c.icon+'</span><span class="lb">'+c.short+'</span>', {t: totCat(c.id)}, !state.review && state.cat===c.id, "",
+  CATS.forEach(c=>add('<span class="ic" aria-hidden="true">'+c.icon+'</span><span class="lb">'+c.short+'</span>', {t: totCat(c.id), g: goalCat(c.id)}, !state.review && state.cat===c.id, "",
     ()=>{ state.cat = (!state.review && state.cat===c.id) ? "all" : c.id; state.review=false; render(); }));
   add('<span class="ic" aria-hidden="true">⚠️</span><span class="lb">Revisar</span>', n(needsReview), state.review, "review",
     ()=>{ state.review = !state.review; state.cat = "all"; render(); });
@@ -1035,7 +1140,7 @@ function card(c,i){
 /* Les targetes es construeixen una sola vegada; filtrar només amaga/mostra */
 /* Dades locals d'aquest dispositiu: vista, pendents marcats, pendents propis i articles nous */
 /* Els canvis viuen dins del fitxer (SAVED) i es desen amb el botó Desa */
-const FILE_KEYS = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_nous","inv_cats","inv_edits","inv_locs","inv_del"];
+const FILE_KEYS = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_nous","inv_cats","inv_edits","inv_locs","inv_del","inv_cfg"];
 const STATE = JSON.parse(JSON.stringify(SAVED.keys || {}));
 let dirty = 0;
 const load = (k,def) => {
@@ -1043,7 +1148,7 @@ const load = (k,def) => {
   try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e){ return def; }
 };
 /* v3.0: les dades compartides es desen a Firestore (meta/state); la resta, al dispositiu */
-const KEYS_CLOUD = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_cats","inv_locs"];
+const KEYS_CLOUD = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_cats","inv_locs","inv_cfg"];
 const pendKeys = new Set();
 const store = (k,v) => {
   if(FILE_KEYS.includes(k)){
@@ -1680,8 +1785,9 @@ function aiOpen(open){
     const d = aiMsg("bot", "Hola! Pregunta'm on és una cosa, quantes en tens, què falta o què cal revisar.");
     aiSuggest(d, ["On és la raclette?", "Què falta a la cuina?", "Què cal revisar?", "Quants articles tinc?"]);
   }
-  $("aiIn").focus();
+  clearTimeout(aiFocusT); aiFocusT = setTimeout(() => { if(!$("aiPanel").hidden) $("aiIn").focus(); }, isTouch ? 450 : 0);
 }
+let aiFocusT = 0;
 $("aiFab").onclick = () => aiOpen($("aiPanel").hidden);
 $("aiClose").onclick = () => aiOpen(false);
 $("aiPanel").addEventListener("keydown", e => { if(e.key === "Escape"){ e.stopPropagation(); aiOpen(false); $("aiFab").focus(); } });
@@ -1882,12 +1988,12 @@ let outEl = null, outT = 0, hintT = 0;
 function disarm(){ if(outEl) outEl.classList.remove("armed", "armed-ai"); outEl = null; $("tapHint").classList.remove("on"); }
 function dblOut(el){
   const now = Date.now();
-  if(outEl === el && now - outT < DBL_MS){ disarm(); return true; }
+  if(outEl === el && now - outT < cfgGet("dbl")){ disarm(); return true; }
   disarm(); outEl = el; outT = now;
   el.classList.add(el.tagName === "DIALOG" ? "armed" : "armed-ai");
   const h = $("tapHint");
   (el.tagName === "DIALOG" && el.open ? el : document.body).appendChild(h);
-  h.classList.add("on"); clearTimeout(hintT); hintT = setTimeout(disarm, DBL_MS + 400);
+  h.classList.add("on"); clearTimeout(hintT); hintT = setTimeout(disarm, cfgGet("dbl") + 400);
   return false;
 }
 /* ---- v2.6: visor de fotos (es tanca clicant fora de la foto) ---- */
@@ -1954,7 +2060,7 @@ document.addEventListener("pointerdown", e => {
     hold.el.classList.remove("holding"); hold.tm = 0; peekOn = true; eatNextClick();
     lbOpen(DATA[t.i], 0, true);
     if(navigator.vibrate) try { navigator.vibrate(12); } catch(_){}
-  }, HOLD_MS)};
+  }, cfgGet("hold"))};
 });
 document.addEventListener("pointermove", e => {
   if(hold && hold.tm && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 10) holdCancel();
@@ -2248,7 +2354,7 @@ $("impIn").onchange = async e => {
       c.ord = k; ops.push({t:"set", col:"items", id, data:cleanItem(c, ph)});
     }
     const meta = {};
-    KEYS_CLOUD.forEach(k => { const v = pk.keys[k]; meta[k] = v != null ? v : (k === "inv_cats" || k === "inv_locs" ? [] : {}); });
+    KEYS_CLOUD.forEach(k => { const v = pk.keys[k]; meta[k] = v != null ? v : (k === "inv_cats" || k === "inv_locs" ? [] : k === "inv_cfg" ? (cfgDeep(cfgRaw()) || {}) : {}); });
     ops.push({t:"set", col:"meta", id:"state", data:meta});
     await cloud.batch(ops, (d, t) => impShow("Pujant al núvol… " + d + " / " + t, d / t));
     impShow("✓ Importació completa", 1);
@@ -2264,9 +2370,9 @@ $("impIn").onchange = async e => {
    v3.1 · Historial de canvis i desfer (compartit entre dispositius)
    hist/{id} -> {ts, who, label, parts:[{k:"item",id,before,after} | {k:"meta",f,before,after}], undone, of}
    ===================================================================== */
-const HIST_MAX = 100;
+let HIST_MAX = 100;
 const WHO = {"arnaubalsellsc4@gmail.com":"Arnau", "ainhoaguerreroalejo2@gmail.com":"Ainhoa"};
-let HIST = [], histLoaded = false, HG = null, histBusy = false, hcTarget = null;
+let HIST = [], histLoaded = false, HG = null, histBusy = false, hcTarget = null, HTAG = "";
 const deep = o => o == null ? null : JSON.parse(JSON.stringify(o));
 function stable(o){
   if(o === undefined || o === null) return "null";
@@ -2276,7 +2382,7 @@ function stable(o){
 }
 function histAdd(p){
   if(importing || histBusy || !cloudUser) return;
-  if(!HG){ HG = {parts:[]}; setTimeout(histFlush, 400); }
+  if(!HG){ HG = {parts:[], tag:HTAG}; setTimeout(histFlush, 400); }
   const ex = HG.parts.find(x => x.k === p.k && (p.k === "item" ? x.id === p.id : x.f === p.f));
   if(ex) ex.after = p.after; else HG.parts.push(p);
 }
@@ -2331,6 +2437,8 @@ function partLabel(p){
     const bl = b || [], al = a || [];
     al.filter(x => !bl.includes(x)).forEach(x => L.push("📍 Ubicació creada «" + x + "»"));
     bl.filter(x => !al.includes(x)).forEach(x => L.push("📍 Ubicació eliminada «" + x + "»"));
+  } else if(p.f === "inv_cfg"){
+    L.push(cfgLabels(b, a));
   }
   return L.join(" · ");
 }
@@ -2341,12 +2449,17 @@ function histFlush(){
   if(!parts.length) return;
   const labels = parts.map(partLabel).filter(Boolean);
   if(!labels.length) return;
-  const label = [...new Set(labels)].join(" · ");
+  const label = (g.tag || "") + [...new Set(labels)].join(" · ");
   cloud.batch([{t:"set", col:"hist", id:cloud.newId(), data:{ts:Date.now(), who:cloudUser.email, label, parts, undone:false}}]).catch(cloudErr);
 }
 /* Desfà un canvi de pendents/zones/ubicacions sense trepitjar els canvis posteriors */
 function metaRevert(f, b, a, cur, keepCats){
   cur = deep(cur);
+  if(f === "inv_cfg"){
+    const o = cur && typeof cur === "object" && !Array.isArray(cur) ? cur : {}, B = cfgFlat(b), A = cfgFlat(a);
+    new Set([...Object.keys(B), ...Object.keys(A)]).forEach(p => { if(stable(B[p]) !== stable(A[p])) cfgSet(o, p, B[p]); });
+    return o;
+  }
   if(f === "inv_tinc" || f === "inv_pend_tret"){
     const o = cur && typeof cur === "object" && !Array.isArray(cur) ? cur : {}, B = b || {}, A = a || {};
     new Set([...Object.keys(B), ...Object.keys(A)]).forEach(k => { if(stable(B[k]) === stable(A[k])) return; if(B[k] === undefined) delete o[k]; else o[k] = deep(B[k]); });
@@ -2511,6 +2624,7 @@ function cloudChat(docs){
   }
   chatBadge();
   if(open){ chatRender(); chatMarkRead(); }
+  chatTrim();
 }
 function cloudChatRead(docs){
   docs.forEach(d => { chatReads[d.id] = Math.max(+chatReads[d.id] || 0, +d.ts || 0); });
@@ -2645,6 +2759,517 @@ $("chatBtn").onclick = () => {
 $("chClose").onclick = () => $("chdlg").close();
 $("chdlg").addEventListener("close", () => { $("chEmoji").hidden = true; chatFit(); chatMarkRead(); chatBadge(); });
 chatBadge();
+/* =====================================================================
+   v3.3 · Ajustos ⚙️ (triple toc per desbloquejar) i assistent d'ordres 🔴 (triple toc al robot)
+   Els ajustos es desen a Firestore (meta/state · camp inv_cfg) i surten a ↶ Desfés.
+   ===================================================================== */
+let CHAT_MAX = 300;
+const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat"};
+const cfgSec = k => k === "hold" || k === "dbl" || k === "tap";
+const cfgDeep = o => o == null ? null : JSON.parse(JSON.stringify(o));
+const fmtSec = ms => String(Math.round(ms / 100) / 10).replace(".", ",") + " s";
+function cfgFlat(o){
+  const r = {};
+  if(!o || typeof o !== "object") return r;
+  Object.keys(o).forEach(k => {
+    const v = o[k];
+    if(v && typeof v === "object" && !Array.isArray(v)) Object.keys(v).forEach(s => { r[k + "|" + s] = v[s]; });
+    else r[k] = v;
+  });
+  return r;
+}
+function cfgSplit(p){ const i = p.indexOf("|"); return i < 0 ? [p, ""] : [p.slice(0, i), p.slice(i + 1)]; }
+function cfgSet(o, p, v){
+  const [k, id] = cfgSplit(p);
+  if(!id){ if(v === undefined) delete o[k]; else o[k] = v; return; }
+  if(!o[k] || typeof o[k] !== "object") o[k] = {};
+  if(v === undefined) delete o[k][id]; else o[k][id] = v;
+  if(!Object.keys(o[k]).length) delete o[k];
+}
+function cfgLabels(b, a){
+  const B = cfgFlat(b), A = cfgFlat(a), L = [];
+  new Set([...Object.keys(B), ...Object.keys(A)]).forEach(p => {
+    if(stable(B[p]) === stable(A[p])) return;
+    const [k, id] = cfgSplit(p);
+    const dv = (k === "locGoal" || k === "catGoal") ? CFGD.goal : CFGD[k];
+    const fv = v => { v = v === undefined ? dv : v; return cfgSec(k) ? fmtSec(v) : String(v); };
+    let name;
+    if(k === "locGoal") name = "Objectiu de «" + id + "»";
+    else if(k === "catGoal") name = "Objectiu de la zona «" + catName(id) + "»";
+    else name = CFG_LABEL[k] || k;
+    L.push("⚙️ " + name + ": " + fv(B[p]) + " → " + fv(A[p]));
+  });
+  return L.join(" · ");
+}
+function cfgClean(o){
+  const r = {};
+  ["hold", "dbl", "tap", "histMax", "chatMax"].forEach(k => {
+    const v = o && o[k];
+    if(typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] && v !== CFGD[k]) r[k] = v;
+  });
+  ["locGoal", "catGoal"].forEach(g => {
+    const m = o && o[g];
+    if(m && typeof m === "object") Object.keys(m).forEach(id => {
+      const v = Math.round(+m[id]);
+      if(v >= 1 && v <= 99999 && v !== CFGD.goal) (r[g] = r[g] || {})[id] = v;
+    });
+  });
+  return r;
+}
+function cfgCommit(fn){
+  const cur = cfgDeep(cfgRaw()) || {};
+  fn(cur);
+  store("inv_cfg", cfgClean(cur));
+  cfgApply();
+  if($("cfdlg").open) cfgRender();
+}
+function cfgApply(){
+  HIST_MAX = cfgGet("histMax"); CHAT_MAX = cfgGet("chatMax");
+  const hm = $("hMaxN"); if(hm) hm.textContent = HIST_MAX;
+  document.documentElement.style.setProperty("--hold", cfgGet("hold") + "ms");
+  render();
+  if(histLoaded) cloudHist(HIST);
+  chatTrim();
+}
+function chatTrim(){
+  if(!window.cloud || !cloudUser || !chatLoaded || importing) return;
+  if(CHAT.length <= CHAT_MAX) return;
+  const old = CHAT.slice(0, CHAT.length - CHAT_MAX).filter(m => !m.pending);
+  if(old.length) cloud.batch(old.map(m => ({t:"del", col:"chat", id:m.id}))).catch(() => {});
+}
+const __cloudMeta33 = cloudMeta;
+cloudMeta = function(m){ __cloudMeta33(m); cfgApply(); };
+
+/* ---- efecte moneda (el botó es gira) ---- */
+function hop(b){ b.classList.remove("hop"); void b.offsetWidth; b.classList.add("hop"); setTimeout(() => b.classList.remove("hop"), 950); }
+
+/* ---- ⚙️ botó d'ajustos: bloquejat fins a 3 tocs ràpids ---- */
+let cfgUnlocked = false, cfgLockT = 0;
+const cfgTaps = [];
+function cfgSetLock(lock){
+  clearTimeout(cfgLockT);
+  if(cfgUnlocked === !lock) return;
+  cfgUnlocked = !lock;
+  $("cfgBtn").classList.toggle("flipped", !lock);
+  hop($("cfgBtn"));
+  if(!lock) cfgLockT = setTimeout(() => cfgSetLock(true), 6000);
+}
+$("cfgBtn").addEventListener("click", () => {
+  if(cfgUnlocked){ clearTimeout(cfgLockT); openCfg(); return; }
+  const now = Date.now(), win = cfgGet("tap");
+  cfgTaps.push(now);
+  while(cfgTaps.length && now - cfgTaps[0] > win) cfgTaps.shift();
+  if(cfgTaps.length >= 3){ cfgTaps.length = 0; cfgSetLock(false); }
+});
+function openCfg(){
+  if(!cloudUser){ toast("Cal iniciar sessió."); return; }
+  cfgRender();
+  $("cfdlg").showModal();
+}
+$("cfClose").onclick = () => $("cfdlg").close();
+$("cfdlg").addEventListener("close", () => cfgSetLock(true));
+
+/* ---- ⚙️ panell d'ajustos (negre i vermell) ---- */
+function cfgRender(){
+  const c = cfgRaw();
+  const row = (title, sub, attrs, val, unit) =>
+    '<label class="cfrow"><span class="cft"><b>' + title + '</b><small>' + sub + '</small></span><span class="cfin"><input type="number" inputmode="decimal" ' + attrs + ' value="' + val + '" required><i>' + unit + '</i></span></label>';
+  let h = '<div class="cfg"><h3>📍 Objectiu de cada ubicació</h3><p class="cfn">Quants articles vols tenir a cada lloc. La barra de progrés es calcula amb aquest número.</p>';
+  LOCS.forEach(l => { h += row(esc(l), totLoc(l) + " articles ara · per defecte " + CFGD.goal, 'data-g="locGoal" data-id="' + esc(l) + '" min="1" max="99999" step="1"', goalLoc(l), "articles"); });
+  if(!LOCS.length) h += '<p class="cfn">Encara no hi ha cap ubicació.</p>';
+  h += '</div><div class="cfg"><h3>🏠 Objectiu de cada zona</h3><p class="cfn">El mateix, per a les barres verticals de les zones.</p>';
+  CATS.forEach(z => { h += row(z.icon + " " + esc(z.label), totCat(z.id) + " articles ara · per defecte " + CFGD.goal, 'data-g="catGoal" data-id="' + esc(z.id) + '" min="1" max="99999" step="1"', goalCat(z.id), "articles"); });
+  h += '</div><div class="cfg"><h3>⏱️ Funcionament</h3><p class="cfn">Temps en segons. Si poses un valor fora del rang, et marcarà el camp en vermell.</p>';
+  h += row("Mantenir premut per veure la foto", "Entre 0,3 i 5 s · per defecte " + String(CFGD.hold / 1000).replace(".", ","), 'data-t="hold" min="0.3" max="5" step="0.1"', cfgGet("hold") / 1000, "s");
+  h += row("Doble toc per tancar finestres", "Entre 0,2 i 3 s · per defecte " + String(CFGD.dbl / 1000).replace(".", ","), 'data-t="dbl" min="0.2" max="3" step="0.1"', cfgGet("dbl") / 1000, "s");
+  h += row("Triple toc (ajustos i assistent)", "Entre 0,4 i 3 s · per defecte " + String(CFGD.tap / 1000).replace(".", ","), 'data-t="tap" min="0.4" max="3" step="0.1"', cfgGet("tap") / 1000, "s");
+  h += row("Canvis que guarda ↶ Desfés", "Entre 10 i 500 · per defecte " + CFGD.histMax, 'data-t="histMax" min="10" max="500" step="1"', cfgGet("histMax"), "canvis");
+  h += row("Missatges que guarda el xat", "Entre 50 i 1000 · per defecte " + CFGD.chatMax, 'data-t="chatMax" min="50" max="1000" step="1"', cfgGet("chatMax"), "missatges");
+  h += '</div><div class="cfg"><h3>📱 Aquest dispositiu</h3><p class="cfn">Vista amb què s\'obre l\'inventari en aquest aparell.</p><div class="cfseg" id="cfView">'
+    + [["grid", "▦ Imatges"], ["list", "☰ Llista"], ["check", "☑ Check"]].map(v => '<button type="button" data-v="' + v[0] + '" aria-pressed="' + (view === v[0]) + '">' + v[1] + '</button>').join("")
+    + '</div></div>';
+  $("cfBody").innerHTML = h;
+}
+$("cfBody").addEventListener("click", e => {
+  const b = e.target.closest("#cfView button"); if(!b) return;
+  setView(b.dataset.v);
+  $("cfView").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === view)));
+});
+$("cfBody").addEventListener("input", e => { if(e.target.classList) e.target.classList.remove("bad"); });
+function cfgCollect(){
+  const body = $("cfBody"); let bad = null;
+  const out = {locGoal:{}, catGoal:{}};
+  for(const inp of body.querySelectorAll("input[data-g], input[data-t]")){
+    const v = inp.valueAsNumber, g = inp.dataset.g, t = inp.dataset.t;
+    let ok, val;
+    if(g){ ok = Number.isFinite(v) && v >= 1 && v <= 99999 && Math.floor(v) === v; val = v; }
+    else { const r = CFGR[t], ms = cfgSec(t) ? Math.round(v * 1000) : v; ok = Number.isFinite(v) && ms >= r[0] && ms <= r[1] && (cfgSec(t) || Math.floor(v) === v); val = ms; }
+    inp.classList.toggle("bad", !ok);
+    if(!ok){ if(!bad) bad = inp; continue; }
+    if(g) out[g][inp.dataset.id] = val; else out[t] = val;
+  }
+  if(bad){ bad.focus(); toast("⚠️ Revisa els camps en vermell: només números dins del rang indicat."); return null; }
+  return cfgClean(out);
+}
+$("cfSave").onclick = () => {
+  const r = cfgCollect(); if(!r) return;
+  if(stable(cfgClean(cfgRaw())) === stable(r)){ toast("No hi ha cap canvi per desar."); return; }
+  store("inv_cfg", r); cfgApply(); cfgRender();
+  toast("✓ Ajustos desats. Ho pots desfer des de ↶ Desfés.");
+};
+$("cfReset").onclick = () => {
+  if(!Object.keys(cfgClean(cfgRaw())).length){ toast("Ja estan tots els valors per defecte."); return; }
+  if(!confirm("Restaurar TOTS els ajustos als valors per defecte?\n\nEls objectius tornaran a 100 i els temps a la configuració original. Ho podràs desfer des de ↶ Desfés.")) return;
+  store("inv_cfg", {}); cfgApply(); cfgRender();
+  toast("↺ Ajustos restaurats als valors per defecte.");
+};
+
+/* ---- 🔴 assistent d'ordres: el robot es gira amb 3 tocs ràpids ---- */
+let adminOn = false;
+const aiTaps = [];
+function adminOpen(){
+  if(!$("aiPanel").hidden) aiOpen(false);
+  adminOn = true;
+  $("aiFab").classList.add("flipped"); hop($("aiFab"));
+  $("aiFab").setAttribute("aria-label", "Tanca l'assistent d'ordres");
+  $("rPanel").hidden = false;
+  if(!$("rMsgs").children.length) rGreet();
+  if(!isTouch) $("rIn").focus();
+}
+function adminClose(){
+  if(!adminOn) return;
+  adminOn = false;
+  $("rPanel").hidden = true;
+  $("aiFab").classList.remove("flipped"); hop($("aiFab"));
+  $("aiFab").setAttribute("aria-label", "Obre l'assistent de productes");
+}
+$("aiFab").onclick = () => {
+  if(adminOn){ adminClose(); return; }
+  const now = Date.now(), win = cfgGet("tap");
+  while(aiTaps.length && now - aiTaps[0].t > win) aiTaps.shift();
+  aiTaps.push({t:now, closed:$("aiPanel").hidden});
+  if(aiTaps.length >= 3 && aiTaps[aiTaps.length - 3].closed){ aiTaps.length = 0; adminOpen(); return; }
+  aiOpen($("aiPanel").hidden);
+};
+$("rClose").onclick = adminClose;
+$("rPanel").addEventListener("keydown", e => { if(e.key === "Escape"){ e.stopPropagation(); adminClose(); } });
+$("rIn").addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); $("rForm").requestSubmit(); } });
+$("rForm").onsubmit = e => { e.preventDefault(); const q = $("rIn").value.trim(); if(!q) return; $("rIn").value = ""; rAsk(q); };
+const __cloudAuth33 = cloudAuth;
+cloudAuth = function(u){ adminClose(); cfgSetLock(true); if($("cfdlg").open) $("cfdlg").close(); __cloudAuth33(u); };
+
+function rMsg(kind, text){
+  const d = document.createElement("div"); d.className = "aimsg " + kind; d.textContent = text;
+  $("rMsgs").appendChild(d); $("rMsgs").scrollTop = $("rMsgs").scrollHeight; return d;
+}
+function rBtns(d, items, cls){
+  const box = document.createElement("div"); box.className = cls;
+  items.forEach(it => { const b = document.createElement("button"); b.type = "button"; b.className = it.cls || "sbtn"; b.textContent = it.text; b.onclick = it.fn; box.appendChild(b); });
+  d.appendChild(box); $("rMsgs").scrollTop = $("rMsgs").scrollHeight; return box;
+}
+function rSuggest(d, qs){ rBtns(d, qs.map(q => ({text:q, fn:() => rAsk(q)})), "aisug"); }
+function rGreet(){
+  const d = rMsg("bot", "Mode ordres activat 🔴\nPuc canviar ajustos i fer canvis a l'inventari. Sempre et demano confirmació abans de tocar res, i tot queda a ↶ Desfés.");
+  rSuggest(d, ["Què puc fer?", "Quins són els ajustos?", "Posa l'objectiu de Cunit a 150"]);
+}
+function rConfirm(text, apply){
+  const d = rMsg("bot", text);
+  const yes = {text:"✓ Confirma", cls:"rok"}, no = {text:"✕ Cancel·la", cls:"rno"};
+  let box;
+  const lock = () => box.querySelectorAll("button").forEach(b => { b.disabled = true; });
+  yes.fn = () => {
+    if(box.querySelector("button").disabled) return;
+    lock();
+    let res;
+    HTAG = "🤖 ";
+    try { res = apply(); } catch(err){ console.error(err); res = "⚠️ No ho he pogut fer. Torna-ho a provar."; }
+    finally { HTAG = ""; }
+    rMsg("bot", res || "Fet ✓");
+  };
+  no.fn = () => { if(box.querySelector("button").disabled) return; lock(); rMsg("bot", "D'acord, no canvio res."); };
+  box = rBtns(d, [yes, no], "rconf");
+}
+function needSession(){ if(cloudUser) return false; rMsg("bot", "Cal tenir la sessió iniciada per fer canvis."); return true; }
+
+/* ---- eines de text ---- */
+const escRe = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const rNorm = t => norm(t).replace(/['’`´]/g, " ").replace(/[^a-z0-9.,\- ]+/g, " ").replace(/\s+/g, " ").trim();
+const rInt = s => { const m = String(s).match(/\d+/g); return m ? +m[m.length - 1] : null; };
+const rNum = s => { const m = String(s).match(/\d+(?:[.,]\d+)?/g); return m ? parseFloat(m[m.length - 1].replace(",", ".")) : null; };
+function rNames(){
+  const L = LOCS.map(l => ({id:l, label:l, n:norm(l)}));
+  const C = [];
+  CATS.forEach(c => { [c.label, c.short].filter((x, i, a) => x && a.indexOf(x) === i).forEach(nm => C.push({id:c.id, label:c.label, n:norm(nm)})); });
+  return {L, C};
+}
+function rFind(text, list){
+  const nt = norm(text); let best = null;
+  list.forEach(x => {
+    if(!x.n) return;
+    const re = new RegExp("(^|[^a-z0-9])(" + escRe(x.n) + ")(?![a-z0-9])", "g"); let m;
+    while((m = re.exec(nt))){ const s = m.index + m[1].length, e = s + x.n.length; if(!best || e - s > best.e - best.s) best = {x, s, e}; }
+  });
+  return best;
+}
+function rCut(text, f){
+  let s = f.s; const before = norm(text).slice(0, s);
+  const m = /(?:\b(?:a|al|a la|en|cap a|cap al|cap a la|zona|ubicacio|la zona|la ubicacio)\s+)+$/.exec(before);
+  if(m) s = before.length - m[0].length;
+  return (text.slice(0, s) + " " + text.slice(f.e)).replace(/\s+/g, " ").trim();
+}
+const R_VERB = /^(?:si us plau\s+|sisplau\s+|pots\s+|podries\s+)?(?:mou|moure|passa|porta|trasllada|canvia|posa|fica|deixa|afegeix|desa|guarda|situa|elimina|esborra|borra|suprimeix)\s+/i;
+const rClean = q => String(q).replace(R_VERB, "").replace(/\b(?:també|tambe|ara|tot|tots|totes)\b/gi, " ")
+  .replace(/^(?:(?:el|la|els|les|l['’]|un|una|aquest|aquesta)\s*)+/i, "").replace(/\s+(?:a|al|en|de|del)\s*$/i, "").replace(/[\s,;:]+$/, "").replace(/\s+/g, " ").trim();
+function rFindItems(q){
+  q = String(q || "").replace(/^(?:(?:el|la|els|les|l['’]|un|una|de|del|d['’])\s*)+/i, "").trim();
+  const nq = loose(q); if(!nq) return [];
+  const sc = [];
+  DATA.forEach((c, i) => {
+    if(!live(c)) return;
+    const n = loose(c.item); let s = 0;
+    if(n === nq) s = 100;
+    else if((" " + n + " ").includes(" " + nq + " ")) s = 70;
+    else if(nq.length >= 3 && n.includes(nq)) s = 60;
+    else if(n.length >= 3 && nq.includes(n)) s = 50;
+    else { const t = nq.split(" ").filter(w => w.length > 2); if(t.length && t.every(w => n.includes(w))) s = 40; else if(nq.length >= 4 && qText(c.item, q)) s = 20; }
+    if(s) sc.push({i, s});
+  });
+  if(!sc.length) return [];
+  sc.sort((a, b) => b.s - a.s);
+  return sc.filter(x => x.s === sc[0].s).slice(0, 8).map(x => x.i);
+}
+function rItemPick(q, then){
+  const found = rFindItems(q);
+  if(!found.length){ rMsg("bot", "No trobo cap article que s'assembli a «" + q + "». Escriu el nom tal com surt a l'inventari."); return; }
+  if(found.length === 1){ then(DATA[found[0]].id); return; }
+  const d = rMsg("bot", "He trobat " + found.length + " articles. Quin vols dir?");
+  rBtns(d, found.map(i => ({text:DATA[i].item + " · " + DATA[i].loc, cls:"rpick", fn:() => then(DATA[i].id)})), "aires rlist");
+}
+const itemIdx = id => DATA.findIndex(c => c.id === id && live(c));
+const itemDesc = c => qtyBadge(c.qty) + " · " + zonesTxt(c) + " · 📍 " + locsTxt(c, ", ");
+
+/* ---- ordres ---- */
+function rHelp(nt){
+  if(!/^(?:ajuda|help|ordres|comandes)\b|que puc fer|que saps fer|que pots fer|com funciones/.test(nt)) return false;
+  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• posa l'objectiu de Cunit a 150\n• posa l'objectiu de la zona Cuina a 120\n• posa l'objectiu de totes les ubicacions a 200\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• vista llista (en aquest dispositiu)\n• restaura els ajustos\n• quins són els ajustos?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
+  return true;
+}
+function rShow(nt){
+  if(!/(quins|quin|mostra|ensenya|veure|llista).*(ajust|objectiu|configuracio)|ajustos actuals|com estan (?:els )?ajustos/.test(nt)) return false;
+  rMsg("bot", "⚙️ Ajustos actuals\n\n📍 Ubicacions: " + (LOCS.map(l => l + " " + goalLoc(l)).join(" · ") || "—")
+    + "\n🏠 Zones: " + CATS.map(z => z.label + " " + goalCat(z.id)).join(" · ")
+    + "\n\n⏱️ Mantenir premut: " + fmtSec(cfgGet("hold")) + " · Doble toc: " + fmtSec(cfgGet("dbl")) + " · Triple toc: " + fmtSec(cfgGet("tap"))
+    + "\n↶ Desfés guarda " + cfgGet("histMax") + " canvis · 💬 el xat guarda " + cfgGet("chatMax") + " missatges");
+  return true;
+}
+function rReset(nt){
+  if(!/(restaura|reinicia|reseteja|torna).*(ajust|defecte|valors)|valors per defecte/.test(nt)) return false;
+  if(needSession()) return true;
+  if(!Object.keys(cfgClean(cfgRaw())).length){ rMsg("bot", "Ja estan tots els ajustos als valors per defecte."); return true; }
+  rConfirm("Restauro TOTS els ajustos als valors per defecte (objectius a 100 i temps originals). Confirmes?", () => { store("inv_cfg", {}); cfgApply(); return "✓ Ajustos restaurats. Ho pots desfer des de ↶ Desfés."; });
+  return true;
+}
+function rGoal(nt, t0){
+  if(!/objectiu/.test(nt)) return false;
+  if(needSession()) return true;
+  const n = rInt(nt);
+  if(n == null){ rMsg("bot", "Quin número vols com a objectiu? Per exemple: «posa l'objectiu de Cunit a 150»."); return true; }
+  if(n < 1 || n > 99999){ rMsg("bot", "L'objectiu ha de ser un número enter entre 1 i 99.999."); return true; }
+  const allL = /tot(?:es)?\s+(?:les\s+)?ubicacion|tot el mon/.test(nt), allC = /tot(?:es)?\s+(?:les\s+)?zones/.test(nt);
+  const {L, C} = rNames(), hasZ = /\bzona\b/.test(nt);
+  const fl = rFind(t0, L), fc = rFind(t0, C);
+  let T = [];
+  if(allL) T = LOCS.map(l => ({g:"locGoal", id:l, name:"«" + l + "»", cur:goalLoc(l)}));
+  else if(allC) T = CATS.map(z => ({g:"catGoal", id:z.id, name:"la zona «" + z.label + "»", cur:goalCat(z.id)}));
+  else if(fc && (hasZ || !fl)) T = [{g:"catGoal", id:fc.x.id, name:"la zona «" + fc.x.label + "»", cur:goalCat(fc.x.id)}];
+  else if(fl) T = [{g:"locGoal", id:fl.x.id, name:"«" + fl.x.id + "»", cur:goalLoc(fl.x.id)}];
+  if(!T.length){
+    const d = rMsg("bot", "De quina ubicació o zona? Ubicacions: " + (LOCS.join(", ") || "—") + ". Zones: " + CATS.map(z => z.label).join(", ") + ".");
+    rSuggest(d, LOCS.slice(0, 3).map(l => "Posa l'objectiu de " + l + " a " + n));
+    return true;
+  }
+  const ch = T.filter(x => x.cur !== n);
+  if(!ch.length){ rMsg("bot", "Ja està a " + n + ". No cal canviar res."); return true; }
+  const txt = ch.length === 1 ? "Poso l'objectiu de " + ch[0].name + ": " + ch[0].cur + " → " + n + "." : "Poso l'objectiu a " + n + " per a " + ch.length + " elements (" + ch.map(x => x.name.replace(/[«»]/g, "") + " " + x.cur).join(", ") + ")."; 
+  rConfirm(txt + " Confirmes?", () => { cfgCommit(c => { ch.forEach(x => { (c[x.g] = c[x.g] || {})[x.id] = n; }); }); return "✓ Fet. Els objectius s'han actualitzat a tots els dispositius."; });
+  return true;
+}
+function rTimes(nt){
+  let k, name;
+  if(/triple\s+(?:toc|clic|click)/.test(nt)){ k = "tap"; name = "el temps del triple toc"; }
+  else if(/doble\s+(?:toc|clic|click)/.test(nt)){ k = "dbl"; name = "el temps del doble toc"; }
+  else if(/mantenir|mantingui|mantenint|premut/.test(nt)){ k = "hold"; name = "el temps de mantenir premut"; }
+  else if(/historial|desfes/.test(nt) && /\d/.test(nt)){ k = "histMax"; name = "els canvis que guarda Desfés"; }
+  else if(/\bxat\b|missatges/.test(nt) && /\d/.test(nt)){ k = "chatMax"; name = "els missatges que guarda el xat"; }
+  else return false;
+  if(needSession()) return true;
+  const n = rNum(nt);
+  if(n == null){ rMsg("bot", "Quin valor? Per exemple: «" + (cfgSec(k) ? "doble toc a 0,8 segons" : "historial a 50") + "»."); return true; }
+  const v = cfgSec(k) ? (/\bms\b|mil[·.]?lisegon/.test(nt) ? Math.round(n) : Math.round(n * 1000)) : Math.round(n);
+  const r = CFGR[k];
+  if(v < r[0] || v > r[1]){ rMsg("bot", "Aquest valor ha d'estar entre " + (cfgSec(k) ? fmtSec(r[0]) + " i " + fmtSec(r[1]) : r[0] + " i " + r[1]) + "."); return true; }
+  const cur = cfgGet(k);
+  if(cur === v){ rMsg("bot", "Ja està així. No cal canviar res."); return true; }
+  const f = x => cfgSec(k) ? fmtSec(x) : String(x);
+  rConfirm("Canvio " + name + ": " + f(cur) + " → " + f(v) + ". Confirmes?", () => { cfgCommit(c => { c[k] = v; }); return "✓ Fet."; });
+  return true;
+}
+function rView(nt){
+  if(!/\bvista\b/.test(nt)) return false;
+  const v = /imatge|grid|graella|foto/.test(nt) ? "grid" : /llista/.test(nt) ? "list" : /check/.test(nt) ? "check" : null;
+  if(!v){ rMsg("bot", "Quina vista? Imatges, llista o check."); return true; }
+  const nm = {grid:"Imatges", list:"Llista", check:"Check"};
+  if(v === view){ rMsg("bot", "Aquest dispositiu ja està en vista " + nm[v] + "."); return true; }
+  rConfirm("Canvio la vista d'aquest dispositiu a " + nm[v] + ". Confirmes?", () => { setView(v); return "✓ Fet. (Només afecta aquest dispositiu.)"; });
+  return true;
+}
+function rCreate(nt, t0, n0){
+  const m = /^(?:crea|crear|fes|nova|nou|afegeix|anota|registra|apunta)\s+(?:(?:una?|la|el|l|aquesta?)\s+)?(?:(?:nova|nou)\s+)?(zona|ubicacio|article|objecte|producte)\b\s*/.exec(n0);
+  if(!m) return false;
+  if(needSession()) return true;
+  const kind = m[1];
+  let rest = t0.slice(m[0].length).trim();
+  rest = rest.replace(/^(?:de la casa\s+)?(?:anomenad[ao]|que es digui|que es diu|amb (?:el )?nom|de nom|:)\s*/i, "").replace(/^[«"'“]+|[»"'”.]+$/g, "").trim();
+  if(kind === "zona" || kind === "ubicacio"){
+    const name = rest.replace(/\s+/g, " ");
+    if(!name){ rMsg("bot", "Com es diu? Per exemple: «crea la " + (kind === "zona" ? "zona Terrassa" : "ubicació Pis") + "»."); return true; }
+    if(kind === "zona"){
+      const dup = CATS.find(c => norm(c.label) === norm(name) || norm(c.short) === norm(name));
+      if(dup){ rMsg("bot", "La zona «" + dup.label + "» ja existeix."); return true; }
+      rConfirm("Creo la zona 🏠 «" + name + "». Confirmes?", () => {
+        const cat = {id:"u" + Date.now(), label:name, short:name, icon:"🏠"};
+        userCats.push(cat); store("inv_cats", userCats); CATS.push(cat); buildSection(cat); setView(view); render();
+        return "✓ Zona «" + name + "» creada.";
+      });
+    } else {
+      const dup = LOCS.find(l => norm(l) === norm(name));
+      if(dup){ rMsg("bot", "La ubicació «" + dup + "» ja existeix."); return true; }
+      rConfirm("Creo la ubicació 📍 «" + name + "». Confirmes?", () => {
+        userLocs.push(name); store("inv_locs", userLocs); refreshLocs(); render();
+        return "✓ Ubicació «" + name + "» creada.";
+      });
+    }
+    return true;
+  }
+  /* article: «crea l'article NOM a UBICACIÓ zona ZONA quantitat N» */
+  let r = rest, qty = null, loc = null, cat = null;
+  const {L, C} = rNames();
+  const mq = /(?:quantitat|unitats?)\s*(?:de\s*)?(\d+)|\b(\d+)\s*unitats?\b/i.exec(r);
+  if(mq){ qty = +(mq[1] || mq[2]); r = (r.slice(0, mq.index) + " " + r.slice(mq.index + mq[0].length)).replace(/\s+/g, " ").trim(); }
+  if(/\bzona\b/i.test(r)){ const fz = rFind(r, C); if(fz){ cat = fz.x; r = rCut(r, fz); } }
+  const fl = rFind(r, L); if(fl){ loc = fl.x; r = rCut(r, fl); }
+  let name = r.replace(/^(?:(?:el|la|els|les|l['’]|un|una)\s*)+/i, "").replace(/[\s,;:]+$/, "").replace(/\s+(?:a|al|en|de|i|amb)$/i, "").trim();
+  name = name.charAt(0).toUpperCase() + name.slice(1);
+  if(!name){ rMsg("bot", "Com es diu l'article? Per exemple: «crea l'article Gots a Cunit zona Cuina»."); return true; }
+  if(!loc || !cat){
+    const d = rMsg("bot", "Per crear «" + name + "» em falta " + (!loc && !cat ? "la ubicació i la zona" : !loc ? "la ubicació" : "la zona") + ". Ubicacions: " + LOCS.join(", ") + ". Zones: " + CATS.map(z => z.label).join(", ") + ".\nExemple: crea l'article " + name + " a " + (loc ? loc.id : LOCS[0] || "Cunit") + " zona " + (cat ? cat.label : CATS[0].label));
+    return true;
+  }
+  const q = qty || qtyFromName(name) || 1;
+  if(q < 1 || q > 99999){ rMsg("bot", "La quantitat ha de ser entre 1 i 99.999."); return true; }
+  rConfirm("Creo l'article «" + name + "» · ×" + q + " · " + cat.label + " · 📍 " + loc.id + ". Confirmes?", () => {
+    const c = {item:name, cat:cat.id, desc:"", qty:q, estado:"sin", fiab:"alta", note:"Afegit des de l'assistent", photos:[], pend:0, inv:0, loc:loc.id, locs:[loc.id], nou:true};
+    c.ord = Date.now();
+    if(!cloudSaveItem(c)) return "⚠️ No s'ha pogut desar.";
+    DATA.push(c); SEARCH.push(searchText(c)); refreshLocs();
+    const i = DATA.length - 1, sec = sections.find(s => s.cat.id === c.cat);
+    if(sec){ sec.grid.insertAdjacentHTML("beforeend", card(c, i)); sec.cards.push(sec.grid.lastElementChild); }
+    updateSub(); render();
+    return "✓ Article «" + name + "» creat (sense foto: la pots afegir des de la fitxa).";
+  });
+  return true;
+}
+function rDelete(nt, t0, n0){
+  if(!/^(?:elimina|esborra|borra|suprimeix|elimino|esborro)\s+/.test(n0)) return false;
+  if(needSession()) return true;
+  if(/\b(?:zona|zones|ubicacio|ubicacions|pendent|pendents)\b/.test(n0)){ rMsg("bot", "De moment només puc eliminar articles. Les zones, ubicacions i pendents s'eliminen des de la web."); return true; }
+  const q = rClean(t0);
+  rItemPick(q, id => {
+    const c = DATA[itemIdx(id)]; if(!c){ rMsg("bot", "Aquest article ja no existeix."); return; }
+    rConfirm("Elimino «" + c.item + "» (" + itemDesc(c) + (c.photos.length ? " · " + c.photos.length + (c.photos.length > 1 ? " fotos" : " foto") : "") + "). Confirmes?", () => {
+      const i = itemIdx(id); if(i < 0) return "Aquest article ja no existeix.";
+      const nm = DATA[i].item; deleteItem(i);
+      return "✓ «" + nm + "» eliminat. El pots recuperar des de ↶ Desfés.";
+    });
+  });
+  return true;
+}
+function rRename(nt, t0, n0){
+  const m = /^(?:canvia|posa|cambia|modifica)\s+(?:el\s+)?nom\s+(?:de\s+la\s+|del\s+|dels\s+|de\s+les\s+|de\s+|d\s+)?(.+?)\s+(?:a|per|com)\s+(.+)$/.exec(n0)
+    || /^(?:reanomena|renombra|rebateja)\s+(?:el\s+|la\s+|l\s+)?(.+?)\s+(?:a|per|com)\s+(.+)$/.exec(n0);
+  if(!m) return false;
+  if(needSession()) return true;
+  let nn = t0.slice(t0.length - m[2].length).replace(/^[«"'“]+|[»"'”.]+$/g, "").trim();
+  nn = nn.charAt(0).toUpperCase() + nn.slice(1);
+  if(!nn){ rMsg("bot", "Quin nom nou vols posar-li?"); return true; }
+  rItemPick(m[1], id => {
+    const c = DATA[itemIdx(id)]; if(!c){ rMsg("bot", "Aquest article ja no existeix."); return; }
+    if(c.item === nn){ rMsg("bot", "Ja es diu així."); return; }
+    rConfirm("Canvio el nom: «" + c.item + "» → «" + nn + "». Confirmes?", () => {
+      const i = itemIdx(id); if(i < 0) return "Aquest article ja no existeix.";
+      saveItem(i, {item:nn}); return "✓ Fet.";
+    });
+  });
+  return true;
+}
+function rQty(nt){
+  let m, q, n;
+  if((m = /^(?:posa|canvia|fixa|deixa|fica|actualitza|modifica)\s+(\d+)\s+(?:unitats\s+)?(?:a|al|a la|de|del|de la|d)\s+(.+)$/.exec(nt))){ n = +m[1]; q = m[2]; }
+  else if((m = /(?:quantitat|unitats)\s+(?:de\s+la\s+|del\s+|dels\s+|de\s+les\s+|de\s+|d\s+)?(.+?)\s+(?:a|en|per|=)\s+(\d+)\s*$/.exec(nt))){ q = m[1]; n = +m[2]; }
+  else if((m = /(?:quantitat|unitats)\s+(?:a|en)\s+(\d+)\s+(?:de\s+la\s+|del\s+|de\s+|d\s+)(.+)$/.exec(nt))){ n = +m[1]; q = m[2]; }
+  else return false;
+  if(needSession()) return true;
+  if(n < 1 || n > 99999){ rMsg("bot", "La quantitat ha de ser un número entre 1 i 99.999."); return true; }
+  rItemPick(q, id => {
+    const c = DATA[itemIdx(id)]; if(!c){ rMsg("bot", "Aquest article ja no existeix."); return; }
+    if(c.qty === n){ rMsg("bot", "«" + c.item + "» ja té quantitat " + n + "."); return; }
+    rConfirm("Canvio la quantitat de «" + c.item + "»: " + c.qty + " → " + n + ". Confirmes?", () => {
+      const i = itemIdx(id); if(i < 0) return "Aquest article ja no existeix.";
+      saveItem(i, {qty:n}); return "✓ Fet.";
+    });
+  });
+  return true;
+}
+function rPlace(nt, t0){
+  if(!/^(?:mou|moure|passa|porta|trasllada|canvia|posa|fica|deixa|afegeix|desa|guarda|situa)\b/.test(nt)) return false;
+  const {L, C} = rNames();
+  let rest = t0, zone = null, loc = null;
+  if(/\bzona\b/.test(nt)){ const fz = rFind(rest, C); if(fz){ zone = fz.x; rest = rCut(rest, fz); } }
+  const fl = rFind(rest, L); if(fl){ loc = fl.x; rest = rCut(rest, fl); }
+  if(!zone && !loc){ const fz = rFind(rest, C); if(fz){ zone = fz.x; rest = rCut(rest, fz); } }
+  if(!zone && !loc) return false;
+  if(needSession()) return true;
+  const add = /(?:^|\s)(?:tambe|a mes|ademes)(?:\s|$)|^afegeix\b/.test(nt);
+  const q = rClean(rest);
+  rItemPick(q, id => {
+    const c = DATA[itemIdx(id)]; if(!c){ rMsg("bot", "Aquest article ja no existeix."); return; }
+    const patch = {}, lines = [];
+    if(loc){
+      const nl = add ? [...new Set([...locsOf(c), loc.id])] : [loc.id];
+      if(stable(nl) !== stable(locsOf(c))){ patch.loc = nl[0]; patch.locs = nl; lines.push("📍 " + locsOf(c).join(", ") + " → " + nl.join(", ")); }
+    }
+    if(zone){
+      const nz = add ? [...new Set([...catsOf(c), zone.id])] : [zone.id];
+      if(stable(nz) !== stable(catsOf(c))){ patch.cat = nz[0]; patch.cats = nz.length > 1 ? nz : null; lines.push("🏠 " + catsOf(c).map(catName).join(", ") + " → " + nz.map(catName).join(", ")); }
+    }
+    if(!lines.length){ rMsg("bot", "«" + c.item + "» ja hi és. No cal canviar res."); return; }
+    rConfirm("Canvio «" + c.item + "»:\n" + lines.join("\n") + "\nConfirmes?", () => {
+      const i = itemIdx(id); if(i < 0) return "Aquest article ja no existeix.";
+      saveItem(i, patch); return "✓ Fet.";
+    });
+  });
+  return true;
+}
+function rAsk(text){
+  rMsg("me", text);
+  const t0 = text.trim(), n0 = norm(t0).replace(/['’`´]/g, " "), nt = rNorm(t0);
+  if(/^(?:hola|bon dia|bones|ei|hey|salut)\b/.test(nt) && nt.split(" ").length < 4){ rMsg("bot", "Hola! Digues-me què vols canviar. Si t'ho vols mirar, escriu «què puc fer?»."); return; }
+  const H = [rHelp, rShow, rReset, rGoal, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
+  for(const h of H){ if(h(nt, t0, n0) !== false) return; }
+  const d = rMsg("bot", "No t'he entès 🤔 Prova amb una ordre com les d'aquests exemples:");
+  rSuggest(d, ["Què puc fer?", "Quins són els ajustos?", "Posa l'objectiu de Cunit a 150"]);
+}
+
 
 gate("wait", "Connectant…");
 cloudSetStatus();
@@ -2701,7 +3326,7 @@ try {
       s => cloudPhotos(s.docChanges().map(c => ({type: c.type, id: c.doc.id, data: c.type === "removed" ? null : c.doc.data()}))), err));
     unsubs.push(F.onSnapshot(ref("meta", "state"), s => cloudMeta(s.exists() ? s.data() : null), err));
     unsubs.push(F.onSnapshot(F.query(F.collection(db, "hist"), F.orderBy("ts", "desc")), s => cloudHist(s.docs.map(d => Object.assign({id: d.id}, d.data()))), err));
-    unsubs.push(F.onSnapshot(F.query(F.collection(db, "chat"), F.orderBy("ts", "desc"), F.limit(300)), {includeMetadataChanges: true},
+    unsubs.push(F.onSnapshot(F.query(F.collection(db, "chat"), F.orderBy("ts", "desc"), F.limit(1100)), {includeMetadataChanges: true},
       s => cloudChat(s.docs.map(d => Object.assign({id: d.id}, d.data(), {pending: d.metadata.hasPendingWrites}))), err));
     unsubs.push(F.onSnapshot(F.collection(db, "chatread"), s => cloudChatRead(s.docs.map(d => ({id: d.id, ts: d.data().ts}))), err));
     unsubs.push(F.onSnapshot(F.collection(db, "items"), {includeMetadataChanges: true},
