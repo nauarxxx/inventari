@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v3.7">
+<meta name="generator" content="Inventari de casa v3.8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -802,7 +802,7 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v3.7</span></h1>
+      <h1>Inventari de casa <span class="ver">v3.8</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -875,7 +875,7 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
     <div id="fNewCat" class="frow fnew" hidden=""><label>Icona<select id="fIcon"><option>🏠</option><option>🍳</option><option>🍽️</option><option>🛋️</option><option>🛏️</option><option>🚽</option><option>🧺</option><option>🧽</option><option>💻</option><option>🧰</option><option>🔌</option><option>🚗</option><option>🌿</option><option>🌞</option><option>👶</option><option>🐾</option><option>🎮</option><option>📚</option><option>🧳</option><option>🏊</option><option>🏋️</option><option>🍷</option><option>📦</option></select></label><label>Nova zona<input id="fCatName" maxlength="30" placeholder="Per exemple: Terrassa" autocomplete="off"></label></div>
     <div class="fmulti"><span class="flab">Altres zones <small>· opcional, només compta a la principal</small></span><div class="fchips" id="fCats2"></div></div>
     <label id="fNoteL" hidden="">Nota<input id="fNote" maxlength="200"></label>
-    <div class="fphoto"><span class="flab">Foto</span>
+    <div class="fphoto"><span class="flab">Foto <small style="font-weight:500">· qualsevol foto o captura</small></span>
       <div class="fpbtns">
         <button type="button" class="pbtn" id="fGalBtn">🖼️ Adjunta foto<small>De la galeria o l'ordinador</small></button>
         <button type="button" class="pbtn cam" id="fCamBtn">📷 Fes una foto<small>Amb la càmera, ara mateix</small></button>
@@ -1083,7 +1083,7 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
 <dialog id="hdlg" class="fdlg hdlg nofit" aria-labelledby="hTitle">
   <div class="hwrap">
     <div class="hhead"><h2 id="hTitle">↶ Historial de canvis</h2><button type="button" class="btn" id="hClose">Tanca</button></div>
-    <p class="fhint">Els més recents a dalt. Toca <b>↶ Desfés</b> per tornar enrere un canvi. És el mateix historial a tots els dispositius (últims <b id="hMaxN">100</b>).</p>
+    <p class="fhint">Els més recents a dalt. Toca <b>↶ Desfés</b> per tornar enrere un canvi. És el mateix historial a tots els dispositius (últims <b id="hMaxN">100</b>). El número del botó només compta els canvis d'avui.</p>
     <ul id="hList" class="hlist"></ul>
   </div>
 </dialog>
@@ -1212,8 +1212,8 @@ const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c))
 const totAll = () => DATA.filter(live).length;
 const pctOf = (n, tot) => (!tot || !n) ? 0 : Math.max(1, Math.min(100, Math.round(n / tot * 100)));
 /* v3.3: valors per defecte (els de la v3.2) i límits dels ajustos */
-const CFGD = {toast:4500, coin:3000, cardmin:205, photoMax:800, photoQ:75, chatVol:0, newDays:0, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
-const CFGR = {toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], photoMax:[400, 1600], photoQ:[40, 90], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
+const CFGD = {toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:0, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
+const CFGR = {toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
 function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
 function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
 const totLoc = l => DATA.filter(c => live(c) && c.locs.includes(l)).length;
@@ -1499,14 +1499,32 @@ function openForm(catId, name, key){
   const q0 = qtyFromName(name); if(q0) $("fQty").value = q0;
   $("fdlg").showModal(); $("fName").focus();
 }
+/* v3.8: es pot pujar QUALSEVOL foto (càmera del mòbil, galeria o captura de pantalla, PNG o JPG, de qualsevol mida).
+   Es redueix sola, sense que calgui configurar res, perquè càpiga al núvol (Firestore: menys d'1 MB per document).
+   Es prova la millor qualitat primer i es va baixant només si cal. */
+const PHOTO_MAX_CHARS = 800000;
+const PHOTO_TIERS = [[8000, 5e6, .88], [6000, 4e6, .85], [4000, 3e6, .8], [3000, 2e6, .75], [2000, 1.3e6, .68], [1400, .8e6, .6], [1000, .5e6, .55], [700, .3e6, .5], [500, .2e6, .45], [320, .1e6, .4]];
+function photoJpeg(src, sw, sh){
+  const longest = Math.max(sw, sh), area = sw * sh;
+  let last = "";
+  for(const [m, px, q] of PHOTO_TIERS){
+    const k = Math.min(1, m / longest, Math.sqrt(px / area));
+    const w = Math.max(1, Math.round(sw * k)), h = Math.max(1, Math.round(sh * k));
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+    const x = cv.getContext("2d");
+    x.fillStyle = "#fff"; x.fillRect(0, 0, w, h);   /* les captures amb transparència no es veuen negres */
+    x.imageSmoothingQuality = "high"; x.drawImage(src, 0, 0, w, h);
+    last = cv.toDataURL("image/jpeg", q);
+    if(last.length <= PHOTO_MAX_CHARS) return last;
+  }
+  return last;
+}
 function resizePhoto(file){
   return new Promise((ok, ko) => {
     const img = new Image(), url = URL.createObjectURL(file);
     img.onload = () => {
-      const max = cfgGet("photoMax"), k = Math.min(1, max / Math.max(img.width, img.height));
-      const cv = document.createElement("canvas"); cv.width = Math.round(img.width*k); cv.height = Math.round(img.height*k);
-      cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
-      URL.revokeObjectURL(url); ok(jpegFit(cv, cfgGet("photoQ") / 100));
+      try { ok(photoJpeg(img, img.naturalWidth || img.width, img.naturalHeight || img.height)); } catch(e){ ko(e); }
+      URL.revokeObjectURL(url);
     };
     img.onerror = () => { URL.revokeObjectURL(url); ko(); };
     img.src = url;
@@ -1522,7 +1540,7 @@ function setFormPhoto(src){
 async function takeFile(e){
   const file = e.target.files[0]; e.target.value = ""; if(!file) return;
   try { setFormPhoto(await resizePhoto(file)); }
-  catch(err){ setFormPhoto(null); $("fPrev").innerHTML = '<span>No s\'ha pogut llegir la foto</span>'; }
+  catch(err){ setFormPhoto(null); $("fPrev").innerHTML = '<span>No s\'ha pogut llegir la foto (format no compatible?)</span>'; }
 }
 $("fPhoto").onchange = takeFile;
 $("fCam").onchange = takeFile;
@@ -1537,7 +1555,7 @@ async function camStart(){
   $("camVid").hidden = false; $("camShot").hidden = true;
   $("camShoot").hidden = false; $("camShoot").disabled = true; $("camUse").hidden = true; $("camRetry").hidden = true;
   try {
-    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing, width:{ideal:Math.max(1280, cfgGet("photoMax"))}, height:{ideal:Math.max(960, Math.round(cfgGet("photoMax") * .75))}}, audio:false});
+    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing, width:{ideal:1920}, height:{ideal:1440}}, audio:false});
     $("camVid").srcObject = camStream; await $("camVid").play().catch(()=>{});
     $("camMsg").hidden = true; $("camShoot").disabled = false;
     navigator.mediaDevices.enumerateDevices().then(d => { $("camSwap").hidden = d.filter(x => x.kind === "videoinput").length < 2; }).catch(()=>{});
@@ -1555,15 +1573,14 @@ $("fCamBtn").onclick = async () => {
 };
 $("camShoot").onclick = () => {
   const v = $("camVid"), w = v.videoWidth, h = v.videoHeight; if(!w || !h) return;
-  const k = Math.min(1, cfgGet("photoMax") / Math.max(w, h)), cv = $("camShot");
-  cv.width = Math.round(w*k); cv.height = Math.round(h*k);
+  const cv = $("camShot"); cv.width = w; cv.height = h;
   cv.getContext("2d").drawImage(v, 0, 0, cv.width, cv.height);
   camStop(); v.hidden = true; cv.hidden = false;
   $("camShoot").hidden = true; $("camUse").hidden = false; $("camRetry").hidden = false; $("camSwap").hidden = true;
 };
 $("camRetry").onclick = () => camStart();
 $("camSwap").onclick = () => { camFacing = camFacing === "environment" ? "user" : "environment"; camStart(); };
-$("camUse").onclick = () => { setFormPhoto(jpegFit($("camShot"), cfgGet("photoQ") / 100)); $("camdlg").close(); };
+$("camUse").onclick = () => { setFormPhoto(photoJpeg($("camShot"), $("camShot").width, $("camShot").height)); $("camdlg").close(); };
 $("camCancel").onclick = () => $("camdlg").close();
 $("camdlg").addEventListener("close", camStop);
 $("fCat").onchange = () => { const nw = $("fCat").value === "__new"; $("fNewCat").hidden = !nw; $("fCatName").required = nw; if(nw) $("fCatName").focus(); };
@@ -1774,7 +1791,7 @@ $("dPhIn").onchange = async e => {
   if(!files.length || cur === null) return;
   const i = cur, c = DATA[i], add = [];
   for(const f of files){ try { add.push(await resizePhoto(f)); } catch(err){} }
-  if(!add.length){ toast("No s'ha pogut llegir cap foto."); return; }
+  if(!add.length){ toast("No s'ha pogut llegir cap foto (format no compatible?). Prova amb JPG o PNG."); return; }
   const first = c.photos.length;
   const patch = {photos: c.photos.concat(add), pend: 0};
   if(c.estado === "sin") patch.estado = "ok";
@@ -2481,9 +2498,9 @@ function parseBackup(text){
 }
 function impShow(t, p){ $("impBar").hidden = false; $("impTxt").textContent = t; $("impFill").style.width = Math.round((p || 0) * 100) + "%"; }
 async function shrinkPhoto(u){
-  if(typeof u !== "string" || !u.startsWith("data:image") ) return null;
-  if(u.length < 700000) return u;
-  return new Promise(res => { const im = new Image(); im.onload = () => { const k = Math.min(1, 800 / Math.max(im.width, im.height)); const cv = document.createElement("canvas"); cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k); cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height); res(cv.toDataURL("image/jpeg", .7)); }; im.onerror = () => res(null); im.src = u; });
+  if(typeof u !== "string" || !u.startsWith("data:image")) return null;
+  if(u.length <= PHOTO_MAX_CHARS) return u;
+  return new Promise(res => { const im = new Image(); im.onload = () => { try { res(photoJpeg(im, im.naturalWidth || im.width, im.naturalHeight || im.height)); } catch(e){ res(null); } }; im.onerror = () => res(null); im.src = u; });
 }
 $("impIn").onchange = async e => {
   const f = e.target.files[0]; e.target.value = ""; if(!f) return;
@@ -2682,10 +2699,21 @@ function cloudHist(docs){
   histBadge();
   if($("hdlg").open) histRender();
 }
+/* v3.8: el número del botó només compta els canvis fets durant el dia en curs (la llista de ↶ Desfés els té tots) */
+const isToday = ts => new Date(ts).toDateString() === new Date().toDateString();
 function histBadge(){
-  const n = HIST.filter(h => !h.undone).length;
+  const n = HIST.filter(h => !h.undone && isToday(h.ts)).length;
   $("histN").hidden = !n; $("histN").textContent = n > 99 ? "99+" : n;
+  $("histBtn").title = n ? "Desfés · " + n + (n > 1 ? " canvis d'avui" : " canvi d'avui") : "Historial de canvis: desfés el que has fet";
 }
+let dayT = 0;
+function histDayTimer(){   /* a mitjanit el número torna a 0 */
+  clearTimeout(dayT);
+  const n = new Date(), next = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1, 0, 0, 2);
+  dayT = setTimeout(() => { histBadge(); histDayTimer(); }, Math.max(1000, next - n));
+}
+histDayTimer();
+document.addEventListener("visibilitychange", () => { if(!document.hidden) histBadge(); });
 const whoName = e => WHO[e] || String(e || "").split("@")[0];
 function ago(ts){
   const s = Math.max(0, (Date.now() - ts) / 1000);
@@ -2917,7 +2945,7 @@ chatBadge();
    Els ajustos es desen a Firestore (meta/state · camp inv_cfg) i surten a ↶ Desfés.
    ===================================================================== */
 let CHAT_MAX = 300;
-const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", photoMax:"Mida màxima de la foto", photoQ:"Qualitat de la foto", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «Nou»"};
+const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «Nou»"};
 const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap" || k === "toast" || k === "coin";
 const cfgDeep = o => o == null ? null : JSON.parse(JSON.stringify(o));
 const fmtSec = ms => String(Math.round(ms / 100) / 10).replace(".", ",") + " s";
@@ -2944,20 +2972,17 @@ function cfgLabels(b, a){
   new Set([...Object.keys(B), ...Object.keys(A)]).forEach(p => {
     if(stable(B[p]) === stable(A[p])) return;
     const [k, id] = cfgSplit(p);
-    if(k === "locGoal" || k === "catGoal") return; /* objectius antics: ja no existeixen */
+    if(!(k in CFGD)) return; /* ajustos antics que ja no existeixen */
     const dv = CFGD[k];
     const fv = v => { v = v === undefined ? dv : v; return cfgSec(k) ? fmtSec(v) : String(v); };
-    let name;
-    if(k === "locGoal") name = "Objectiu de «" + id + "»";
-    else if(k === "catGoal") name = "Objectiu de la zona «" + catName(id) + "»";
-    else name = CFG_LABEL[k] || k;
+    const name = CFG_LABEL[k] || k;
     L.push("⚙️ " + name + ": " + fv(B[p]) + " → " + fv(A[p]));
   });
   return L.join(" · ");
 }
 function cfgClean(o){
   const r = {};
-  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "photoMax", "photoQ", "chatVol", "newDays"].forEach(k => {
+  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays"].forEach(k => {
     const v = o && o[k];
     if(typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] && v !== CFGD[k]) r[k] = v;
   });
@@ -3057,7 +3082,7 @@ $("cfBody").addEventListener("click", e => {
 $("cfBody").addEventListener("input", e => { if(e.target.classList) e.target.classList.remove("bad"); });
 function cfgCollect(){
   const body = $("cfBody"); let bad = null;
-  const out = {locGoal:{}, catGoal:{}};
+  const out = {};
   for(const inp of body.querySelectorAll("input[data-g], input[data-t]")){
     const v = inp.valueAsNumber, g = inp.dataset.g, t = inp.dataset.t;
     let ok, val;
@@ -3185,7 +3210,7 @@ const itemDesc = c => qtyBadge(c.qty) + " · " + zonesTxt(c) + " · 📍 " + loc
 /* ---- ordres ---- */
 function rHelp(nt){
   if(!/^(?:ajuda|help|ordres|comandes)\b|que puc fer|que saps fer|que pots fer|com funciones/.test(nt)) return false;
-  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• qualitat de les fotos a 80 · mida de les fotos a 1000\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
+  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
   return true;
 }
 function rShow(nt){
@@ -3195,7 +3220,7 @@ function rShow(nt){
     + "\n↶ Desfés guarda " + cfgGet("histMax") + " canvis · 💬 el xat guarda " + cfgGet("chatMax") + " missatges"
     + "\n🔊 Volum de WALL-E: " + cfgGet("wvol") + "%"
     + "\n⏳ Avisos: " + fmtSec(cfgGet("toast")) + " · Moneda: " + fmtSec(cfgGet("coin")) + " · 🖼️ targetes PC: " + cfgGet("cardmin") + " px"
-    + "\n📷 Fotos: " + cfgGet("photoMax") + " px · qualitat " + cfgGet("photoQ") + "% · 🔔 avís del xat: " + cfgGet("chatVol") + "% · ✨ Nou: " + (cfgGet("newDays") ? cfgGet("newDays") + " dies" : "desactivat")
+    + "\n🔔 Avís del xat: " + cfgGet("chatVol") + "% · ✨ Nou: " + (cfgGet("newDays") ? cfgGet("newDays") + " dies" : "desactivat")
     + "\n💾 Còpies que es guarden: " + cfgGet("bkMax") + " · automàtica cada " + (cfgGet("bkAuto") ? cfgGet("bkAuto") + " dies" : "— (desactivada)") + " · 🖼️ " + cfgGet("cols") + " articles per fila");
   return true;
 }
@@ -3216,8 +3241,6 @@ function rTimes(nt){
   if(/\bxat\b/.test(nt) && /\bvolum\b|\bso\b|avis/.test(nt) && /\d/.test(nt)){ k = "chatVol"; name = "el volum de l'avís del xat"; }
   else if(/\bavis(?:os)?\b|toast/.test(nt) && /\d/.test(nt)){ k = "toast"; name = "els segons que es veu l'avís"; }
   else if(/moneda|desbloque|bloqueja/.test(nt) && /\d/.test(nt)){ k = "coin"; name = "els segons abans de bloquejar la moneda"; }
-  else if(/qualitat/.test(nt) && /\bfotos?\b|imatges?/.test(nt)){ k = "photoQ"; name = "la qualitat de les fotos"; }
-  else if(/\bfotos?\b|imatges?/.test(nt) && /mida|\bpx\b|pixel|resolucio|maxim/.test(nt)){ k = "photoMax"; name = "la mida màxima de les fotos"; }
   else if(/targetes?/.test(nt)){ k = "cardmin"; name = "la mida de les targetes (PC)"; }
   else if(/\bnous?\b|novetat/.test(nt) && /dies/.test(nt)){ k = "newDays"; name = "els dies que un article es marca com a «Nou»"; }
   else if(/versio.*(audio|wall)|(audio|wall).*versio/.test(nt)){ k = "wver"; name = "la versió de l'àudio de WALL-E"; }
@@ -3405,7 +3428,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "3.7";
+const APP_VER = "3.8";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null, phLoaded = false;
 const __cloudPhotos34 = cloudPhotos;
@@ -3899,9 +3922,6 @@ function cfgTimeRows(row){
 function cfgMoreHtml(row){
   return row("Mida de les targetes (PC)", "Entre 140 i 400 px · per defecte " + CFGD.cardmin + " · més petit = més targetes per fila", 'data-t="cardmin" min="140" max="400" step="5"', cfgGet("cardmin"), "px")
     + row("Marca com a «Nou» durant", "Entre 0 i 60 dies · 0 = desactivat · per defecte 0 · surt ✨ Nou als articles creats fa poc", 'data-t="newDays" min="0" max="60" step="1"', cfgGet("newDays"), "dies")
-    + '</div><div class="cfg"><h3>📷 Fotos</h3><p class="cfn">S\'apliquen a les fotos noves. Les que ja tens no es toquen.</p>'
-    + row("Mida màxima de la foto", "Entre 400 i 1600 px · per defecte " + CFGD.photoMax, 'data-t="photoMax" min="400" max="1600" step="50"', cfgGet("photoMax"), "px")
-    + row("Qualitat de la foto", "Entre 40 i 90 · per defecte " + CFGD.photoQ + " · més qualitat = més espai al núvol", 'data-t="photoQ" min="40" max="90" step="1"', cfgGet("photoQ"), "%")
     + '</div><div class="cfg"><h3>💬 Xat</h3><p class="cfn">So d\'avís quan t\'arriba un missatge amb el xat tancat (amb la pàgina oberta).</p>'
     + row("Volum de l'avís del xat", "Entre 0 i 100 · 0 = en silenci · per defecte " + CFGD.chatVol, 'data-t="chatVol" min="0" max="100" step="1"', cfgGet("chatVol"), "%")
     + '<button type="button" class="wtest" id="cTest">▶ Prova l\'avís</button>'
@@ -3958,13 +3978,6 @@ function chatBeep(force){
 }
 /* el navegador només deixa sonar després d'un toc: es prepara en el primer toc quan l'avís està activat */
 addEventListener("pointerdown", () => { if(cfgGet("chatVol") > 0){ try { chatCtx(); } catch(e){} } }, {passive:true});
-
-/* ---- fotos: mida i qualitat configurables, sempre per sota del límit d'1 MB de Firestore ---- */
-function jpegFit(cv, q){
-  let k = q, u = cv.toDataURL("image/jpeg", k);
-  while(u.length > 900000 && k > .35){ k -= .1; u = cv.toDataURL("image/jpeg", k); }
-  return u;
-}
 
 /* ---- ordres noves de l'assistent ---- */
 function rStats(nt){
