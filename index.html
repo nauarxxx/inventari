@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v3.3">
+<meta name="generator" content="Inventari de casa v3.5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -342,7 +342,7 @@ html{overflow-x:hidden}
 .empty-msg button{margin-top:12px}
 
 /* ---- v2.6: targetes més petites a la vista Imatges ---- */
-body:not(.list) #out .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+body:not(.list) #out .grid{grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:8px}
 @media (min-width:600px){body:not(.list) #out .grid{grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px}}
 body:not(.list) #out .card{border-radius:12px}
 body:not(.list) #out .body{padding:7px 8px 9px;gap:3px}
@@ -685,14 +685,94 @@ details.ccol.solo>summary h3::after{display:none}
 .cffoot{display:flex;gap:10px;justify-content:space-between;padding:10px 14px;border-top:2px solid #ff3b3b;background:#0a0000}
 .cffoot .btn{white-space:nowrap}
 .cffoot .btn.primary{flex:1}
+
+/* ===== v3.4: còpies, vista mòbil/PC, títol centrat ===== */
+.toprow .tl{grid-area:g;justify-self:start;display:flex;align-items:center;gap:8px}
+.toprow .ttl h1{justify-self:center;text-align:center}
+.toprow .ttl #sub{justify-self:center;text-align:center}
+/* interruptor mòbil / PC */
+.vmsw{position:relative;flex:none;width:68px;height:36px;padding:0 4px;border-radius:999px;border:2px solid var(--line);background:#0c0c0c;cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--muted);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.vmsw:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.vmi{position:relative;z-index:1;width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:color .2s}
+.vmk{position:absolute;top:2px;left:2px;width:28px;height:28px;border-radius:50%;background:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.5);transition:transform .25s cubic-bezier(.3,.8,.3,1)}
+.vmsw[data-m="pc"] .vmk{transform:translateX(32px)}
+.vmsw[data-m="mobile"] .vmi:first-child,.vmsw[data-m="pc"] .vmi:nth-child(2){color:var(--accent-ink)}
+@media (prefers-reduced-motion:reduce){.vmk{transition:none}}
+/* vista mòbil dins una finestra de PC */
+html.vm{background:#080808}
+body.vm-mobile{max-width:430px;margin:0 auto;min-height:100vh;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+body.vm-mobile .crfab{left:max(14px,calc(50% - 201px))}
+body.vm-mobile .aifab,body.vm-mobile .totop{right:max(14px,calc(50% - 201px))}
+body.vm-mobile .aipanel{left:max(8px,calc(50% - 207px));right:max(8px,calc(50% - 207px));width:auto}
+body.vm-mobile .fdlg{width:min(430px,calc(100vw - 24px))}
+body.vm-mobile .hdlg[open],body.vm-mobile .chdlg[open],body.vm-mobile .cfdlg[open]{width:min(430px,calc(100vw - 24px))}
+/* avisos per sobre de tot (també de les finestres obertes) */
+.toast[popover]{inset:auto auto calc(150px + env(safe-area-inset-bottom,0px)) 50%;margin:0;border:0;overflow:visible;transform:translateX(-50%)}
+/* botó de còpies a l'encapçalament dels ajustos */
+.bkbtn{flex:none;font:inherit;font-size:14px;font-weight:800;padding:9px 14px;border-radius:999px;border:2px solid #ff3b3b;background:#140000;color:#fff;cursor:pointer;white-space:nowrap}
+.bkbtn:hover{background:#2a0000}
+.bkbtn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.bkbtn .bks{display:none}
+@media (max-width:600px){.bkbtn{padding:8px 11px}.bkbtn .bkl{display:none}.bkbtn .bks{display:inline}}
+/* gestor de còpies (negre i vermell) */
+.bkcreate{display:flex;gap:8px;padding:12px 14px 6px}
+.fdlg .bkcreate input{flex:1;min-width:0;background:#000;border:2px solid #5a1010;color:#fff;border-radius:12px;padding:10px 12px}
+.fdlg .bkcreate input:focus{outline:0;border-color:#ff3b3b;box-shadow:0 0 0 3px rgba(255,59,59,.25)}
+.bkgo{flex:none;font:inherit;font-size:15px;font-weight:800;padding:10px 16px;border-radius:12px;border:0;background:linear-gradient(140deg,#4ae388,#1fbf5b);color:#021a0b;cursor:pointer;box-shadow:0 4px 14px rgba(31,191,91,.35)}
+.bkgo:active:not(:disabled){transform:scale(.97)}
+.bkgo:disabled{opacity:.45;cursor:default}
+.bkgo:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media (max-width:420px){.bkcreate{flex-direction:column}}
+.bkprog{margin:4px 14px 2px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#ffd0d0}
+.bkprog .ibar{border-color:#5a1010;background:#000}
+.bkprog .ibar i{background:linear-gradient(90deg,#1fbf5b,#7ef0c4)}
+.bkscroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px 14px}
+.bklist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.bklist.busy{opacity:.5;pointer-events:none}
+.bki{display:flex;gap:8px;align-items:stretch}
+.bkrow{flex:1;min-width:0;font:inherit;color:#fff;text-align:left;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;border:2px solid #3a0a0a;background:#0d0000;cursor:pointer}
+.bkrow:hover,.bkrow:focus-visible{border-color:#ff3b3b;outline:0}
+.bkd{flex:none;width:40px;height:40px;border-radius:12px;background:#000;border:1px solid #5a1010;display:flex;align-items:center;justify-content:center;font-size:20px}
+.bkt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bkt b{font-size:15px;overflow-wrap:anywhere}
+.bkt b em{font-style:normal;font-size:11px;font-weight:700;color:#ffb4b4;margin-left:4px}
+.bkt small{font-size:12px;color:#c9a0a0}
+.bkr{flex:none;font-size:20px;color:#ff6b6b;font-weight:800}
+.bkdel{flex:none;width:46px;font:inherit;font-size:18px;border-radius:14px;border:2px solid #3a0a0a;background:#0d0000;cursor:pointer;padding:0}
+.bkdel:hover,.bkdel:focus-visible{border-color:#ff3b3b;background:#2a0000;outline:0}
+.bkempty{padding:34px 10px;text-align:center;color:#c9a0a0;font-size:14px}
+.bknote{margin:0;padding:8px 14px 12px;font-size:12px;color:#c9a0a0;border-top:1px solid #4a0000}
+.bkdlg .cftt small{display:block}
+.cfdlg.bkconf[open]{display:block;width:min(440px,calc(100vw - 24px));height:fit-content}
+body.vm-mobile .cfdlg.bkconf[open]{width:min(430px,calc(100vw - 24px))}
+.cfdlg .cform{gap:12px}
+.cfhead h2{white-space:nowrap}
+.cfhead .cftt{flex:0 1 auto;min-width:0}
+.cfhead .bkbtn{margin-left:auto}
+@media (max-width:600px){.cfhead{gap:8px;padding:10px}.cfhead .cfico{width:34px;height:34px;font-size:18px}.cffoot{gap:8px;padding:10px}.cffoot .btn{padding:10px 12px}.bkdlg .cfhead .cftt{flex:1 1 auto}.bkdlg .cfhead h2{white-space:normal}}
+.cfdlg .cform h2{color:#ff6b6b}
+.cfdlg .hcl{background:#120000;border-color:#5a1010;color:#fff}
+.cfdlg .fhint{color:#c9a0a0}
+/* ===== v3.5: so de WALL-E ===== */
+.wtest{align-self:flex-start;font:inherit;font-size:14px;font-weight:800;padding:9px 16px;border-radius:999px;border:2px solid #ff3b3b;background:#140000;color:#fff;cursor:pointer}
+.wtest:hover{background:#2a0000}
+.wtest:active{transform:scale(.97)}
+.wtest:focus-visible{outline:3px solid #fff;outline-offset:2px}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="toprow">
+    <div class="tl">
     <button id="cfgBtn" class="cfgbtn flipbtn" type="button" aria-label="Ajustos" aria-haspopup="dialog" aria-controls="cfdlg" title="Ajustos"><span class="persp"><span class="coin"><span class="face front"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="face back"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></span></span></button>
+    <button id="vmBtn" class="vmsw" type="button" role="switch" aria-checked="false" aria-label="Canvia entre vista mòbil i vista PC" title="Vista mòbil / PC" data-m="pc">
+      <span class="vmi" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span>
+      <span class="vmi" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="12.5" rx="2"/><path d="M8.5 20.5h7M12 16.5v4"/></svg></span>
+      <span class="vmk" aria-hidden="true"></span>
+    </button>
+    </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v3.3</span></h1>
+      <h1>Inventari de casa <span class="ver">v3.5</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -714,7 +794,7 @@ details.ccol.solo>summary h3::after{display:none}
 </header>
 <button id="totop" class="btn totop" type="button" hidden="">↑ Filtres</button>
 <button id="saveBtn" class="btn savebtn" type="button" aria-haspopup="dialog" aria-controls="sdlg">☁️ Connectant…</button>
-<div id="toast" class="toast" role="status" aria-live="polite" hidden=""></div>
+<div id="toast" class="toast" role="status" aria-live="polite" popover="manual" hidden=""></div>
 <button id="aiFab" class="btn aifab flipbtn" type="button" aria-label="Obre l'assistent de productes" aria-expanded="false" aria-controls="aiPanel"><span class="persp"><span class="coin"><span class="face front"><svg viewBox="0 0 64 64" width="38" height="38" fill="currentColor" aria-hidden="true"><rect x="11" y="9" width="17" height="12" rx="5"></rect><rect x="36" y="9" width="17" height="12" rx="5"></rect>
 <circle cx="20" cy="15" r="3.2" fill="var(--accent)"></circle><circle cx="44" cy="15" r="3.2" fill="var(--accent)"></circle>
 <rect x="27" y="13" width="10" height="3" rx="1.5"></rect><rect x="30" y="20" width="4" height="9"></rect>
@@ -907,11 +987,37 @@ details.ccol.solo>summary h3::after{display:none}
   <div class="cfwrap">
     <div class="cfhead">
       <span class="cfico" aria-hidden="true">⚙️</span>
-      <div class="cftt"><h2 id="cfTitle">Ajustos</h2><small>Tots els valors són numèrics · es comparteixen entre dispositius</small></div>
+      <div class="cftt"><h2 id="cfTitle">Ajustos</h2></div>
+      <button type="button" class="bkbtn" id="bkOpen" aria-haspopup="dialog" aria-controls="bkdlg" title="Còpies de seguretat">💾 <span class="bkl">Còpies de seguretat</span><span class="bks">Còpies</span></button>
       <button type="button" class="btn" id="cfClose">Tanca</button>
     </div>
     <div id="cfBody" class="cfbody"></div>
     <div class="cffoot"><button type="button" class="btn" id="cfReset">↺ Per defecte</button><button type="button" class="btn primary" id="cfSave">Desa els ajustos</button></div>
+  </div>
+</dialog>
+<dialog id="bkdlg" class="fdlg cfdlg bkdlg nofit" aria-labelledby="bkTitle">
+  <div class="cfwrap">
+    <div class="cfhead">
+      <span class="cfico" aria-hidden="true">💾</span>
+      <div class="cftt"><h2 id="bkTitle">Còpies de seguretat</h2><small id="bkSub"></small></div>
+      <button type="button" class="btn" id="bkClose">Tanca</button>
+    </div>
+    <div class="bkcreate">
+      <input id="bkName" maxlength="40" placeholder="Nom de la còpia (opcional)" aria-label="Nom de la còpia" autocomplete="off">
+      <button type="button" class="bkgo" id="bkCreate">＋ Crea una còpia</button>
+    </div>
+    <div id="bkProg" class="bkprog" hidden><b id="bkProgT"></b><span class="ibar"><i id="bkProgF"></i></span></div>
+    <div class="bkscroll"><ul id="bkList" class="bklist"></ul></div>
+    <p class="bknote">Una còpia guarda articles, fotos, pendents, zones, ubicacions i ajustos. Toca una còpia per restaurar-la.</p>
+  </div>
+</dialog>
+<dialog id="bkcdlg" class="fdlg cfdlg bkconf nofit" aria-labelledby="bkcTitle">
+  <div class="cform">
+    <h2 id="bkcTitle"></h2>
+    <p class="hcl" id="bkcLabel"></p>
+    <p class="fhint" id="bkcInfo"></p>
+    <p class="xwarn" id="bkcWarn"></p>
+    <div class="factions"><button type="button" class="btn" id="bkcNo">Cancel·la</button><button type="button" class="btn primary" id="bkcYes"></button></div>
   </div>
 </dialog>
 <dialog id="chdlg" class="fdlg chdlg nofit" aria-labelledby="chTitle">
@@ -1067,8 +1173,8 @@ const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c))
 const GOAL = 100; /* objectiu: 100 articles = 100% */
 const pctOf = (n, g) => Math.min(100, Math.round(n / (g || GOAL) * 100));
 /* v3.3: valors per defecte (els de la v3.2) i límits dels ajustos */
-const CFGD = {goal:100, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300};
-const CFGR = {hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000]};
+const CFGD = {goal:100, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000};
+const CFGR = {hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000]};
 function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
 function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
 function goalOf(g, id){ const m = cfgRaw()[g], v = m && typeof m === "object" ? Math.round(+m[id]) : NaN; return v >= 1 && v <= 99999 ? v : CFGD.goal; }
@@ -1575,7 +1681,12 @@ $("pForm").onsubmit = e => {
   setView(view); refreshPend(catId);
 };
 let toastT = null;
-function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(()=>{ t.hidden = true; }, 4500); }
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.hidden = false;
+  try { if(t.showPopover){ if(t.matches(":popover-open")) t.hidePopover(); t.showPopover(); } } catch(e){}
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>{ try { if(t.matches && t.matches(":popover-open")) t.hidePopover(); } catch(e){} t.hidden = true; }, 4500);
+}
 function resetFilters(){
   state.q=""; state.cat="all"; state.loc="all"; state.review=false;
   $("q").value=""; render();
@@ -1779,6 +1890,7 @@ function aiAsk(text){
   aiItems(d, top);
 }
 function aiOpen(open){
+  if(!open && typeof walleStop === "function") walleStop();
   $("aiPanel").hidden = !open; $("aiFab").setAttribute("aria-expanded", String(open));
   if(!open) return;
   if(!$("aiMsgs").children.length){
@@ -2764,8 +2876,8 @@ chatBadge();
    Els ajustos es desen a Firestore (meta/state · camp inv_cfg) i surten a ↶ Desfés.
    ===================================================================== */
 let CHAT_MAX = 300;
-const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat"};
-const cfgSec = k => k === "hold" || k === "dbl" || k === "tap";
+const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E"};
+const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap";
 const cfgDeep = o => o == null ? null : JSON.parse(JSON.stringify(o));
 const fmtSec = ms => String(Math.round(ms / 100) / 10).replace(".", ",") + " s";
 function cfgFlat(o){
@@ -2803,7 +2915,7 @@ function cfgLabels(b, a){
 }
 function cfgClean(o){
   const r = {};
-  ["hold", "dbl", "tap", "histMax", "chatMax"].forEach(k => {
+  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap"].forEach(k => {
     const v = o && o[k];
     if(typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] && v !== CFGD[k]) r[k] = v;
   });
@@ -2827,6 +2939,7 @@ function cfgApply(){
   HIST_MAX = cfgGet("histMax"); CHAT_MAX = cfgGet("chatMax");
   const hm = $("hMaxN"); if(hm) hm.textContent = HIST_MAX;
   document.documentElement.style.setProperty("--hold", cfgGet("hold") + "ms");
+  document.documentElement.style.setProperty("--cols", cfgGet("cols"));
   render();
   if(histLoaded) cloudHist(HIST);
   chatTrim();
@@ -2852,7 +2965,7 @@ function cfgSetLock(lock){
   cfgUnlocked = !lock;
   $("cfgBtn").classList.toggle("flipped", !lock);
   hop($("cfgBtn"));
-  if(!lock) cfgLockT = setTimeout(() => cfgSetLock(true), 6000);
+  if(!lock) cfgLockT = setTimeout(() => cfgSetLock(true), 3000);
 }
 $("cfgBtn").addEventListener("click", () => {
   if(cfgUnlocked){ clearTimeout(cfgLockT); openCfg(); return; }
@@ -2885,12 +2998,22 @@ function cfgRender(){
   h += row("Triple toc (ajustos i assistent)", "Entre 0,4 i 3 s · per defecte " + String(CFGD.tap / 1000).replace(".", ","), 'data-t="tap" min="0.4" max="3" step="0.1"', cfgGet("tap") / 1000, "s");
   h += row("Canvis que guarda ↶ Desfés", "Entre 10 i 500 · per defecte " + CFGD.histMax, 'data-t="histMax" min="10" max="500" step="1"', cfgGet("histMax"), "canvis");
   h += row("Missatges que guarda el xat", "Entre 50 i 1000 · per defecte " + CFGD.chatMax, 'data-t="chatMax" min="50" max="1000" step="1"', cfgGet("chatMax"), "missatges");
+  h += '</div><div class="cfg"><h3>🖼️ Aspecte</h3><p class="cfn">Només afecta la vista Imatges quan es veu en format mòbil.</p>';
+  h += row("Articles per fila (vista Imatges)", "Entre 2 i 6 · per defecte " + CFGD.cols, 'data-t="cols" min="2" max="6" step="1"', cfgGet("cols"), "per fila");
+  h += '</div><div class="cfg"><h3>💾 Còpies de seguretat</h3><p class="cfn">Per crear-ne o restaurar-ne, toca el botó «Còpies de seguretat» de dalt.</p>';
+  h += row("Còpies que es guarden", "Entre 1 i 50 · per defecte " + CFGD.bkMax + " · s'esborra la més antiga", 'data-t="bkMax" min="1" max="50" step="1"', cfgGet("bkMax"), "còpies");
+  h += row("Còpia automàtica cada…", "Entre 0 i 60 dies · 0 = desactivada · per defecte 0", 'data-t="bkAuto" min="0" max="60" step="1"', cfgGet("bkAuto"), "dies");
+  h += '</div><div class="cfg"><h3>🔊 So de WALL-E</h3><p class="cfn">Sona quan obres l\'assistent de productes (no en el mode d\'ordres). Fitxer: <b>Walle.mp3</b>.</p>';
+  h += row("Volum de WALL-E", "Entre 0 i 100 · 0 = en silenci · per defecte " + CFGD.wvol, 'data-t="wvol" min="0" max="100" step="1"', cfgGet("wvol"), "%");
+  h += row("Repetició mínima", "Entre 0,5 i 10 s · per defecte " + String(CFGD.wgap / 1000).replace(".", ","), 'data-t="wgap" min="0.5" max="10" step="0.1"', cfgGet("wgap") / 1000, "s");
+  h += '<button type="button" class="wtest" id="wTest">▶ Prova el so</button>';
   h += '</div><div class="cfg"><h3>📱 Aquest dispositiu</h3><p class="cfn">Vista amb què s\'obre l\'inventari en aquest aparell.</p><div class="cfseg" id="cfView">'
     + [["grid", "▦ Imatges"], ["list", "☰ Llista"], ["check", "☑ Check"]].map(v => '<button type="button" data-v="' + v[0] + '" aria-pressed="' + (view === v[0]) + '">' + v[1] + '</button>').join("")
     + '</div></div>';
   $("cfBody").innerHTML = h;
 }
 $("cfBody").addEventListener("click", e => {
+  if(e.target.closest("#wTest")){ walleSay(true); return; }
   const b = e.target.closest("#cfView button"); if(!b) return;
   setView(b.dataset.v);
   $("cfView").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === view)));
@@ -2926,31 +3049,6 @@ $("cfReset").onclick = () => {
 
 /* ---- 🔴 assistent d'ordres: el robot es gira amb 3 tocs ràpids ---- */
 let adminOn = false;
-const aiTaps = [];
-function adminOpen(){
-  if(!$("aiPanel").hidden) aiOpen(false);
-  adminOn = true;
-  $("aiFab").classList.add("flipped"); hop($("aiFab"));
-  $("aiFab").setAttribute("aria-label", "Tanca l'assistent d'ordres");
-  $("rPanel").hidden = false;
-  if(!$("rMsgs").children.length) rGreet();
-  if(!isTouch) $("rIn").focus();
-}
-function adminClose(){
-  if(!adminOn) return;
-  adminOn = false;
-  $("rPanel").hidden = true;
-  $("aiFab").classList.remove("flipped"); hop($("aiFab"));
-  $("aiFab").setAttribute("aria-label", "Obre l'assistent de productes");
-}
-$("aiFab").onclick = () => {
-  if(adminOn){ adminClose(); return; }
-  const now = Date.now(), win = cfgGet("tap");
-  while(aiTaps.length && now - aiTaps[0].t > win) aiTaps.shift();
-  aiTaps.push({t:now, closed:$("aiPanel").hidden});
-  if(aiTaps.length >= 3 && aiTaps[aiTaps.length - 3].closed){ aiTaps.length = 0; adminOpen(); return; }
-  aiOpen($("aiPanel").hidden);
-};
 $("rClose").onclick = adminClose;
 $("rPanel").addEventListener("keydown", e => { if(e.key === "Escape"){ e.stopPropagation(); adminClose(); } });
 $("rIn").addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); $("rForm").requestSubmit(); } });
@@ -3051,7 +3149,7 @@ const itemDesc = c => qtyBadge(c.qty) + " · " + zonesTxt(c) + " · 📍 " + loc
 /* ---- ordres ---- */
 function rHelp(nt){
   if(!/^(?:ajuda|help|ordres|comandes)\b|que puc fer|que saps fer|que pots fer|com funciones/.test(nt)) return false;
-  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• posa l'objectiu de Cunit a 150\n• posa l'objectiu de la zona Cuina a 120\n• posa l'objectiu de totes les ubicacions a 200\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• vista llista (en aquest dispositiu)\n• restaura els ajustos\n• quins són els ajustos?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
+  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• posa l'objectiu de Cunit a 150\n• posa l'objectiu de la zona Cuina a 120\n• posa l'objectiu de totes les ubicacions a 200\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• vista llista (en aquest dispositiu)\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
   return true;
 }
 function rShow(nt){
@@ -3059,7 +3157,9 @@ function rShow(nt){
   rMsg("bot", "⚙️ Ajustos actuals\n\n📍 Ubicacions: " + (LOCS.map(l => l + " " + goalLoc(l)).join(" · ") || "—")
     + "\n🏠 Zones: " + CATS.map(z => z.label + " " + goalCat(z.id)).join(" · ")
     + "\n\n⏱️ Mantenir premut: " + fmtSec(cfgGet("hold")) + " · Doble toc: " + fmtSec(cfgGet("dbl")) + " · Triple toc: " + fmtSec(cfgGet("tap"))
-    + "\n↶ Desfés guarda " + cfgGet("histMax") + " canvis · 💬 el xat guarda " + cfgGet("chatMax") + " missatges");
+    + "\n↶ Desfés guarda " + cfgGet("histMax") + " canvis · 💬 el xat guarda " + cfgGet("chatMax") + " missatges"
+    + "\n🔊 Volum de WALL-E: " + cfgGet("wvol") + "%"
+    + "\n💾 Còpies que es guarden: " + cfgGet("bkMax") + " · automàtica cada " + (cfgGet("bkAuto") ? cfgGet("bkAuto") + " dies" : "— (desactivada)") + " · 🖼️ " + cfgGet("cols") + " articles per fila");
   return true;
 }
 function rReset(nt){
@@ -3096,9 +3196,13 @@ function rGoal(nt, t0){
 }
 function rTimes(nt){
   let k, name;
-  if(/triple\s+(?:toc|clic|click)/.test(nt)){ k = "tap"; name = "el temps del triple toc"; }
+  if(/wall[\s-]?e|\bvolum\b/.test(nt)){ k = "wvol"; name = "el volum de WALL-E"; }
+  else if(/triple\s+(?:toc|clic|click)/.test(nt)){ k = "tap"; name = "el temps del triple toc"; }
   else if(/doble\s+(?:toc|clic|click)/.test(nt)){ k = "dbl"; name = "el temps del doble toc"; }
   else if(/mantenir|mantingui|mantenint|premut/.test(nt)){ k = "hold"; name = "el temps de mantenir premut"; }
+  else if(/columna|columnes|per fila/.test(nt)){ k = "cols"; name = "els articles per fila a la vista Imatges"; }
+  else if(/\bcopi(?:a|es)\b|backup/.test(nt) && /autom|cada|dies/.test(nt)){ k = "bkAuto"; name = "els dies entre còpies automàtiques"; }
+  else if(/\bcopi(?:a|es)\b|backup/.test(nt)){ k = "bkMax"; name = "les còpies de seguretat que es guarden"; }
   else if(/historial|desfes/.test(nt) && /\d/.test(nt)){ k = "histMax"; name = "els canvis que guarda Desfés"; }
   else if(/\bxat\b|missatges/.test(nt) && /\d/.test(nt)){ k = "chatMax"; name = "els missatges que guarda el xat"; }
   else return false;
@@ -3264,12 +3368,348 @@ function rAsk(text){
   rMsg("me", text);
   const t0 = text.trim(), n0 = norm(t0).replace(/['’`´]/g, " "), nt = rNorm(t0);
   if(/^(?:hola|bon dia|bones|ei|hey|salut)\b/.test(nt) && nt.split(" ").length < 4){ rMsg("bot", "Hola! Digues-me què vols canviar. Si t'ho vols mirar, escriu «què puc fer?»."); return; }
-  const H = [rHelp, rShow, rReset, rGoal, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
+  const H = [rHelp, rShow, rReset, rGoal, rBackup, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
   for(const h of H){ if(h(nt, t0, n0) !== false) return; }
   const d = rMsg("bot", "No t'he entès 🤔 Prova amb una ordre com les d'aquests exemples:");
   rSuggest(d, ["Què puc fer?", "Quins són els ajustos?", "Posa l'objectiu de Cunit a 150"]);
 }
 
+
+/* =====================================================================
+   v3.4 · Còpies de seguretat, vista mòbil/PC i monedes en 4 tocs
+   bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
+   bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
+   ===================================================================== */
+const APP_VER = "3.5";
+const BK_SIZE = 600000;
+let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null, phLoaded = false;
+const __cloudPhotos34 = cloudPhotos;
+cloudPhotos = function(c){ phLoaded = true; __cloudPhotos34(c); };
+const bkWhen = ts => { const d = new Date(ts); return d.toLocaleDateString("ca", {day:"2-digit", month:"2-digit", year:"numeric"}) + " " + d.toLocaleTimeString("ca", {hour:"2-digit", minute:"2-digit"}); };
+function bkShow(t, p){ $("bkProg").hidden = false; $("bkProgT").textContent = t; $("bkProgF").style.width = Math.round((p || 0) * 100) + "%"; }
+function bkHide(ms){ setTimeout(() => { if(!bkBusy) $("bkProg").hidden = true; }, ms || 0); }
+function bkLock(){ $("bkCreate").disabled = bkBusy; $("bkName").disabled = bkBusy; $("bkList").classList.toggle("busy", bkBusy); }
+function bkPack(entries){
+  const out = []; let cur = [], size = 0;
+  entries.forEach(e => {
+    const s = JSON.stringify(e[1]).length + String(e[0]).length + 12;
+    if(cur.length && size + s > BK_SIZE){ out.push(cur); cur = []; size = 0; }
+    cur.push(e); size += s;
+  });
+  if(cur.length) out.push(cur);
+  return out;
+}
+/* Crea la còpia a partir de l'estat que hi ha ara a la memòria (articles, fotos, pendents, zones, ubicacions i ajustos) */
+async function bkMake(name, o){
+  o = o || {};
+  const items = [...RAW].map(([id, d]) => Object.assign({}, deep(d), {id}));
+  if(!phLoaded) throw {code:"photos-loading"};
+  const phs = new Map();
+  /* si algun article apunta a una foto que ja no existeix, es treu la referència perquè la còpia sigui coherent */
+  items.forEach(c => { if(Array.isArray(c.ph)) c.ph = c.ph.filter(p => { const u = PH.get(p); if(u) phs.set(p, u); return !!u; }); });
+  const keys = {};
+  KEYS_CLOUD.forEach(k => { keys[k] = STATE[k] === undefined ? (k === "inv_cats" || k === "inv_locs" ? [] : {}) : deep(STATE[k]); });
+  const bid = cloud.newId(), ops = [], chunks = [];
+  bkPack(items.map(c => [c.id, c])).forEach((g, n) => { const id = bid + "_i" + n; chunks.push(id); ops.push({t:"set", col:"bkdata", id, data:{b:bid, k:"i", n, v:g.map(e => e[1])}}); });
+  bkPack([...phs]).forEach((g, n) => { const id = bid + "_p" + n; chunks.push(id); const v = {}; g.forEach(e => { v[e[0]] = e[1]; }); ops.push({t:"set", col:"bkdata", id, data:{b:bid, k:"p", n, v}}); });
+  const meta = {ts:Date.now(), name:name || "", who:cloudUser.email, ver:APP_VER, nItems:items.length, nPh:phs.size, keys, chunks, kind:o.kind || "manual"};
+  ops.push({t:"set", col:"bkmeta", id:bid, data:meta});
+  await cloud.batch(ops, o.prog);
+  return Object.assign({id:bid}, meta);
+}
+async function bkPrune(fresh, protect){
+  const max = cfgGet("bkMax");
+  const all = [fresh].concat(BK.filter(b => b.id !== fresh.id)).sort((a, b) => b.ts - a.ts);
+  if(all.length <= max) return;
+  const del = all.slice(max).filter(b => b.id !== protect && b.id !== fresh.id);
+  if(!del.length) return;
+  const ops = [];
+  del.forEach(b => { (b.chunks || []).forEach(id => ops.push({t:"del", col:"bkdata", id})); ops.push({t:"del", col:"bkmeta", id:b.id}); });
+  await cloud.batch(ops);
+}
+const bkErrTxt = e => e && e.code === "photos-loading" ? "Les fotos encara s'estan carregant. Torna-ho a provar d'aquí uns segons." : e && e.code === "backup-corrupt" ? "La còpia està incompleta o trencada: no s'ha tocat res." : "No s'ha pogut completar (" + (e && e.code || "error") + ").";
+async function bkCreate(name, o){
+  o = o || {};
+  if(bkBusy) return null;
+  if(!cloudUser || !window.cloud){ toast("Cal tenir la sessió iniciada."); return null; }
+  if(!navigator.onLine){ toast("Cal connexió a internet per crear una còpia."); return null; }
+  if(!cloudLoaded || itemsCache){ toast("Espera que s'acabi de carregar l'inventari."); return null; }
+  bkBusy = true; bkLock();
+  try {
+    bkShow("Creant la còpia…", .02);
+    const b = await bkMake(name, {kind:o.kind, prog:(d, t) => bkShow("Pujant la còpia… " + d + " / " + t, d / t)});
+    bkShow("Netejant còpies velles…", 1); await bkPrune(b, o.protect);
+    bkShow("✓ Còpia creada", 1);
+    if(!o.quiet) toast("✓ Còpia creada: " + b.nItems + " articles i " + b.nPh + " fotos.");
+    return b;
+  } catch(e){ console.error(e); toast("⚠️ " + bkErrTxt(e)); return null; }
+  finally { bkBusy = false; bkLock(); bkHide(1800); }
+}
+async function bkDelete(id){
+  const b = BK.find(x => x.id === id); if(!b || bkBusy) return;
+  bkBusy = true; bkLock();
+  try {
+    const ops = (b.chunks || []).map(c => ({t:"del", col:"bkdata", id:c})); ops.push({t:"del", col:"bkmeta", id});
+    await cloud.batch(ops); toast("🗑️ Còpia eliminada.");
+  } catch(e){ cloudErr(e); }
+  finally { bkBusy = false; bkLock(); }
+}
+async function bkRestore(id){
+  const b = BK.find(x => x.id === id); if(!b || bkBusy) return;
+  if(!cloudUser || !window.cloud){ toast("Cal tenir la sessió iniciada."); return; }
+  if(!navigator.onLine){ toast("Cal connexió a internet per restaurar."); return; }
+  if(!cloudLoaded || itemsCache){ toast("Espera que s'acabi de carregar l'inventari."); return; }
+  bkBusy = true; importing = true; bkLock();
+  const label = b.name || "còpia del " + bkWhen(b.ts);
+  try {
+    bkShow("Llegint la còpia…", .03);
+    const docs = await cloud.getBackup(id);
+    const byId = new Map(docs.map(d => [d.id, d.data]));
+    const itemsArr = [], phObj = {}; let okc = true;
+    (b.chunks || []).forEach(cid => { const d = byId.get(cid); if(!d){ okc = false; return; } if(d.k === "i") itemsArr.push(...(d.v || [])); else Object.assign(phObj, d.v || {}); });
+    if(!okc || itemsArr.length !== b.nItems || Object.keys(phObj).length !== b.nPh || itemsArr.some(c => !c.id || (c.ph || []).some(p => !phObj[p]))) throw {code:"backup-corrupt"};
+    /* còpia automàtica de l'estat actual, per poder tornar enrere */
+    bkShow("Guardant l'estat actual (còpia de seguretat)…", .1);
+    const safe = await bkMake("Abans de restaurar «" + label + "»", {kind:"safe"});
+    await bkPrune(safe, id);
+    /* aplica la còpia: primer s'escriu tot el que cal, després s'esborra el que sobra */
+    const owner = {}; itemsArr.forEach(c => (c.ph || []).forEach(p => { owner[p] = c.id; }));
+    const ops = [], keep = new Set(itemsArr.map(c => c.id));
+    itemsArr.forEach(c => { const o = Object.assign({}, c); delete o.id; ops.push({t:"set", col:"items", id:c.id, data:o}); });
+    Object.keys(phObj).forEach(pid => { if(PH.get(pid) !== phObj[pid]) ops.push({t:"set", col:"photos", id:pid, data:{d:phObj[pid], it:owner[pid] || ""}}); });
+    const meta = {}; KEYS_CLOUD.forEach(k => { const v = b.keys && b.keys[k]; meta[k] = v != null ? v : (k === "inv_cats" || k === "inv_locs" ? [] : {}); });
+    ops.push({t:"set", col:"meta", id:"state", data:meta});
+    [...RAW.keys()].filter(i => !keep.has(i)).forEach(i => ops.push({t:"del", col:"items", id:i}));
+    [...PH.keys()].filter(p => !(p in phObj)).forEach(p => ops.push({t:"del", col:"photos", id:p}));
+    HIST.forEach(h => ops.push({t:"del", col:"hist", id:h.id}));
+    await cloud.batch(ops, (d, t) => bkShow("Restaurant… " + d + " / " + t, .15 + .85 * d / t));
+    bkShow("✓ Còpia restaurada", 1);
+    toast("✓ Còpia restaurada: " + b.nItems + " articles i " + b.nPh + " fotos. Ja es veu a tots els dispositius.");
+  } catch(e){ console.error(e); toast("⚠️ " + bkErrTxt(e)); bkShow("⚠️ " + bkErrTxt(e), 0); }
+  finally { bkBusy = false; importing = false; bkLock(); bkHide(2500); scheduleRebuild(); }
+}
+function bkAutoCheck(){
+  if(bkAutoDone || !cloudUser || !window.cloud || !bkLoaded || !cloudLoaded || itemsCache || !DATA.length) return;
+  const days = cfgGet("bkAuto"); if(days <= 0) return;
+  bkAutoDone = true;
+  const due = () => Date.now() - (BK.length ? BK[0].ts : 0) >= days * 864e5;
+  if(!due()) return;
+  setTimeout(() => { if(due() && !bkBusy) bkCreate("Còpia automàtica", {kind:"auto", quiet:true}); }, 1500 + Math.random() * 4000);
+}
+function cloudBk(docs){
+  BK = docs.filter(d => d && d.ts && Array.isArray(d.chunks)).sort((a, b) => b.ts - a.ts);
+  bkLoaded = true;
+  if($("bkdlg").open) bkRender();
+  bkAutoCheck();
+}
+function bkRender(){
+  const ul = $("bkList"), max = cfgGet("bkMax");
+  $("bkSub").textContent = bkLoaded ? BK.length + " de " + max + " còpies" : "Carregant…";
+  if(!bkLoaded){ ul.innerHTML = '<li class="bkempty">Carregant les còpies…</li>'; return; }
+  if(!BK.length){ ul.innerHTML = '<li class="bkempty">Encara no hi ha cap còpia.<br>Crea\'n una amb el botó verd.</li>'; return; }
+  ul.innerHTML = BK.map(b => {
+    const tag = b.kind === "safe" ? ' <em>🛟 de seguretat</em>' : b.kind === "auto" ? ' <em>⏰ automàtica</em>' : "";
+    return '<li class="bki"><button type="button" class="bkrow" data-id="' + esc(b.id) + '"><span class="bkd" aria-hidden="true">💾</span><span class="bkt"><b>' + esc(b.name || "Còpia de seguretat") + tag + '</b>'
+      + '<small>' + esc(bkWhen(b.ts)) + ' · ' + b.nItems + ' articles · ' + b.nPh + ' fotos · ' + esc(whoName(b.who)) + (b.ver ? ' · v' + esc(b.ver) : '') + '</small></span><span class="bkr" aria-hidden="true">↶</span></button>'
+      + '<button type="button" class="bkdel" data-id="' + esc(b.id) + '" aria-label="Elimina la còpia" title="Elimina la còpia">🗑️</button></li>';
+  }).join("");
+}
+$("bkOpen").onclick = () => { bkRender(); bkLock(); $("bkdlg").showModal(); };
+$("bkClose").onclick = () => $("bkdlg").close();
+$("bkCreate").onclick = async () => { const b = await bkCreate($("bkName").value.trim().replace(/\s+/g, " ")); if(b) $("bkName").value = ""; };
+$("bkName").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); $("bkCreate").click(); } });
+$("bkList").addEventListener("click", e => {
+  if(bkBusy) return;
+  const d = e.target.closest(".bkdel"), r = e.target.closest(".bkrow"), el = d || r; if(!el) return;
+  const b = BK.find(x => x.id === el.dataset.id); if(!b) return;
+  bkConfirm = {id:b.id, mode:d ? "del" : "restore"};
+  const info = b.nItems + " articles · " + b.nPh + " fotos · " + bkWhen(b.ts) + " · " + whoName(b.who);
+  $("bkcLabel").textContent = b.name || "Còpia de seguretat";
+  $("bkcInfo").textContent = info;
+  if(d){
+    $("bkcTitle").textContent = "Eliminar aquesta còpia?";
+    $("bkcWarn").textContent = "S'esborrarà de manera definitiva. No es pot desfer.";
+    $("bkcYes").textContent = "🗑️ Sí, elimina";
+  } else {
+    $("bkcTitle").textContent = "Restaurar aquesta còpia?";
+    $("bkcWarn").textContent = "⚠️ Es substituiran TOTS els articles, fotos, pendents, zones, ubicacions i ajustos actuals per els d'aquesta còpia, també als altres dispositius. L'historial de ↶ Desfés s'esborrarà. Abans de restaurar es crea una còpia automàtica de l'estat actual, per poder tornar enrere.";
+    $("bkcYes").textContent = "↶ Sí, restaura";
+  }
+  $("bkcdlg").showModal();
+});
+$("bkcNo").onclick = () => { bkConfirm = null; $("bkcdlg").close(); };
+$("bkcYes").onclick = async () => {
+  const c = bkConfirm; bkConfirm = null; $("bkcdlg").close(); if(!c) return;
+  if(c.mode === "del") await bkDelete(c.id); else await bkRestore(c.id);
+};
+const __cloudAuth34 = cloudAuth;
+cloudAuth = function(u){ BK = []; bkLoaded = false; bkAutoDone = false; phLoaded = false; aiDisarm(); if($("bkdlg").open) $("bkdlg").close(); __cloudAuth34(u); };
+const __cloudItems34 = cloudItems;
+cloudItems = function(d, m){ __cloudItems34(d, m); bkAutoCheck(); };
+const __cfgApply34 = cfgApply;
+cfgApply = function(){ __cfgApply34(); if($("bkdlg").open) bkRender(); bkAutoCheck(); };
+
+/* ---- 🔴 assistent d'ordres: 3 tocs giren el robot, el 4t obre el panell (si no, torna sol als 3 s) ---- */
+let aiArmed = false, aiArmT = 0, aiOpenT = 0;
+const aiTaps = [];
+function aiArm(){
+  aiArmed = true; clearTimeout(aiArmT);
+  $("aiFab").classList.add("flipped"); hop($("aiFab"));
+  $("aiFab").setAttribute("aria-label", "Obre l'assistent d'ordres (toca una altra vegada)");
+  aiArmT = setTimeout(aiDisarm, 3000);
+}
+function aiDisarm(){
+  clearTimeout(aiArmT); clearTimeout(aiOpenT); aiTaps.length = 0;
+  if(!aiArmed) return;
+  aiArmed = false;
+  if(!adminOn){ $("aiFab").classList.remove("flipped"); hop($("aiFab")); $("aiFab").setAttribute("aria-label", "Obre l'assistent de productes"); }
+}
+function adminOpen(){
+  clearTimeout(aiArmT); aiArmed = false;
+  if(!$("aiPanel").hidden) aiOpen(false);
+  adminOn = true;
+  $("aiFab").classList.add("flipped");
+  $("aiFab").setAttribute("aria-label", "Tanca l'assistent d'ordres");
+  $("rPanel").hidden = false;
+  if(!$("rMsgs").children.length) rGreet();
+  if(!isTouch) $("rIn").focus();
+}
+function adminClose(){
+  aiDisarm();
+  if(!adminOn) return;
+  adminOn = false;
+  $("rPanel").hidden = true;
+  $("aiFab").classList.remove("flipped"); hop($("aiFab"));
+  $("aiFab").setAttribute("aria-label", "Obre l'assistent de productes");
+}
+$("aiFab").onclick = () => {
+  if(adminOn){ adminClose(); return; }
+  if(aiArmed){ adminOpen(); return; }               /* 4t toc */
+  if(!$("aiPanel").hidden){ clearTimeout(aiOpenT); aiTaps.length = 0; aiOpen(false); return; }
+  const now = Date.now(), win = cfgGet("tap");
+  while(aiTaps.length && now - aiTaps[0] > win) aiTaps.shift();
+  aiTaps.push(now); clearTimeout(aiOpenT); walleWarm();
+  if(aiTaps.length >= 3){ aiTaps.length = 0; aiArm(); return; }  /* 3 tocs: gira la moneda */
+  aiOpenT = setTimeout(() => { aiTaps.length = 0; aiOpen(true); walleSay(); }, 450);   /* toc simple: assistent normal */
+};
+
+/* ---- ordres noves per a l'assistent ---- */
+function rBackup(nt, t0, n0){
+  if(/^(?:fes|fer|crea|crear|genera|vull)\s+(?:me\s+)?(?:una\s+)?(?:nova\s+)?(?:copia|backup)\b/.test(n0)){
+    if(needSession()) return true;
+    rConfirm("Creo una còpia de seguretat de tot l'inventari (" + DATA.filter(live).length + " articles i " + PH.size + " fotos). Confirmes?", () => {
+      bkCreate("Còpia de l'assistent", {quiet:true}).then(b => rMsg("bot", b ? "✓ Còpia creada: " + b.nItems + " articles i " + b.nPh + " fotos." : "⚠️ No s'ha pogut crear la còpia."));
+      return "⏳ Creant la còpia…";
+    });
+    return true;
+  }
+  if(/(quines|mostra|ensenya|llista|veure).*(copies|backups|copia)/.test(nt)){
+    if(!bkLoaded){ rMsg("bot", "Encara estic carregant les còpies. Torna-ho a provar en un moment."); return true; }
+    rMsg("bot", BK.length ? "💾 Còpies de seguretat (" + BK.length + " de " + cfgGet("bkMax") + "):\n\n" + BK.slice(0, 10).map(b => "• " + bkWhen(b.ts) + " · " + (b.name || "Còpia de seguretat") + " · " + b.nItems + " articles").join("\n") + "\n\nPer restaurar-ne una, obre ⚙️ → 💾 Còpies de seguretat." : "Encara no hi ha cap còpia. Digues «fes una còpia de seguretat».");
+    return true;
+  }
+  return false;
+}
+
+/* ---- 📱🖥️ vista mòbil / vista PC ---- */
+const isPhone = isTouch && Math.min(screen.width, screen.height) < 768;
+const MQL = [];
+function mqCollect(){
+  if(MQL.length) return;
+  for(const sh of document.styleSheets){ let rs; try { rs = sh.cssRules; } catch(e){ continue; } for(const r of rs){ if(typeof CSSMediaRule !== "undefined" && r instanceof CSSMediaRule) MQL.push({r, o:r.media.mediaText}); } }
+}
+function mqEval(t, w){
+  let res = false;
+  for(const p of t.split(",")){
+    if(/prefers|pointer|hover|orientation|print|resolution|height/.test(p)) return null;
+    const cs = [...p.matchAll(/\((max|min)-width:\s*([\d.]+)px\)/g)];
+    if(!cs.length) return null;
+    if(cs.every(c => c[1] === "max" ? w <= +c[2] : w >= +c[2])) res = true;
+  }
+  return res;
+}
+function mqForce(w){ mqCollect(); MQL.forEach(m => { const v = mqEval(m.o, w); m.r.media.mediaText = v === null ? m.o : (v ? "all" : "not all"); }); }
+function mqReset(){ MQL.forEach(m => { m.r.media.mediaText = m.o; }); }
+const vmSaved = () => { const v = load("inv_vm", "auto"); return v === "mobile" || v === "pc" ? v : "auto"; };
+const vmNatural = () => isPhone ? "mobile" : "pc";
+const vmEff = () => { const s = vmSaved(); return s === "auto" ? vmNatural() : s; };
+function vmApply(){
+  const mode = vmEff(), meta = document.querySelector('meta[name="viewport"]');
+  const base = "width=device-width, initial-scale=1, viewport-fit=cover";
+  mqReset(); document.body.classList.remove("vm-mobile"); document.documentElement.classList.remove("vm");
+  if(isPhone){ meta.setAttribute("content", mode === "pc" ? "width=1280, viewport-fit=cover" : base); }
+  else {
+    meta.setAttribute("content", base);
+    if(mode === "mobile"){ document.body.classList.add("vm-mobile"); document.documentElement.classList.add("vm"); mqForce(430); }
+  }
+  const b = $("vmBtn"); b.dataset.m = mode; b.setAttribute("aria-checked", String(mode === "pc"));
+  b.title = mode === "pc" ? "Vista PC · toca per passar a vista mòbil" : "Vista mòbil · toca per passar a vista PC";
+}
+$("vmBtn").onclick = () => {
+  const next = vmEff() === "pc" ? "mobile" : "pc";
+  store("inv_vm", next === vmNatural() ? "auto" : next);
+  vmApply();
+  if(!isPhone && next === "pc" && innerWidth < 900) toast("La finestra és molt estreta: amplia-la per veure bé la vista PC.");
+  else toast(next === "pc" ? "🖥️ Vista PC" : "📱 Vista mòbil");
+};
+vmApply();
+
+/* =====================================================================
+   v3.5 · So de WALL-E en obrir l'assistent de productes
+   Fitxer: «Walle.mp3» (al costat de l'index.html, amb la W majúscula).
+   Si no es pot carregar, sona un so robòtic de reserva.
+   ===================================================================== */
+const WALLE_SRC = "Walle.mp3";
+let wAudio = null, wBad = false, wLast = 0, wCtx = null;
+function walleWarm(){
+  /* es crea dins d'un toc de l'usuari, perquè el navegador deixi sonar després */
+  if(wAudio || wBad) return;
+  try {
+    wAudio = new Audio(WALLE_SRC); wAudio.preload = "auto"; wAudio.playsInline = true;
+    wAudio.addEventListener("error", () => { wBad = true; });
+    wAudio.load();
+  } catch(e){ wBad = true; wAudio = null; }
+}
+function walleVol(){ return Math.max(0, Math.min(1, cfgGet("wvol") / 100)); }
+function walleStop(){ try { if(wAudio){ wAudio.pause(); wAudio.currentTime = 0; } } catch(e){} }
+/* so robòtic de reserva («WAL-LEE»), fet amb Web Audio: sense fitxers */
+function walleSynth(vol){
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+    wCtx = wCtx || new AC(); if(wCtx.state === "suspended") wCtx.resume();
+    const t0 = wCtx.currentTime + .02, g = wCtx.createGain(); g.connect(wCtx.destination);
+    g.gain.setValueAtTime(0, t0);
+    const note = (f0, f1, t, d, type) => {
+      const o = wCtx.createOscillator(), e = wCtx.createGain(), bp = wCtx.createBiquadFilter();
+      o.type = type || "sawtooth"; o.frequency.setValueAtTime(f0, t0 + t); o.frequency.exponentialRampToValueAtTime(f1, t0 + t + d);
+      bp.type = "bandpass"; bp.frequency.value = 1100; bp.Q.value = 2.2;
+      e.gain.setValueAtTime(0, t0 + t); e.gain.linearRampToValueAtTime(vol * .55, t0 + t + .03); e.gain.exponentialRampToValueAtTime(.0001, t0 + t + d);
+      o.connect(bp); bp.connect(e); e.connect(g); o.start(t0 + t); o.stop(t0 + t + d + .05);
+    };
+    g.gain.setValueAtTime(1, t0);
+    note(210, 330, 0, .22);          /* WAL */
+    note(330, 520, .22, .12, "square");
+    note(520, 300, .36, .34);        /* -LEE */
+    note(300, 420, .36, .34, "triangle");
+  } catch(e){}
+}
+function walleSay(force){
+  const v = walleVol();
+  if(v <= 0){ if(force) toast("El volum de WALL-E està a 0."); return; }
+  const now = Date.now();
+  if(!force && now - wLast < cfgGet("wgap")) return;
+  wLast = now;
+  walleWarm();
+  if(!wAudio || wBad){ walleSynth(v); return; }
+  try {
+    wAudio.pause(); wAudio.currentTime = 0; wAudio.volume = v;
+    const p = wAudio.play();
+    if(p && p.catch) p.catch(err => {
+      /* el navegador ha bloquejat el so: no es fa res. Si el fitxer no existeix o no es pot llegir: so de reserva */
+      if(err && err.name !== "NotAllowedError" && err.name !== "AbortError"){ wBad = true; walleSynth(v); }
+    });
+  } catch(e){ wBad = true; walleSynth(v); }
+}
 
 gate("wait", "Connectant…");
 cloudSetStatus();
@@ -3302,6 +3742,7 @@ try {
     signIn(){ const p = new A.GoogleAuthProvider(); p.setCustomParameters({prompt: "select_account"}); return A.signInWithPopup(auth, p); },
     signOut(){ return A.signOut(auth); },
     newId(){ return F.doc(F.collection(db, "items")).id; },
+    getBackup(bid){ return F.getDocs(F.query(F.collection(db, "bkdata"), F.where("b", "==", bid))).then(s => s.docs.map(d => ({id: d.id, data: d.data()}))); },
     async batch(ops, onProg){
       let b = F.writeBatch(db), n = 0, bytes = 0, done = 0;
       const flush = async () => { if(!n) return; const k = n; await b.commit(); done += k; if(onProg) onProg(done, ops.length); b = F.writeBatch(db); n = 0; bytes = 0; };
@@ -3325,6 +3766,7 @@ try {
     unsubs.push(F.onSnapshot(F.collection(db, "photos"),
       s => cloudPhotos(s.docChanges().map(c => ({type: c.type, id: c.doc.id, data: c.type === "removed" ? null : c.doc.data()}))), err));
     unsubs.push(F.onSnapshot(ref("meta", "state"), s => cloudMeta(s.exists() ? s.data() : null), err));
+    unsubs.push(F.onSnapshot(F.query(F.collection(db, "bkmeta"), F.orderBy("ts", "desc")), s => cloudBk(s.docs.map(d => Object.assign({id: d.id}, d.data()))), err));
     unsubs.push(F.onSnapshot(F.query(F.collection(db, "hist"), F.orderBy("ts", "desc")), s => cloudHist(s.docs.map(d => Object.assign({id: d.id}, d.data()))), err));
     unsubs.push(F.onSnapshot(F.query(F.collection(db, "chat"), F.orderBy("ts", "desc"), F.limit(1100)), {includeMetadataChanges: true},
       s => cloudChat(s.docs.map(d => Object.assign({id: d.id}, d.data(), {pending: d.metadata.hasPendingWrites}))), err));
