@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v3.9">
+<meta name="generator" content="Inventari de casa v4.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -15,31 +15,31 @@
 :root{
   color-scheme:dark;
   --bg:#000000; --surface:#0c0c0c; --surface2:#181818; --ink:#ffffff; --muted:#c2c2c2; --line:#3a3a3a;
-  --accent:#4fe3d2; --accent-ink:#021a17;
+  --accent:#4fe3d2; --accent-ink:#021a17; --accent-rgb:79,227,210; --accent-hi:#8af7eb; --accent-lo:#2fc9b7; --newc:#e5252a;
   --ok:#7ef0c4; --conf:#ffd166; --sin:#ff8a7a; --pend:#ffb86b;
   --badge-bg:#ffffff; --badge-ink:#000000;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
-html{scroll-padding-top:env(safe-area-inset-top,0px);background:#000}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.4;-webkit-text-size-adjust:100%}
-.top{background:var(--bg);padding:12px 14px 8px;border-bottom:2px solid var(--line)}
+.top{background:var(--bg);padding:12px 14px 8px}
 .top h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
 .top p{margin:2px 0 10px;color:var(--muted);font-size:14px}
 .search{width:100%;font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
 .search::placeholder{color:var(--muted)}
 .locs{display:flex;gap:8px;margin:0 0 10px;flex-wrap:wrap}
-.loc-btn{flex:1 1 0;min-width:0;font:inherit;font-size:15px;font-weight:700;padding:10px 12px;border-radius:999px;border:2px solid var(--line);background:radial-gradient(120% 140% at 0% 0%,#1d2a2a 0%,var(--surface2) 55%);color:var(--ink);cursor:pointer;line-height:1.2;display:flex;align-items:center;gap:10px;text-align:left;transition:border-color .2s,box-shadow .2s}
+.loc-btn{flex:1 1 0;min-width:0;font:inherit;font-size:15px;font-weight:700;padding:10px 12px;border-radius:999px;border:2px solid var(--line);background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--accent) 12%,#181818) 0%,var(--surface2) 55%);color:var(--ink);cursor:pointer;line-height:1.2;display:flex;align-items:center;gap:10px;text-align:left;transition:border-color .2s,box-shadow .2s}
 .loc-btn .lname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .loc-btn .n{color:var(--muted);font-weight:700;font-size:13px;background:#000;border:1px solid var(--line);border-radius:999px;padding:2px 9px;flex:none}
-.globe{width:34px;height:34px;flex:none;border-radius:50%;position:relative;overflow:hidden;background:radial-gradient(circle at 32% 30%,#7ff5e8 0%,#27a99b 45%,#0b4740 100%);box-shadow:inset -4px -5px 8px rgba(0,0,0,.55),0 0 0 2px rgba(79,227,210,.25)}
+.globe{width:34px;height:34px;flex:none;border-radius:50%;position:relative;overflow:hidden;background:radial-gradient(circle at 32% 30%,var(--accent-hi) 0%,color-mix(in srgb,var(--accent) 70%,#000) 45%,color-mix(in srgb,var(--accent) 25%,#000) 100%);box-shadow:inset -4px -5px 8px rgba(0,0,0,.55),0 0 0 2px rgba(var(--accent-rgb),.25)}
 .globe svg{position:absolute;inset:0;width:100%;height:100%}
 .globe .mer{animation:globespin 6s linear infinite;transform-origin:17px 17px}
 .globe .pin{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-size:15px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.7))}
 @keyframes globespin{from{transform:translateX(-17px)}to{transform:translateX(17px)}}
-.loc-btn[aria-pressed="true"]{border-color:var(--accent);background:radial-gradient(120% 140% at 0% 0%,#0f4d46 0%,#06201d 70%);box-shadow:0 0 0 3px rgba(79,227,210,.18),0 0 18px rgba(79,227,210,.35)}
+.loc-btn[aria-pressed="true"]{border-color:var(--accent);background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--accent) 30%,#000) 0%,color-mix(in srgb,var(--accent) 12%,#000) 70%);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.18),0 0 18px rgba(var(--accent-rgb),.35)}
 .loc-btn[aria-pressed="true"] .n{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .loc-btn:not([aria-pressed="true"]) .mer{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.globe .mer{animation:none}}
@@ -121,7 +121,7 @@ body.check #out{display:none}
 body.list #out .grid{grid-template-columns:1fr;gap:8px}
 @media (min-width:1050px){body.list #out .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 body.list #out .card-btn{flex-direction:row;align-items:stretch}
-body.list #out .ph{width:76px;height:76px;flex:none;aspect-ratio:auto;align-self:flex-start;margin:8px 0 8px 8px;border-radius:10px}
+body.list #out .ph{width:var(--lph,76px);height:var(--lph,76px);flex:none;aspect-ratio:auto;align-self:flex-start;margin:8px 0 8px 8px;border-radius:10px}
 body.list #out .ph.empty{padding:4px;font-size:11px}
 body.list #out .ph.empty span:not(.qty){display:none}
 body.list #out .qty,body.list #out .more{display:none}
@@ -135,7 +135,7 @@ section h2 .n{font-size:14px;font-weight:500;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0;padding:0;list-style:none}
 @media (min-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
 @media (min-width:1050px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.card{background:var(--surface);border:2px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;padding:0}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:var(--rad,14px);overflow:hidden;display:flex;flex-direction:column;padding:0}
 .card-btn{all:unset;cursor:pointer;display:flex;flex-direction:column;height:100%}
 .card-btn:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
 .ph{position:relative;display:block;width:100%;aspect-ratio:1/1;background:#000;overflow:hidden}
@@ -151,7 +151,7 @@ section h2 .n{font-size:14px;font-weight:500;color:var(--muted)}
 .tag{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:5px}
 .tag.loc-tag{color:var(--accent)}
 .tag.conf::before,.tag.sin::before,.tag.pend::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
-.tag.conf{color:var(--conf)}.tag.sin{color:var(--sin)}.tag.pend{color:var(--pend)}.tag.nou{color:#d7b5ff}
+.tag.conf{color:var(--conf)}.tag.sin{color:var(--sin)}.tag.pend{color:var(--pend)}
 .empty-msg{padding:40px 10px;text-align:center;color:var(--muted)}
 button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
@@ -229,20 +229,20 @@ html:not(.js) #saveBtn,html:not(.js) #aiFab,html:not(.js) #q,html:not(.js) #locs
 .locbar .loc-btn .lsub{display:none}
 .locbar .loc-all{grid-row:span var(--rows,1);display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto auto;align-content:center;column-gap:14px;row-gap:2px;
   padding:14px 18px;border-radius:22px;text-align:left;
-  background:radial-gradient(140% 160% at 0% 0%,#14605a 0%,#0a2e2b 45%,#060f0e 100%)}
-.locbar .loc-all .globe{grid-row:1/4;width:58px;height:58px;box-shadow:inset -6px -8px 12px rgba(0,0,0,.55),0 0 0 3px rgba(79,227,210,.3),0 0 22px rgba(79,227,210,.35)}
+  background:radial-gradient(140% 160% at 0% 0%,color-mix(in srgb,var(--accent) 38%,#000) 0%,color-mix(in srgb,var(--accent) 18%,#000) 45%,color-mix(in srgb,var(--accent) 6%,#000) 100%)}
+.locbar .loc-all .globe{grid-row:1/4;width:58px;height:58px;box-shadow:inset -6px -8px 12px rgba(0,0,0,.55),0 0 0 3px rgba(var(--accent-rgb),.3),0 0 22px rgba(var(--accent-rgb),.35)}
 .locbar .loc-all .lname{font-size:19px;font-weight:800;white-space:normal;line-height:1.1}
 .locbar .loc-all .lsub{display:block;font-size:12px;color:var(--muted);font-weight:500}
 .locbar .loc-all .n{justify-self:start;font-size:14px;padding:2px 12px;margin-top:4px}
-.locbar .loc-all[aria-pressed="false"]{background:radial-gradient(140% 160% at 0% 0%,#123d3a 0%,#0c1716 60%);border-color:#2b5753}
+.locbar .loc-all[aria-pressed="false"]{background:radial-gradient(140% 160% at 0% 0%,color-mix(in srgb,var(--accent) 24%,#000) 0%,color-mix(in srgb,var(--accent) 8%,#000) 60%);border-color:color-mix(in srgb,var(--accent) 35%,#000)}
 .locbar .loc-btn:not(.loc-all) .lname{overflow-wrap:normal;word-break:normal}
 .create-btn{width:100%;display:flex;align-items:center;gap:12px;font:inherit;text-align:left;color:var(--accent-ink);
-  background:linear-gradient(100deg,#8af7eb 0%,var(--accent) 45%,#2fc9b7 100%);border:0;border-radius:16px;padding:9px 14px 9px 9px;min-height:52px;cursor:pointer;
-  box-shadow:0 6px 18px rgba(79,227,210,.28);transition:transform .15s,box-shadow .2s;position:relative;overflow:hidden}
+  background:linear-gradient(100deg,var(--accent-hi) 0%,var(--accent) 45%,var(--accent-lo) 100%);border:0;border-radius:16px;padding:9px 14px 9px 9px;min-height:52px;cursor:pointer;
+  box-shadow:0 6px 18px rgba(var(--accent-rgb),.28);transition:transform .15s,box-shadow .2s;position:relative;overflow:hidden}
 .create-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-120%)}
 @media (prefers-reduced-motion:no-preference){.create-btn::after{animation:cshine 3.2s ease-in-out 1s 2}}
 @keyframes cshine{0%{transform:translateX(-120%)}60%,100%{transform:translateX(120%)}}
-.create-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(79,227,210,.4)}
+.create-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(var(--accent-rgb),.4)}
 .create-btn:active{transform:scale(.99)}
 .create-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .cplus{flex:none;width:36px;height:36px;border-radius:12px;background:var(--accent-ink);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;line-height:1}
@@ -344,7 +344,7 @@ html{overflow-x:hidden}
 /* ---- v2.6: targetes més petites a la vista Imatges ---- */
 body:not(.list) #out .grid{grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:8px}
 @media (min-width:600px){body:not(.list) #out .grid{grid-template-columns:repeat(auto-fill,minmax(var(--cardmin,205px),1fr));gap:12px}}
-body:not(.list) #out .card{border-radius:12px}
+body:not(.list) #out .card{border-radius:calc(var(--rad,14px) - 2px)}
 body:not(.list) #out .body{padding:7px 8px 9px;gap:3px}
 body:not(.list) #out .body h3{font-size:13.5px;line-height:1.2}
 body:not(.list) #out p.desc:not(.lmeta){font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -357,8 +357,8 @@ body:not(.list) #out .ph.empty{font-size:11px;padding:8px}
 /* ---- v2.6: mantenir premut 1 s per veure la foto ---- */
 #out .card-btn,#checkview li,#out .card-btn img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
 #out li.card{transition:transform .15s}
-#out li.card.holding{transform:scale(.95);transition:transform var(--hold,1s) ease-in;box-shadow:0 0 0 3px rgba(79,227,210,.45)}
-#checkview li.holding{background:rgba(79,227,210,.12);transition:background var(--hold,1s)}
+#out li.card.holding{transform:scale(.95);transition:transform var(--hold,1s) ease-in;box-shadow:0 0 0 3px rgba(var(--accent-rgb),.45)}
+#checkview li.holding{background:rgba(var(--accent-rgb),.12);transition:background var(--hold,1s)}
 .box .ph:not(.empty){cursor:zoom-in}
 /* ---- v2.6: visor de fotos ---- */
 .lbx{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
@@ -380,11 +380,11 @@ body:not(.list) #out .ph.empty{font-size:11px;padding:8px}
 /* ---- v2.6.1: progrés per ubicació (horitzontal) i per zona (vertical). 100% = 100 articles ---- */
 .loc-btn.has-prog{position:relative;overflow:hidden;isolation:isolate}
 .loc-btn.has-prog .prog{position:absolute;inset:0;z-index:-1;pointer-events:none}
-.loc-btn.has-prog .prog i{display:block;height:100%;background:linear-gradient(90deg,rgba(47,201,183,.55),rgba(79,227,210,.38));box-shadow:inset -3px 0 0 var(--accent);transition:width .5s ease}
+.loc-btn.has-prog .prog i{display:block;height:100%;background:linear-gradient(90deg,rgba(47,201,183,.55),rgba(var(--accent-rgb),.38));box-shadow:inset -3px 0 0 var(--accent);transition:width .5s ease}
 .loc-btn.has-prog .prog.full i{background:linear-gradient(90deg,rgba(126,240,196,.6),rgba(184,255,230,.4));box-shadow:none}
 .loc-btn.has-prog .pct{position:absolute;right:10px;bottom:6px;font-size:11.5px;font-weight:800;color:#fff;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.7)}
 .chip.has-prog{position:relative;overflow:hidden;isolation:isolate}
-.chip.has-prog .vfill{position:absolute;left:0;right:0;bottom:0;z-index:-1;background:linear-gradient(0deg,rgba(79,227,210,.42),rgba(79,227,210,.16));transition:height .5s ease}
+.chip.has-prog .vfill{position:absolute;left:0;right:0;bottom:0;z-index:-1;background:linear-gradient(0deg,rgba(var(--accent-rgb),.42),rgba(var(--accent-rgb),.16));transition:height .5s ease}
 .chip.has-prog .vfill.full{background:linear-gradient(0deg,rgba(126,240,196,.55),rgba(126,240,196,.22))}
 .chip.has-prog[aria-pressed="true"] .vfill{background:linear-gradient(0deg,rgba(2,26,23,.38),rgba(2,26,23,.14))}
 .chip.has-prog .n{align-self:flex-end;margin-right:5px;font-size:10.5px;font-weight:700;color:var(--ink)}
@@ -392,7 +392,7 @@ body:not(.list) #out .ph.empty{font-size:11px;padding:8px}
 @media (max-width:600px){.loc-btn.has-prog .pct{font-size:10.5px}.chip.has-prog .n{font-size:9.5px;margin-right:3px}}
 
 /* ---- v2.7: crear zona/ubicació dins del formulari i fotos amb càmera ---- */
-.fnew{background:rgba(79,227,210,.07);border:2px dashed var(--accent);border-radius:12px;padding:8px}
+.fnew{background:rgba(var(--accent-rgb),.07);border:2px dashed var(--accent);border-radius:12px;padding:8px}
 .fnewin{border-color:var(--accent)!important}
 .fphoto{display:flex;flex-direction:column;gap:6px}
 .fphoto .flab{font-size:14px;font-weight:700;color:var(--muted)}
@@ -413,14 +413,14 @@ dialog.armed::backdrop{background:rgba(0,0,0,.6)}
 .armed-ai{outline:3px solid var(--accent);outline-offset:3px}
 
 /* ===== v2.8 ===== */
-.lp{margin:12px 0 10px;background:linear-gradient(160deg,#0d1f1d 0%,#070707 75%);border:2px solid var(--line);border-radius:20px;padding:8px;display:flex;flex-direction:column;gap:8px}
+.lp{margin:12px 0 10px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 10%,#000) 0%,var(--bg) 75%);border:2px solid var(--line);border-radius:20px;padding:8px;display:flex;flex-direction:column;gap:8px}
 .lp-all{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:8px 12px 8px 8px;border-radius:14px;border:2px solid transparent;transition:background .2s,border-color .2s}
 .lp-all .globe{width:44px;height:44px}
 .lp-t{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
 .lp-t b{font-size:18px;font-weight:800}
 .lp-t small{font-size:12px;color:var(--muted);font-weight:500}
 .lp-n{flex:none;font-weight:800;font-size:15px;padding:3px 12px;border-radius:999px;background:#000;border:1px solid var(--line);color:var(--muted)}
-.lp-all[aria-pressed="true"]{background:rgba(79,227,210,.10);border-color:var(--accent)}
+.lp-all[aria-pressed="true"]{background:rgba(var(--accent-rgb),.10);border-color:var(--accent)}
 .lp-all[aria-pressed="true"] .lp-n{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .lp-all:not([aria-pressed="true"]) .mer{animation-play-state:paused}
 .lp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
@@ -428,16 +428,16 @@ dialog.armed::backdrop{background:rgba(0,0,0,.6)}
 .lp-loc{all:unset;box-sizing:border-box;cursor:pointer;min-width:0;min-height:58px;position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:9px 12px 8px;border-radius:14px;background:var(--surface2);border:2px solid var(--line);transition:border-color .2s,box-shadow .2s,transform .1s}
 .lp-loc:active{transform:scale(.98)}
 .lp-bar{position:absolute;inset:0;z-index:-1;pointer-events:none}
-.lp-bar i{display:block;height:100%;background:linear-gradient(90deg,rgba(47,201,183,.55),rgba(79,227,210,.32));box-shadow:inset -3px 0 0 var(--accent);transition:width .5s ease}
+.lp-bar i{display:block;height:100%;background:linear-gradient(90deg,rgba(47,201,183,.55),rgba(var(--accent-rgb),.32));box-shadow:inset -3px 0 0 var(--accent);transition:width .5s ease}
 .lp-bar.full i{background:linear-gradient(90deg,rgba(126,240,196,.6),rgba(184,255,230,.38));box-shadow:none}
 .lp-top{display:flex;align-items:center;gap:6px;min-width:0}
 .lp-pin{font-size:14px;flex:none}
 .lp-name{flex:1;min-width:0;font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lp-c{flex:none;font-weight:800;font-size:19px;line-height:1;color:#fff}
-.lp-pct{font-size:11px;color:#e6fffb;font-weight:600;line-height:1}
+.lp-pct{font-size:11px;color:color-mix(in srgb,var(--accent) 12%,#fff);font-weight:600;line-height:1}
 .lp-name,.lp-c,.lp-pct{text-shadow:0 1px 2px rgba(0,0,0,.75)}
-.lp-loc[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,227,210,.22),0 0 16px rgba(79,227,210,.35)}
-.lp-loc[aria-pressed="true"] .lp-bar i{background:linear-gradient(90deg,rgba(79,227,210,.8),rgba(138,247,235,.55))}
+.lp-loc[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.22),0 0 16px rgba(var(--accent-rgb),.35)}
+.lp-loc[aria-pressed="true"] .lp-bar i{background:linear-gradient(90deg,rgba(var(--accent-rgb),.8),rgba(138,247,235,.55))}
 .lp-all:focus-visible,.lp-loc:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 @media (max-width:600px){
   .lp{padding:6px;border-radius:18px}
@@ -453,13 +453,13 @@ dialog.armed::backdrop{background:rgba(0,0,0,.6)}
 .srow{display:flex;gap:8px;align-items:stretch}
 .srow .search{flex:1;min-width:0}
 .crt{flex:none;display:flex;align-items:center;gap:6px;font:inherit;font-weight:800;font-size:15px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;color:var(--accent-ink);
-  background:linear-gradient(100deg,#8af7eb 0%,var(--accent) 55%,#2fc9b7 100%);box-shadow:0 4px 14px rgba(79,227,210,.25)}
+  background:linear-gradient(100deg,var(--accent-hi) 0%,var(--accent) 55%,var(--accent-lo) 100%);box-shadow:0 4px 14px rgba(var(--accent-rgb),.25)}
 .crt span{font-size:20px;line-height:1}
 .crt:focus-visible{outline:3px solid #fff;outline-offset:2px}
 @media (max-width:380px){.crt{padding:0 13px}.crt b{display:none}}
 .crfab{position:fixed;left:14px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:35;width:56px;height:56px;padding:0;border-radius:50%;border:0;cursor:pointer;
   font:inherit;font-size:34px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;color:var(--accent-ink);
-  background:linear-gradient(140deg,#8af7eb 0%,var(--accent) 50%,#2fc9b7 100%);box-shadow:0 4px 14px rgba(0,0,0,.6),0 0 0 3px rgba(79,227,210,.2)}
+  background:linear-gradient(140deg,var(--accent-hi) 0%,var(--accent) 50%,var(--accent-lo) 100%);box-shadow:0 4px 14px rgba(0,0,0,.6),0 0 0 3px rgba(var(--accent-rgb),.2)}
 .crfab:active{transform:scale(.95)}
 .crfab:focus-visible{outline:3px solid #fff;outline-offset:3px}
 body.lock .crfab{display:none}
@@ -472,12 +472,12 @@ html:not(.js) #createFab{display:none!important}
 .fchips{display:flex;flex-wrap:wrap;gap:6px}
 .fdlg label.fchip{flex-direction:row;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--ink);padding:6px 10px;border-radius:999px;border:2px solid var(--line);background:var(--surface2);cursor:pointer}
 .fdlg label.fchip input{width:18px;height:18px;padding:0;accent-color:var(--accent);flex:none}
-.fdlg label.fchip:has(input:checked){border-color:var(--accent);background:rgba(79,227,210,.12)}
+.fdlg label.fchip:has(input:checked){border-color:var(--accent);background:rgba(var(--accent-rgb),.12)}
 .fnone{font-size:13px;color:var(--muted)}
 @media (max-width:600px){
   body.list #out .grid{gap:5px}
   body.list #out .card{border-radius:10px;border-width:1px}
-  body.list #out .ph{width:46px;height:46px;margin:6px 0 6px 6px;border-radius:8px}
+  body.list #out .ph{width:calc(var(--lph,76px)*.62);height:calc(var(--lph,76px)*.62);margin:6px 0 6px 6px;border-radius:8px}
   body.list #out .body{min-width:0;padding:5px 10px;gap:1px;justify-content:center}
   body.list #out .body h3{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   body.list #out p.desc:not(.lmeta),body.list #out .lnote{display:none}
@@ -497,10 +497,10 @@ details.ccol.solo>summary h3::after{display:none}
 .cfold{font:inherit;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);cursor:pointer;white-space:nowrap}
 
 /* ===== v3.0: núvol ===== */
-.gate{position:fixed;inset:0;z-index:200;background:radial-gradient(120% 90% at 50% 0%,#0f3a35 0%,#000 65%);display:flex;align-items:center;justify-content:center;padding:24px}
+.gate{position:fixed;inset:0;z-index:200;background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--accent) 22%,#000) 0%,#000 65%);display:flex;align-items:center;justify-content:center;padding:24px}
 .gate[hidden]{display:none}
 .gbox{width:min(380px,100%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
-.glogo{width:84px;height:84px;border-radius:24px;background:linear-gradient(140deg,#8af7eb,#2fc9b7);display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 10px 30px rgba(79,227,210,.35)}
+.glogo{width:84px;height:84px;border-radius:24px;background:linear-gradient(140deg,var(--accent-hi),var(--accent-lo));display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 10px 30px rgba(var(--accent-rgb),.35)}
 .gbox h1{margin:6px 0 0;font-size:26px}
 .gbox p{margin:0;color:var(--muted);font-size:15px}
 .gbtn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;font:inherit;font-size:16px;font-weight:700;padding:14px 18px;border-radius:14px;border:0;background:#fff;color:#1f1f1f;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.5)}
@@ -516,7 +516,7 @@ details.ccol.solo>summary h3::after{display:none}
 .impbar{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:250;width:min(420px,calc(100vw - 24px));background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.7)}
 .impbar[hidden]{display:none}
 .ibar{height:8px;border-radius:99px;background:#000;overflow:hidden;border:1px solid var(--line)}
-.ibar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2fc9b7,#8af7eb);transition:width .2s}
+.ibar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent-lo),var(--accent-hi));transition:width .2s}
 
 /* ===== v3.1: historial i desfer ===== */
 .toprow{display:flex;align-items:flex-start;gap:10px}
@@ -558,8 +558,8 @@ details.ccol.solo>summary h3::after{display:none}
 @media (max-width:600px){.top h1{font-size:17px;line-height:1.15}.top h1 .ver{font-size:11px;padding:1px 6px}}
 .chdlg[open]{display:flex;flex-direction:column;width:min(520px,calc(100vw - 24px));height:min(780px,calc(100dvh - 24px));max-height:calc(100dvh - 24px)}
 .chwrap{display:flex;flex-direction:column;min-height:0;flex:1}
-.chhead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:2px solid var(--line);background:linear-gradient(160deg,#0f3a35 0%,#0c0c0c 80%)}
-.chico{width:40px;height:40px;border-radius:14px;background:linear-gradient(140deg,#8af7eb,#2fc9b7);display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+.chhead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:2px solid var(--line);background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 22%,#000) 0%,var(--surface) 80%)}
+.chico{width:40px;height:40px;border-radius:14px;background:linear-gradient(140deg,var(--accent-hi),var(--accent-lo));display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
 .chtt{flex:1;min-width:0}
 .chtt h2{margin:0;font-size:19px}
 .chtt small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -574,7 +574,7 @@ details.ccol.solo>summary h3::after{display:none}
 .cm.grp{margin-top:0}
 .cm:not(.grp){margin-top:8px}
 .cm-av{flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:.02em;color:#04110f;box-shadow:0 2px 6px rgba(0,0,0,.5)}
-.cm-av.nau{background:linear-gradient(140deg,#8af7eb,#2fc9b7)}
+.cm-av.nau{background:linear-gradient(140deg,var(--accent-hi),var(--accent-lo))}
 .cm-av.noa{background:linear-gradient(140deg,#ffb3d9,#ff7eb6);color:#2a0a1a}
 .cm-av.ghost{visibility:hidden}
 .cm-b{max-width:min(78%,420px);min-width:0;display:flex;flex-direction:column}
@@ -584,7 +584,7 @@ details.ccol.solo>summary h3::after{display:none}
 .cm-n.noa{color:#ff9ccb}
 .cm-t{padding:8px 12px 6px;border-radius:18px;font-size:15.5px;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
 .cm.ot .cm-t{background:var(--surface2);border:1px solid var(--line);border-bottom-left-radius:6px}
-.cm.me .cm-t{background:linear-gradient(140deg,#5ff0df,#2fc9b7);color:#03201c;border-bottom-right-radius:6px;font-weight:500}
+.cm.me .cm-t{background:linear-gradient(140deg,var(--accent-hi),var(--accent-lo));color:var(--accent-ink);border-bottom-right-radius:6px;font-weight:500}
 .cm.grp.ot .cm-t{border-top-left-radius:6px}
 .cm.grp.me .cm-t{border-top-right-radius:6px}
 .cm-t a{color:inherit;text-decoration:underline}
@@ -604,9 +604,9 @@ details.ccol.solo>summary h3::after{display:none}
 .chgrid .chnone{grid-column:1/-1;color:var(--muted);font-size:13px;padding:14px 4px;text-align:center}
 .fdlg form.chform{flex-direction:row;align-items:flex-end;gap:8px;padding:10px;border-top:2px solid var(--line);background:var(--surface);flex:none}
 .chem{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface2);font-size:22px;line-height:1;cursor:pointer;padding:0}
-.chem[aria-expanded="true"]{border-color:var(--accent);background:rgba(79,227,210,.14)}
+.chem[aria-expanded="true"]{border-color:var(--accent);background:rgba(var(--accent-rgb),.14)}
 .fdlg .chform textarea{flex:1;min-width:0;min-height:44px;max-height:120px;height:44px;resize:none;border-radius:22px;padding:10px 16px;line-height:1.3;overflow-y:auto}
-.chsend{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:linear-gradient(140deg,#8af7eb,#2fc9b7);color:#03201c;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.chsend{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:linear-gradient(140deg,var(--accent-hi),var(--accent-lo));color:var(--accent-ink);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .chsend:disabled{opacity:.4;cursor:default}
 .chsend:active:not(:disabled){transform:scale(.94)}
 .chem:focus-visible,.chsend:focus-visible{outline:3px solid #fff;outline-offset:2px}
@@ -691,7 +691,7 @@ details.ccol.solo>summary h3::after{display:none}
 .toprow .ttl h1{justify-self:center;text-align:center}
 .toprow .ttl #sub{justify-self:center;text-align:center}
 /* interruptor mòbil / PC */
-.vmsw{position:relative;flex:none;width:68px;height:36px;padding:0 4px;border-radius:999px;border:2px solid var(--line);background:#0c0c0c;cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--muted);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.vmsw{position:relative;flex:none;width:68px;height:36px;padding:0 4px;border-radius:999px;border:2px solid var(--line);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--muted);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .vmsw:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .vmi{position:relative;z-index:1;width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:color .2s}
 .vmk{position:absolute;top:2px;left:2px;width:28px;height:28px;border-radius:50%;background:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.5);transition:transform .25s cubic-bezier(.3,.8,.3,1)}
@@ -764,7 +764,7 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .delbtn:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .lplist{display:flex;flex-direction:column;gap:6px;max-height:min(40dvh,320px);overflow-y:auto}
 .lpi{font:inherit;color:var(--ink);text-align:left;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);cursor:pointer}
-.lpi.on{border-color:var(--accent);background:rgba(79,227,210,.12)}
+.lpi.on{border-color:var(--accent);background:rgba(var(--accent-rgb),.12)}
 .lpk{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--accent-ink)}
 .lpi.on .lpk{background:var(--accent);border-color:var(--accent)}
 .lpn{flex:1;min-width:0;font-weight:700;overflow-wrap:anywhere}
@@ -788,6 +788,71 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .cfbar{height:10px;border-radius:99px;background:#000;border:1px solid #5a1010;overflow:hidden;display:block}
 .cfbar i{display:block;height:100%;border-radius:99px}
 .cfbar i.ok{background:#1fbf5b}.cfbar i.warn{background:#ffd166}.cfbar i.bad{background:#e5252a}
+
+/* ===== v4.0: cartell NEW, barra intel·ligent, mòbil renovat, colors ===== */
+.newtag{position:absolute;left:0;top:0;z-index:2;background:var(--newc,#e5252a);color:#fff;font-weight:800;font-size:11px;letter-spacing:.07em;line-height:1;padding:5px 9px 5px 8px;border-radius:0 0 10px 0;box-shadow:0 2px 6px rgba(0,0,0,.55);text-transform:uppercase;pointer-events:none}
+.ph.isnew .qty{left:auto;right:8px}
+body:not(.list) #out .ph.isnew .qty{left:auto;right:6px}
+body.list #out .ph.empty span.newtag{display:block}
+body:not(.list) #out .newtag{font-size:10px;padding:4px 8px 4px 7px}
+body.list #out .newtag{font-size:8.5px;padding:3px 6px 3px 5px;border-radius:0 0 8px 0}
+.sec-new h2{color:var(--newc,#e5252a)}
+.sec-new h2 .n{color:var(--muted)}
+.sec-new .card{border-color:color-mix(in srgb,var(--newc,#e5252a) 70%,var(--line))}
+.ntg{font-style:normal;font-weight:800;font-size:10px;letter-spacing:.06em;color:#fff;background:var(--newc,#e5252a);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+#dNew{border-color:var(--newc,#e5252a);color:var(--newc,#e5252a)}
+/* barra de cerca i filtres (enganxada a dalt al mòbil) */
+.top{border-bottom:0}
+.fbar{background:var(--bg);border-bottom:2px solid var(--line);padding:0 14px 8px}
+.fbar .srow{padding-top:2px}
+.chips{position:relative}
+.vbar{display:none;flex:none;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.vbar button{font:inherit;font-weight:800;font-size:18px;line-height:1;padding:0 11px;min-width:42px;background:var(--surface2);color:var(--ink);border:0;cursor:pointer}
+.vbar button+button{border-left:2px solid var(--line)}
+.vbar button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.vbar button:focus-visible{outline:3px solid #fff;outline-offset:-3px}
+.subhint{color:var(--muted)}
+/* selector de colors */
+.thpre{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 4px}
+.thsw{width:34px;height:34px;border-radius:50%;border:2px solid #5a1010;background:var(--sw);cursor:pointer;padding:0;box-shadow:inset 0 0 0 2px rgba(0,0,0,.35)}
+.thsw:hover,.thsw:focus-visible{border-color:#fff;outline:0}
+.fdlg .cfrow input[type="color"]{width:56px;height:38px;padding:2px;text-align:left;background:#000;cursor:pointer}
+.cfrow .cfin i.hx{min-width:70px;font-family:ui-monospace,Menlo,Consolas,monospace}
+@media (max-width:600px){
+  html{scroll-padding-top:calc(130px + env(safe-area-inset-top,0px))}
+  /* barra sticky: cerca + vista + filtres de zona */
+  .fbar{position:sticky;top:0;z-index:8;padding:6px 14px 6px;transition:transform .22s ease;box-shadow:0 6px 14px rgba(0,0,0,.45)}
+  .fbar.hide{transform:translateY(-110%)}
+  .fbar:focus-within{transform:none}
+  .vbar{display:inline-flex}
+  .crt{display:none}
+  .search{padding:10px 12px}
+  .chips{display:flex;overflow-x:auto;gap:6px;padding:6px 14px 2px;margin:0 -14px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;min-width:72px;min-height:50px;padding-top:5px;padding-bottom:4px;scroll-snap-align:center}
+  /* ubicacions en una sola fila que es llisca */
+  .lp{flex-direction:row;align-items:stretch;overflow-x:auto;gap:6px;padding:6px;scroll-snap-type:x proximity;scrollbar-width:none}
+  .lp::-webkit-scrollbar{display:none}
+  .lp-all{flex:0 0 auto;min-width:150px;padding:6px 10px 6px 6px;scroll-snap-align:start}
+  .lp-all .lp-t small{display:none}
+  .lp-grid{display:flex;gap:6px;grid-template-columns:none}
+  .lp-loc,.lp-loc:last-child:nth-child(odd){flex:0 0 150px;grid-column:auto;scroll-snap-align:start;min-height:52px}
+  .subhint{display:none}
+  section h2 .views,.chead .views{display:none}
+  /* botons d'acció més còmodes de tocar */
+  .hbtn{min-width:44px;min-height:44px;justify-content:center}
+  .cfgbtn{width:44px;height:44px}
+  .vmsw{height:40px}
+  .dact .btn{padding:12px 14px}
+  .btn{min-height:42px}
+  .totop{min-height:40px}
+  /* indicador de sincronització compacte */
+  .savebtn{height:44px;min-width:44px;padding:0 14px;display:flex;align-items:center;gap:4px}
+  .savebtn.sync-ok{width:44px;padding:0;justify-content:center;border-radius:50%}
+  .savebtn.sync-ok .tx{display:none}
+  .savebtn .ic{font-size:18px;line-height:1}
+  main{padding-bottom:130px}
+}
 </style>
 </head>
 <body>
@@ -802,7 +867,7 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v3.9</span></h1>
+      <h1>Inventari de casa <span class="ver">v4.0</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -815,14 +880,17 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
     </button>
   </div>
   <div id="locs" class="lp" role="group" aria-label="Filtra per ubicació"></div>
+</header>
+<div id="fbar" class="fbar">
   <div class="srow">
     <input id="q" class="search" type="search" placeholder="Cerca a tot l'inventari: nom, marca, nota…" aria-label="Cerca a l'inventari" autocomplete="off">
+    <span class="vbar" role="group" aria-label="Vista"><button type="button" data-v="grid" title="Imatges" aria-label="Vista imatges">▦</button><button type="button" data-v="list" title="Llista" aria-label="Vista llista">☰</button><button type="button" data-v="check" title="Check" aria-label="Vista check">☑</button></span>
     <button id="createBtn" class="crt" type="button" aria-haspopup="dialog" aria-controls="cdlg" title="Crea un article, una ubicació o una zona"><span aria-hidden="true">＋</span><b>Crea</b></button>
   </div>
   <div id="chips" class="chips" role="group" aria-label="Filtra per zona"></div>
   <button id="reset" class="reset" type="button" hidden="">Treu tots els filtres</button>
-</header>
-<button id="totop" class="btn totop" type="button" hidden="">↑ Filtres</button>
+</div>
+<button id="totop" class="btn totop" type="button" hidden="">↑ Dalt</button>
 <button id="saveBtn" class="btn savebtn" type="button" aria-haspopup="dialog" aria-controls="sdlg">☁️ Connectant…</button>
 <div id="toast" class="toast" role="status" aria-live="polite" popover="manual" hidden=""></div>
 <button id="aiFab" class="btn aifab flipbtn" type="button" aria-label="Obre l'assistent de productes" aria-expanded="false" aria-controls="aiPanel"><span class="persp"><span class="coin"><span class="face front"><svg viewBox="0 0 64 64" width="38" height="38" fill="currentColor" aria-hidden="true"><rect x="11" y="9" width="17" height="12" rx="5"></rect><rect x="36" y="9" width="17" height="12" rx="5"></rect>
@@ -988,7 +1056,7 @@ button.loc:focus-visible{outline:3px solid #fff;outline-offset:2px}
         <p id="dDesc"></p>
         <p id="dNote" class="note"></p>
         <div id="dBreak" class="breakdown"></div>
-        <div class="dact"><button class="btn" id="dEdit" type="button">✎ Edita</button><button class="btn ok" id="dOk" type="button">✓ Correcte</button><button class="btn" id="dAddPh" type="button">📷 Afegeix fotos</button></div>
+        <div class="dact"><button class="btn" id="dEdit" type="button">✎ Edita</button><button class="btn ok" id="dOk" type="button">✓ Correcte</button><button class="btn" id="dNew" type="button" hidden>✕ Treu el NEW</button><button class="btn" id="dAddPh" type="button">📷 Afegeix fotos</button></div>
         <input id="dPhIn" type="file" accept="image/*" multiple="" hidden="">
       </div>
     </div>
@@ -1212,14 +1280,17 @@ const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c))
 const totAll = () => DATA.filter(live).length;
 const pctOf = (n, tot) => (!tot || !n) ? 0 : Math.max(1, Math.min(100, Math.round(n / tot * 100)));
 /* v3.3: valors per defecte (els de la v3.2) i límits dels ajustos */
-const CFGD = {toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:0, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
-const CFGR = {toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
+const CFGD = {sortMode:0, lph:76, rad:14, aiwait:450, smartbar:1, vib:0, toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:3, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
+const CFGR = {sortMode:[0, 2], lph:[40, 120], rad:[4, 28], aiwait:[200, 1000], smartbar:[0, 1], vib:[0, 1], toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
 function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
 function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
 const totLoc = l => DATA.filter(c => live(c) && c.locs.includes(l)).length;
 const totCat = id => DATA.filter(c => live(c) && catsOf(c).includes(id)).length;
+/* v4.0: un article és NEW els primers dies (ord = moment de creació) fins que el treguis amb «Treu el NEW» */
+const NEWCAT = {id:"__new", label:"Nous", short:"Nous", icon:"🆕"};
+const isNew = c => { const d = cfgGet("newDays"); return d > 0 && !c.nouVist && typeof c.ord === "number" && c.ord > 1e12 && c.ord > Date.now() - d * 864e5; };
 function renderLocs(){
-  const box = $("locs"); box.innerHTML = "";
+  const box = $("locs"), sl0 = box.scrollLeft; box.innerHTML = "";
   const GLOBE = '<span class="globe" aria-hidden="true"><svg viewBox="0 0 34 34" fill="none" stroke="rgba(2,26,23,.55)" stroke-width="1.3">'
     +'<path d="M2 12h30M1 17h32M2 22h30"/>'
     +'<g class="mer"><ellipse cx="17" cy="17" rx="6" ry="16"/><ellipse cx="17" cy="17" rx="12" ry="16"/><path d="M17 1v32"/><ellipse cx="51" cy="17" rx="6" ry="16"/><ellipse cx="-17" cy="17" rx="6" ry="16"/></g>'
@@ -1243,11 +1314,11 @@ function renderLocs(){
     b.onclick = () => { state.loc = (state.loc===l ? "all" : l); render(); };
     grid.appendChild(b);
   });
-  box.appendChild(grid);
+  box.appendChild(grid); box.scrollLeft = sl0;
 }
 function renderChips(){
   /* Revisar funciona com una categoria més */
-  const box = $("chips"); box.innerHTML = "";
+  const box = $("chips"), sl0 = box.scrollLeft; box.innerHTML = "";
   const base = (c,i) => live(c) && (state.loc==="all" || c.locs.includes(state.loc)) && (!state.q || qHit(i));
   const n = f => DATA.filter((c,i)=>base(c,i) && f(c)).length;
   const add = (label, num, pressed, cls, fn) => {
@@ -1265,35 +1336,81 @@ function renderChips(){
     ()=>{ state.cat = (!state.review && state.cat===c.id) ? "all" : c.id; state.review=false; render(); }));
   add('<span class="ic" aria-hidden="true">⚠️</span><span class="lb">Revisar</span>', n(needsReview), state.review, "review",
     ()=>{ state.review = !state.review; state.cat = "all"; render(); });
+  box.scrollLeft = sl0; chipFocus(box);
 }
 function card(c,i){
   let ph;
   const qty = '<span class="qty">'+esc(qtyBadge(c.qty))+'</span>';
+  const nw = isNew(c), NT = nw ? '<span class="newtag">NEW</span>' : '';
   if(c.photos.length){
-    ph = '<div class="ph"><img loading="lazy" decoding="async" alt="'+esc(c.item)+'" src="'+c.photos[0]+'">'+qty+(c.photos.length>1?'<span class="more">'+c.photos.length+' fotos</span>':'')+'</div>';
+    ph = '<div class="ph'+(nw?' isnew':'')+'"><img loading="lazy" decoding="async" alt="'+esc(c.item)+'" src="'+c.photos[0]+'">'+qty+NT+(c.photos.length>1?'<span class="more">'+c.photos.length+' fotos</span>':'')+'</div>';
   } else {
-    ph = '<div class="ph empty">'+qty+'<span>'+(c.pend>0?'Foto pendent de tornar a enviar':'Encara sense foto')+'</span></div>';
+    ph = '<div class="ph empty'+(nw?' isnew':'')+'">'+qty+NT+'<span>'+(c.pend>0?'Foto pendent de tornar a enviar':'Encara sense foto')+'</span></div>';
   }
   let tags = locsOf(c).map(l => '<span class="tag loc-tag">📍 '+esc(l)+'</span>').join("");
   if(c.estado==="conf") tags += '<span class="tag conf">Quantitat per confirmar</span>';
   if(c.estado==="sin") tags += '<span class="tag sin">Sense foto</span>';
   if(c.pend>0) tags += '<span class="tag pend">Foto pendent</span>';
-  if(cfgGet("newDays") > 0 && typeof c.ord === "number" && c.ord > Date.now() - cfgGet("newDays") * 864e5) tags += '<span class="tag nou">✨ Nou</span>';
   return '<li class="card" data-i="'+i+'"><button class="card-btn" type="button" data-i="'+i+'" aria-label="Detalls de '+esc(c.item)+'">'+ph+'<div class="body"><h3>'+esc(c.item)+'</h3><p class="lmeta desc">Quantitat: <b>'+esc(c.qty)+'</b> · Fiabilitat: <b>'+esc(FIAB[c.fiab]||c.fiab)+'</b></p>'+(c.desc?'<p class="desc">'+esc(c.desc)+'</p>':'')+(c.note?'<p class="lnote">'+esc(c.note)+'</p>':'')+'<div class="tags">'+tags+'</div></div></button></li>';
 }
 
 /* Les targetes es construeixen una sola vegada; filtrar només amaga/mostra */
 /* Dades locals d'aquest dispositiu: vista, pendents marcats, pendents propis i articles nous */
 /* Els canvis viuen dins del fitxer (SAVED) i es desen amb el botó Desa */
-const FILE_KEYS = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_nous","inv_cats","inv_edits","inv_locs","inv_del","inv_cfg"];
+/* ---- v4.0: colors bàsics (tema) ---- */
+const THEME_KEYS = ["accent", "bg", "ink", "newc"];
+const THEME_DEF = {accent:"#4fe3d2", bg:"#000000", ink:"#ffffff", newc:"#e5252a"};
+const THEME_NAME = {accent:"Color principal", bg:"Color del fons", ink:"Color del text", newc:"Color del cartell NEW"};
+const THEME_VARS = ["--bg", "--surface", "--surface2", "--line", "--ink", "--muted", "--accent", "--accent-rgb", "--accent-hi", "--accent-lo", "--accent-ink", "--newc"];
+const hexOk = h => /^#[0-9a-f]{6}$/i.test(String(h || ""));
+const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const rgbHex = a => "#" + a.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0")).join("");
+const mixRgb = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+const lumOf = a => { const f = c => { c /= 255; return c <= .03928 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4); }; return .2126 * f(a[0]) + .7152 * f(a[1]) + .0722 * f(a[2]); };
+const contrastOf = (a, b) => { const x = lumOf(a), y = lumOf(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+function themeRaw(){ const t = STATE.inv_theme; return t && typeof t === "object" && !Array.isArray(t) ? t : {}; }
+function themeVals(r){ r = r || themeRaw(); const o = {}; THEME_KEYS.forEach(k => { o[k] = hexOk(r[k]) ? String(r[k]).toLowerCase() : THEME_DEF[k]; }); return o; }
+function themeClean(o){ const r = {}; THEME_KEYS.forEach(k => { if(o && hexOk(o[k]) && String(o[k]).toLowerCase() !== THEME_DEF[k]) r[k] = String(o[k]).toLowerCase(); }); return r; }
+function themeCheck(T){
+  const bg = hexRgb(T.bg), ink = hexRgb(T.ink), ac = hexRgb(T.accent), nc = hexRgb(T.newc);
+  if(lumOf(bg) > .2) return "El fons ha de ser fosc.";
+  if(contrastOf(ink, bg) < 4.5) return "El color del text té massa poc contrast amb el fons.";
+  if(contrastOf(ac, bg) < 2.5) return "El color principal té massa poc contrast amb el fons.";
+  if(lumOf(nc) > .6) return "El color del cartell NEW és massa clar (el text és blanc).";
+  return "";
+}
+function themeLabels(b, a){
+  const B = themeVals(b || {}), A = themeVals(a || {}), L = [];
+  THEME_KEYS.forEach(k => { if(B[k] !== A[k]) L.push("🎨 " + THEME_NAME[k] + ": " + B[k] + " → " + A[k]); });
+  return L.join(" · ");
+}
+function themeApply(){
+  const root = document.documentElement.style, r = themeRaw(), meta = document.querySelector('meta[name="theme-color"]');
+  const custom = THEME_KEYS.some(k => hexOk(r[k]) && String(r[k]).toLowerCase() !== THEME_DEF[k]);
+  const T = themeVals(r);
+  try { localStorage.setItem("inv_theme_cache", JSON.stringify(custom ? T : null)); } catch(e){}
+  if(!custom){ THEME_VARS.forEach(n => root.removeProperty(n)); if(meta) meta.setAttribute("content", "#000000"); return; }
+  const bg = hexRgb(T.bg), ink = hexRgb(T.ink), ac = hexRgb(T.accent), W = [255, 255, 255], K = [0, 0, 0];
+  const set = (n, v) => root.setProperty(n, v);
+  set("--bg", T.bg); set("--surface", rgbHex(mixRgb(bg, W, .05))); set("--surface2", rgbHex(mixRgb(bg, W, .10)));
+  set("--line", rgbHex(mixRgb(bg, W, .23))); set("--ink", T.ink); set("--muted", rgbHex(mixRgb(ink, bg, .24)));
+  set("--accent", T.accent); set("--accent-rgb", ac.join(",")); set("--accent-hi", rgbHex(mixRgb(ac, W, .38))); set("--accent-lo", rgbHex(mixRgb(ac, K, .2)));
+  set("--accent-ink", lumOf(ac) > .3 ? rgbHex(mixRgb(ac, K, .92)) : "#ffffff");
+  set("--newc", T.newc);
+  if(meta) meta.setAttribute("content", T.bg);
+}
+
+const FILE_KEYS = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_nous","inv_cats","inv_edits","inv_locs","inv_del","inv_cfg","inv_theme"];
 const STATE = JSON.parse(JSON.stringify(SAVED.keys || {}));
+try { const tc = JSON.parse(localStorage.getItem("inv_theme_cache") || "null"); if(tc && typeof tc === "object" && STATE.inv_theme === undefined) STATE.inv_theme = tc; } catch(e){}
+themeApply();
 let dirty = 0;
 const load = (k,def) => {
   if(FILE_KEYS.includes(k)) return k in STATE ? JSON.parse(JSON.stringify(STATE[k])) : def;
   try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e){ return def; }
 };
 /* v3.0: les dades compartides es desen a Firestore (meta/state); la resta, al dispositiu */
-const KEYS_CLOUD = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_cats","inv_locs","inv_cfg"];
+const KEYS_CLOUD = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_cats","inv_locs","inv_cfg","inv_theme"];
 const pendKeys = new Set();
 const store = (k,v) => {
   if(FILE_KEYS.includes(k)){
@@ -1358,16 +1475,47 @@ function setView(v){
   view = v; store("inv_vista", v);
   document.body.classList.toggle("list", v==="list");
   document.body.classList.toggle("check", v==="check");
-  document.querySelectorAll(".views button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===v)));
+  document.querySelectorAll(".views button, .vbar button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===v)));
   if(typeof render==="function" && sections.length) render();
 }
 const VIEWS = '<span class="views" role="group" aria-label="Vista"><button type="button" data-v="grid">▦ Imatges</button><button type="button" data-v="list">☰ Llista</button><button type="button" data-v="check">☑ Check</button></span>';
-document.addEventListener("click", e => { const b = e.target.closest(".views button"); if(b) setView(b.dataset.v); });
+document.addEventListener("click", e => { const b = e.target.closest(".views button, .vbar button"); if(b) setView(b.dataset.v); });
 function updateSub(){
-  $("sub").textContent = DATA.filter(live).length + " articles · " + DATA.filter(c=>live(c) && c.photos.length).length + " amb foto. Toca un article per veure'n els detalls.";
+  const L = DATA.filter(live);
+  $("sub").innerHTML = L.length + " articles · " + L.filter(c => c.photos.length).length + ' amb foto<span class="subhint">. Toca un article per veure\'n els detalls.</span>';
 }
+/* ---- v4.0: més pendents a cada zona (s'afegeixen al final: les marques que ja tinguis no es mouen) ---- */
+const PEND_MORE = {
+  cuina:["Safata de forn", "Joc de ganivets de cuina", "Taula de tallar", "Obridor de llaunes", "Pelador de verdures", "Espremedor de cítrics", "Premsa d'alls", "Setrilleres d'oli i vinagre", "Bols per a amanides", "Gots (6 o més)", "Tasses (6 o més)", "Draps de cuina", "Cullera de fusta i pala", "Paper d'alumini i film transparent", "Cafetera", "Mortaret", "Salers i pebrers", "Colador fi"],
+  menjador:["Tovalles", "Estovalles individuals", "Setrilles de taula", "Gerro amb flors", "Espelmes i portaespelmes", "Aparador o bufet", "Moble de rebedor", "Tamboret o puf", "Plaid", "Reposapeus", "Llum ambiental", "Mirall decoratiu", "Ventilador de sostre", "Safata decorativa"],
+  bany:["Alfombreta de bany", "Paperera de bany", "Raspall de vàter", "Dispensador de sabó", "Prestatge de bany", "Assecador de cabells", "Maquineta d'afaitar", "Pinta o raspall de cabell", "Farmaciola", "Ambientador", "Cistell de roba bruta", "Got per als raspalls de dents", "Cotó i bastonets", "Crema hidratant"],
+  dormitori:["Armari", "Calaixera", "Mirall de peu", "Penjadors", "Capçal de llit", "Llum de lectura", "Llençols de recanvi", "Edredó d'estiu", "Coixí cervical", "Catifa de llit", "Estors o persianes", "Ventilador", "Humidificador", "Calçador"],
+  office:["Teclat", "Ratolí", "Monitor", "Alfombreta de ratolí", "Suport per al portàtil", "Hub USB", "Carregador de mòbil", "Cables USB-C", "Rotuladors i bolígrafs", "Calculadora", "Paperera d'oficina", "Altaveus", "Repetidor Wi-Fi", "Targeta SD o pendrive", "Ventilador USB", "Organitzador de cables", "Calendari o agenda"],
+  eines:["Serra", "Tenalles", "Llimes", "Cúter", "Nivell", "Trepant amb broques", "Assortiment de cargols i volanderes", "Cola d'encolar", "Cinta d'embalar", "Guants de treball", "Ulleres de protecció", "Escala plegable", "Caixa d'eines", "Cinta de teflon", "Llanterna", "Corda", "Inflador", "Soldador d'estany"],
+  electro:["Cafetera", "Batedora o minipimer", "Aspiradora", "Aspiradora de mà", "Ventilador", "Estufa o radiador", "Aire condicionat", "Assecador de cabells", "Olla a pressió", "Robot de cuina", "Termo elèctric", "Rentadora-assecadora", "Humidificador", "Depuradora d'aire", "Torradora de pa", "Escalfador d'aigua"],
+  neteja:["Fregalls de cuina", "Draps de microfibra", "Raspall de fregar", "Mopa", "Bossa d'aspiradora (recanvi)", "Esponges", "Netejador de forns", "Desinfectant", "Suavitzant", "Pastilles de rentaplats", "Sabó de mans (recanvi)", "Guants de goma", "Cubell amb escorredor", "Ambientadors", "Esprai antical", "Paper de cuina"]
+};
+Object.keys(PEND_MORE).forEach(k => { PENDENTS[k] = (PENDENTS[k] || []).concat(PEND_MORE[k]); });
+/* zones creades per tu: pendents segons el nom; si el nom no és conegut, una llista general */
+const PEND_LABEL = {
+  jocs:["Jocs de taula", "Baralla de cartes", "Daus", "Puzles", "Consola", "Comandaments extra", "Jocs de consola", "Pilota", "Escacs o dames", "Dòmino", "Cartes UNO", "Cartes de pòquer", "Joc de dards", "Cables i carregadors de la consola"],
+  altres:["Caixes d'emmagatzematge", "Etiquetes i retolador", "Bosses de plàstic", "Corda i brides", "Farmaciola", "Mantes de recanvi", "Piles de recanvi", "Llanterna d'emergència", "Documents i garanties", "Claus de recanvi", "Maleta de viatge", "Paraigua", "Detector de monòxid", "Extintor"],
+  terrassa:["Taula exterior", "Cadires exteriors", "Para-sol", "Coixins d'exterior", "Barbacoa", "Estenedor exterior", "Llums solars", "Testos i plantes", "Mànega", "Regadora", "Tauleta auxiliar", "Hamaca o gandula", "Cubell d'escombraries exterior", "Tendal"],
+  garatge:["Prestatgeries metàl·liques", "Caixes de plàstic", "Bicicleta", "Inflador", "Eines de jardí", "Estris de neteja del cotxe", "Bidons", "Escala", "Penjadors de paret", "Aspiradora de taller", "Oli i líquids del cotxe", "Cables de pont"],
+  jardi:["Tisores de podar", "Regadora", "Mànega", "Pala i rasclet", "Guants de jardiner", "Testos", "Terra i abonament", "Carretó", "Desbrossadora", "Aspersors", "Cubell de compost", "Estris de jardineria"],
+  habitacio:["Llit i matalàs", "Armari", "Taula de nit", "Llum", "Cortines", "Catifa", "Escriptori", "Cadira", "Penjadors", "Mirall"]
+};
+const PEND_GENERIC = ["Prestatgeria", "Caixes d'emmagatzematge", "Llum", "Regleta d'endolls", "Cistells", "Penjadors", "Cubell d'escombraries", "Etiquetes i retolador", "Caixa de primers auxilis", "Mirall"];
+function pendBase(catId){
+  if(PENDENTS[catId]) return PENDENTS[catId];
+  const z = CATS.find(c => c.id === catId), k = z ? norm(z.label).trim() : "";
+  if(PEND_LABEL[k]) return PEND_LABEL[k];
+  const hit = Object.keys(PEND_LABEL).find(x => k.startsWith(x));
+  return hit ? PEND_LABEL[hit] : PEND_GENERIC;
+}
+
 const sections = [];
-const pendRows = catId => (PENDENTS[catId]||[]).map((p,k)=>({key:catId+":"+k, name:p})).filter(r=>!tret[r.key])
+const pendRows = catId => (pendBase(catId)).map((p,k)=>({key:catId+":"+k, name:p})).filter(r=>!tret[r.key])
   .concat((extra[catId]||[]).map(x=>({key:catId+":x"+x.id, name:x.name, own:x.id})));
 const pdel = (catId, r) => '<button type="button" class="pdel" data-cat="'+catId+'" data-k="'+r.key+'"'+(r.own?' data-own="'+r.own+'"':'')+' aria-label="Elimina '+esc(r.name)+' dels pendents">✕</button>';
 /* Creu vermella: elimina el pendent (els propis s'esborren; els suggerits s'amaguen i es poden restaurar) */
@@ -1452,6 +1600,7 @@ function buildSection(cat){
     };
     renderPend(sec);
 }
+buildNewSection();
 CATS.forEach(buildSection);
 
 /* ---- Formulari per crear un article des de Pendents ---- */
@@ -1652,16 +1801,46 @@ $("fForm").onsubmit = e => {
   updateSub(); render(); $("fdlg").close();
 };
 
+/* ---- v4.0: ordre (els NEW sempre a dalt) i secció «Nous» ---- */
+let ORD = new Map();
+function applyOrder(){
+  const L = [];
+  DATA.forEach((c, i) => { if(live(c)) L.push({c, i}); });
+  const mode = cfgGet("sortMode"), m = new Map();
+  if(mode === 1) [...L].sort((a, b) => String(a.c.item).localeCompare(String(b.c.item), "ca", {sensitivity:"base", numeric:true})).forEach((x, k) => m.set(x.i, k));
+  else if(mode === 2) [...L].sort((a, b) => (+b.c.ord || 0) - (+a.c.ord || 0) || b.i - a.i).forEach((x, k) => m.set(x.i, k));
+  L.filter(x => isNew(x.c)).sort((a, b) => b.c.ord - a.c.ord).forEach((x, k) => m.set(x.i, -100000 + k));
+  ORD = m;
+  sections.forEach(sec => sec.cards.forEach(li => { li.style.order = m.get(+li.dataset.i) || 0; }));
+}
+function buildNewSection(){
+  const s = document.createElement("section"); s.className = "sec-new";
+  s.innerHTML = '<h2><span aria-hidden="true">🆕</span>Nous<span class="n"></span>' + VIEWS + '</h2><ul class="grid"></ul>';
+  $("out").appendChild(s);
+  sections.push({el:s, cat:NEWCAT, n:s.querySelector("h2 .n"), grid:s.querySelector("ul.grid"), cards:[]});
+}
+function syncNewCards(){
+  const sec = sections[0]; if(!sec || sec.cat.id !== "__new") return;
+  const want = []; DATA.forEach((c, i) => { if(live(c) && isNew(c)) want.push(i); });
+  const have_ = sec.cards.map(li => +li.dataset.i);
+  if(want.length === have_.length && want.every((x, k) => x === have_[k])) return;
+  sec.cards.forEach(li => li.remove()); sec.cards = [];
+  const tmp = document.createElement("ul");
+  want.forEach(i => { tmp.innerHTML = card(DATA[i], i); const li = tmp.firstElementChild; sec.grid.appendChild(li); sec.cards.push(li); });
+}
 function render(){
+  syncNewCards(); applyOrder();
   renderLocs(); renderChips();
   let total = 0; order = [];
   sections.forEach(sec=>{
-    let n = 0;
-    sec.cards.forEach(li=>{
-      const i = +li.dataset.i, ok = matches(DATA[i], i) && (state.cat === "all" ? sec.cat.id === DATA[i].cat : sec.cat.id === state.cat);
+    let n = 0; const vis = [], isN = sec.cat.id === "__new";
+    sec.cards.forEach((li, k)=>{
+      const i = +li.dataset.i, c = DATA[i], nw = !!c && isNew(c);
+      const ok = !!c && matches(c, i) && (isN ? (state.cat === "all" && nw) : state.cat === "all" ? (sec.cat.id === c.cat && !nw) : sec.cat.id === state.cat);
       li.hidden = !ok;
-      if(ok){ n++; order.push(i); }
+      if(ok){ n++; vis.push({i, o: +li.style.order || 0, k}); }
     });
+    vis.sort((a, b) => a.o - b.o || a.k - b.k).forEach(v => order.push(v.i));
     sec.el.hidden = !n && state.cat!==sec.cat.id; sec.n.textContent = n; total += n;
   });
   $("none").hidden = total>0 || view==="check";
@@ -1682,7 +1861,7 @@ function renderCheck(){
   let shown = 0;
   const seen = new Set();
   const cols = CATS.filter(cat=>state.cat==="all" || state.cat===cat.id).map(cat=>{
-    const arts = DATA.map((c,i)=>({c,i})).filter(({c,i})=>catsOf(c).includes(cat.id) && matches(c,i));
+    const arts = DATA.map((c,i)=>({c,i})).filter(({c,i})=>catsOf(c).includes(cat.id) && matches(c,i)).sort((x, y) => ((ORD.get(x.i) || 0) - (ORD.get(y.i) || 0)) || x.i - y.i);
     const pend = state.loc==="all" && !state.review ? pendRows(cat.id).filter(r=>have[r.key]!=="art" && (!q || qText(norm(r.name)))) : [];
     const ok = arts.length + pend.filter(r=>have[r.key]).length, all = arts.length + pend.length;
     arts.forEach(({i}) => seen.add(i));
@@ -1691,7 +1870,7 @@ function renderCheck(){
     shown++;
     return '<details class="ccol'+(solo?' solo':'')+'" data-cat="'+cat.id+'"'+(solo || !checkClosed.has(cat.id) ? ' open' : '')+'><summary><h3><span aria-hidden="true">'+cat.icon+'</span>'+esc(cat.label)+'<span class="n">'+ok+' / '+all+'</span></h3></summary><ul>'
       + pend.filter(r=>!have[r.key]).map(r=>'<li class="cp"><label><input type="checkbox" data-cat="'+cat.id+'" data-k="'+r.key+'"><span>'+esc(r.name)+'</span></label><span class="ptag">Pendent</span>'+pdel(cat.id, r)+'</li>').join("")
-      + arts.map(({c,i})=>'<li><label><input type="checkbox" checked data-i="'+i+'"><span>'+esc(c.item)+'</span></label><span class="cmeta">'+esc(qtyBadge(c.qty))+' · '+esc(locsTxt(c, ", "))+'</span></li>').join("")
+      + arts.map(({c,i})=>'<li><label><input type="checkbox" checked data-i="'+i+'"><span>'+esc(c.item)+(isNew(c)?'<em class="ntg">NEW</em>':'')+'</span></label><span class="cmeta">'+esc(qtyBadge(c.qty))+' · '+esc(locsTxt(c, ", "))+'</span></li>').join("")
       + pend.filter(r=>have[r.key]).map(r=>'<li><label><input type="checkbox" checked data-cat="'+cat.id+'" data-k="'+r.key+'"><span>'+esc(r.name)+'</span></label><span class="cmeta">Marcat</span>'+pdel(cat.id, r)+'</li>').join("")
       + '</ul></details>';
   }).join("");
@@ -1768,6 +1947,8 @@ function showDlg(){
     ? '<img alt="'+esc(c.item)+'" src="'+c.photos[idx]+'">' + (multi ? '<span class="more">Foto '+(idx+1)+' de '+c.photos.length+' · toca per ampliar</span>' : '')
     : '<span style="color:#c2c2c2;font-size:14px">'+(c.pend>0?'Foto pendent de tornar a enviar':'Encara sense foto')+'</span>';
   if(!c.photos.length) $("dPhoto").className = "ph empty";
+  if(isNew(c)) $("dPhoto").insertAdjacentHTML("beforeend", '<span class="newtag">NEW</span>');
+  $("dNew").hidden = !isNew(c);
   $("dLoc").textContent = "📍 " + locsTxt(c);
   $("dTitle").textContent = c.item;
   $("dQty").textContent = c.qty;
@@ -1882,7 +2063,7 @@ $("q").addEventListener("input", e => {
 });
 $("reset").onclick = resetFilters;
 const filtersEl = $("chips");
-addEventListener("scroll", () => { $("totop").hidden = filtersEl.getBoundingClientRect().bottom > 0; }, {passive:true});
+addEventListener("scroll", () => { $("totop").hidden = scrollY < 600; }, {passive:true});
 $("totop").onclick = () => { scrollTo({top:0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); };
 $("none").querySelector("button").onclick = resetFilters;
 $("out").addEventListener("click", e => { const b = e.target.closest(".card-btn[data-i]"); if(b) openDlg(+b.dataset.i); });
@@ -2293,7 +2474,9 @@ function cloudSetStatus(){
   else if(pend){ t = "⏳ Desant…"; c = "sync-wait"; }
   else if(!cloudLoaded){ t = "⏳ Carregant…"; c = "sync-wait"; }
   else { t = "☁️ Sincronitzat"; c = "sync-ok"; }
-  b.textContent = t; if(c) b.classList.add(c);
+  const sp = t.indexOf(" ");
+  b.innerHTML = '<span class="ic">' + t.slice(0, sp) + '</span> <span class="tx">' + t.slice(sp + 1) + '</span>';
+  if(c) b.classList.add(c);
 }
 function cloudErr(e){
   console.error(e);
@@ -2416,6 +2599,7 @@ function rebuildFromCloud(){
   if(state.cat !== "all" && !CATS.some(z => z.id === state.cat)) state.cat = "all";
   if(state.loc !== "all" && !LOCS.includes(state.loc)) state.loc = "all";
   $("out").innerHTML = ""; sections.length = 0;
+  buildNewSection();
   CATS.forEach(buildSection);
   sections.forEach(x => {
     if(doneO.has(x.cat.id)){ x.doneOpen = true; renderPend(x); }
@@ -2567,7 +2751,7 @@ const pendName = key => {
   const r = pendRows(cat).find(x => x.key === key);
   if(r) return r.name;
   const k = String(key).split(":")[1];
-  return (PENDENTS[cat] || [])[+k] || key;
+  return pendBase(cat)[+k] || key;
 };
 const catName = id => (CATS.find(z => z.id === id) || {}).label || id;
 function partLabel(p){
@@ -2587,6 +2771,7 @@ function partLabel(p){
     if(na > nb) ch.push("+" + (na - nb) + (na - nb > 1 ? " fotos" : " foto"));
     else if(na < nb) ch.push("foto treta");
     else if(stable(b.ph) !== stable(a.ph)) ch.push("foto canviada");
+    if(!!b.nouVist !== !!a.nouVist) ch.push(a.nouVist ? "NEW tret" : "NEW restaurat");
     if(!ch.length && (b.estado !== a.estado || b.fiab !== a.fiab || (b.note || "") !== (a.note || ""))) ch.push("marcat com a correcte");
     return "✎ «" + a.item + "»: " + (ch.join(", ") || "editat");
   }
@@ -2615,6 +2800,8 @@ function partLabel(p){
     bl.filter(x => !al.includes(x)).forEach(x => L.push("📍 Ubicació eliminada «" + x + "»"));
   } else if(p.f === "inv_cfg"){
     L.push(cfgLabels(b, a));
+  } else if(p.f === "inv_theme"){
+    L.push(themeLabels(b, a));
   }
   return L.join(" · ");
 }
@@ -2636,7 +2823,7 @@ function metaRevert(f, b, a, cur, keepCats){
     new Set([...Object.keys(B), ...Object.keys(A)]).forEach(p => { if(stable(B[p]) !== stable(A[p])) cfgSet(o, p, B[p]); });
     return o;
   }
-  if(f === "inv_tinc" || f === "inv_pend_tret"){
+  if(f === "inv_tinc" || f === "inv_pend_tret" || f === "inv_theme"){
     const o = cur && typeof cur === "object" && !Array.isArray(cur) ? cur : {}, B = b || {}, A = a || {};
     new Set([...Object.keys(B), ...Object.keys(A)]).forEach(k => { if(stable(B[k]) === stable(A[k])) return; if(B[k] === undefined) delete o[k]; else o[k] = deep(B[k]); });
     return o;
@@ -2952,10 +3139,10 @@ chatBadge();
    Els ajustos es desen a Firestore (meta/state · camp inv_cfg) i surten a ↶ Desfés.
    ===================================================================== */
 let CHAT_MAX = 300;
-const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «Nou»"};
-const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap" || k === "toast" || k === "coin";
+const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «NEW»", sortMode:"Ordre dels articles", lph:"Foto a la vista llista", rad:"Cantonades arrodonides", aiwait:"Espera del toc simple a l'assistent", smartbar:"Barra de cerca intel·ligent", vib:"Vibració en tocar"};
+const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap" || k === "toast" || k === "coin" || k === "aiwait";
 const cfgDeep = o => o == null ? null : JSON.parse(JSON.stringify(o));
-const fmtSec = ms => String(Math.round(ms / 100) / 10).replace(".", ",") + " s";
+const fmtSec = ms => String(Math.round(ms / 10) / 100).replace(".", ",") + " s";
 function cfgFlat(o){
   const r = {};
   if(!o || typeof o !== "object") return r;
@@ -2989,7 +3176,7 @@ function cfgLabels(b, a){
 }
 function cfgClean(o){
   const r = {};
-  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays"].forEach(k => {
+  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays", "sortMode", "lph", "rad", "aiwait", "smartbar", "vib"].forEach(k => {
     const v = o && o[k];
     if(typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] && v !== CFGD[k]) r[k] = v;
   });
@@ -3008,6 +3195,9 @@ function cfgApply(){
   document.documentElement.style.setProperty("--hold", cfgGet("hold") + "ms");
   document.documentElement.style.setProperty("--cols", cfgGet("cols"));
   document.documentElement.style.setProperty("--cardmin", cfgGet("cardmin") + "px");
+  document.documentElement.style.setProperty("--lph", cfgGet("lph") + "px");
+  document.documentElement.style.setProperty("--rad", cfgGet("rad") + "px");
+  themeApply();
   if(window.__lnd !== cfgGet("newDays")){ const first = window.__lnd === undefined; window.__lnd = cfgGet("newDays"); if(!first) scheduleRebuild(); }
   render();
   if(histLoaded) cloudHist(HIST);
@@ -3217,7 +3407,7 @@ const itemDesc = c => qtyBadge(c.qty) + " · " + zonesTxt(c) + " · 📍 " + loc
 /* ---- ordres ---- */
 function rHelp(nt){
   if(!/^(?:ajuda|help|ordres|comandes)\b|que puc fer|que saps fer|que pots fer|com funciones/.test(nt)) return false;
-  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
+  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• ordena per nom · ordena per recents · ordre original\n• cantonades a 20 · foto de la llista a 90\n• vibració activada · barra de cerca desactivada\n\n🎨 COLORS\n• posa el color principal a blau\n• color del fons blau fosc · color del text #ffeecc\n• color del cartell NEW taronja\n• tema verd (rosa, lila, groc, taronja, gris…)\n• restaura els colors\n\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
   return true;
 }
 function rShow(nt){
@@ -3227,7 +3417,9 @@ function rShow(nt){
     + "\n↶ Desfés guarda " + cfgGet("histMax") + " canvis · 💬 el xat guarda " + cfgGet("chatMax") + " missatges"
     + "\n🔊 Volum de WALL-E: " + cfgGet("wvol") + "%"
     + "\n⏳ Avisos: " + fmtSec(cfgGet("toast")) + " · Moneda: " + fmtSec(cfgGet("coin")) + " · 🖼️ targetes PC: " + cfgGet("cardmin") + " px"
-    + "\n🔔 Avís del xat: " + cfgGet("chatVol") + "% · ✨ Nou: " + (cfgGet("newDays") ? cfgGet("newDays") + " dies" : "desactivat")
+    + "\n🔔 Avís del xat: " + cfgGet("chatVol") + "% · NEW: " + (cfgGet("newDays") ? cfgGet("newDays") + " dies" : "desactivat")
+    + "\n🎨 Colors: principal " + themeVals().accent + " · fons " + themeVals().bg + " · text " + themeVals().ink + " · NEW " + themeVals().newc
+    + "\n↕ Ordre: " + ["original", "nom A→Z", "més recents primer"][cfgGet("sortMode")]
     + "\n💾 Còpies que es guarden: " + cfgGet("bkMax") + " · automàtica cada " + (cfgGet("bkAuto") ? cfgGet("bkAuto") + " dies" : "— (desactivada)") + " · 🖼️ " + cfgGet("cols") + " articles per fila");
   return true;
 }
@@ -3245,11 +3437,16 @@ function rGoal(nt){
 }
 function rTimes(nt){
   let k, name;
-  if(/\bxat\b/.test(nt) && /\bvolum\b|\bso\b|avis/.test(nt) && /\d/.test(nt)){ k = "chatVol"; name = "el volum de l'avís del xat"; }
+  if(/cantonad|arrodon|\bradi\b/.test(nt)){ k = "rad"; name = "les cantonades arrodonides"; }
+  else if(/vibraci/.test(nt)){ k = "vib"; name = "la vibració en tocar"; }
+  else if(/\bbarra\b/.test(nt) && /cerca|intel/.test(nt)){ k = "smartbar"; name = "la barra de cerca intel·ligent"; }
+  else if(/\bfotos?\b/.test(nt) && /llista/.test(nt)){ k = "lph"; name = "la mida de la foto a la vista llista"; }
+  else if(/espera|retard/.test(nt) && /assistent|toc simple/.test(nt)){ k = "aiwait"; name = "l'espera del toc simple a l'assistent"; }
+  else if(/\bxat\b/.test(nt) && /\bvolum\b|\bso\b|avis/.test(nt) && /\d/.test(nt)){ k = "chatVol"; name = "el volum de l'avís del xat"; }
   else if(/\bavis(?:os)?\b|toast/.test(nt) && /\d/.test(nt)){ k = "toast"; name = "els segons que es veu l'avís"; }
   else if(/moneda|desbloque|bloqueja/.test(nt) && /\d/.test(nt)){ k = "coin"; name = "els segons abans de bloquejar la moneda"; }
   else if(/targetes?/.test(nt)){ k = "cardmin"; name = "la mida de les targetes (PC)"; }
-  else if(/\bnous?\b|novetat/.test(nt) && /dies/.test(nt)){ k = "newDays"; name = "els dies que un article es marca com a «Nou»"; }
+  else if(/\bnous?\b|novetat/.test(nt) && /dies/.test(nt)){ k = "newDays"; name = "els dies que un article porta el cartell NEW"; }
   else if(/versio.*(audio|wall)|(audio|wall).*versio/.test(nt)){ k = "wver"; name = "la versió de l'àudio de WALL-E"; }
   else if(/wall[\s-]?e|\bvolum\b/.test(nt)){ k = "wvol"; name = "el volum de WALL-E"; }
   else if(/triple\s+(?:toc|clic|click)/.test(nt)){ k = "tap"; name = "el temps del triple toc"; }
@@ -3262,7 +3459,8 @@ function rTimes(nt){
   else if(/\bxat\b|missatges/.test(nt) && /\d/.test(nt)){ k = "chatMax"; name = "els missatges que guarda el xat"; }
   else return false;
   if(needSession()) return true;
-  const n = rNum(nt);
+  let n = rNum(nt);
+  if(n == null && (k === "vib" || k === "smartbar")) n = /desactiv|apag|\bno\b|\boff\b|sense|treu/.test(nt) ? 0 : 1;
   if(n == null){ rMsg("bot", "Quin valor? Per exemple: «" + (cfgSec(k) ? "doble toc a 0,8 segons" : "historial a 50") + "»."); return true; }
   const v = cfgSec(k) ? (/\bms\b|mil[·.]?lisegon/.test(nt) ? Math.round(n) : Math.round(n * 1000)) : Math.round(n);
   const r = CFGR[k];
@@ -3422,7 +3620,7 @@ function rAsk(text){
   rMsg("me", text);
   const t0 = text.trim(), n0 = norm(t0).replace(/['’`´]/g, " "), nt = rNorm(t0);
   if(/^(?:hola|bon dia|bones|ei|hey|salut)\b/.test(nt) && nt.split(" ").length < 4){ rMsg("bot", "Hola! Digues-me què vols canviar. Si t'ho vols mirar, escriu «què puc fer?»."); return; }
-  const H = [rHelp, rShow, rStats, rReset, rGoal, rBackup, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
+  const H = [rHelp, rShow, rStats, rTheme, rSort, rReset, rGoal, rBackup, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
   for(const h of H){ if(h(nt, t0, n0) !== false) return; }
   const d = rMsg("bot", "No t'he entès 🤔 Prova amb una ordre com les d'aquests exemples:");
   rSuggest(d, ["Què puc fer?", "Resum de l'inventari", "Quins són els ajustos?"]);
@@ -3434,7 +3632,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "3.9";
+const APP_VER = "4.0";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null, phLoaded = false;
 const __cloudPhotos34 = cloudPhotos;
@@ -3644,7 +3842,7 @@ $("aiFab").onclick = () => {
   while(aiTaps.length && now - aiTaps[0] > win) aiTaps.shift();
   aiTaps.push(now); clearTimeout(aiOpenT); walleWarm();
   if(aiTaps.length >= 3){ aiTaps.length = 0; aiArm(); return; }  /* 3 tocs: gira la moneda */
-  aiOpenT = setTimeout(() => { aiTaps.length = 0; aiOpen(true); walleSay(); }, 450);   /* toc simple: assistent normal */
+  aiOpenT = setTimeout(() => { aiTaps.length = 0; aiOpen(true); walleSay(); }, cfgGet("aiwait"));   /* toc simple: assistent normal */
 };
 
 /* ---- ordres noves per a l'assistent ---- */
@@ -3926,15 +4124,31 @@ function cfgTimeRows(row){
     + row("Segons abans de bloquejar la moneda", "Entre 1 i 10 s · per defecte " + String(CFGD.coin / 1000).replace(".", ","), 'data-t="coin" min="1" max="10" step="0.5"', cfgGet("coin") / 1000, "s");
 }
 function cfgMoreHtml(row){
+  const th = themeVals();
+  const sw = id => '<button type="button" class="thsw" data-p="' + id + '" title="' + THEME_PRESETS[id].name + '" aria-label="Tema ' + THEME_PRESETS[id].name + '" style="--sw:' + THEME_PRESETS[id].accent + '"></button>';
+  const crow = (k, title, sub) => '<label class="cfrow"><span class="cft"><b>' + title + '</b><small>' + sub + '</small></span><span class="cfin"><input type="color" data-th="' + k + '" value="' + th[k] + '"><i class="hx">' + th[k] + '</i></span></label>';
   return row("Mida de les targetes (PC)", "Entre 140 i 400 px · per defecte " + CFGD.cardmin + " · més petit = més targetes per fila", 'data-t="cardmin" min="140" max="400" step="5"', cfgGet("cardmin"), "px")
-    + row("Marca com a «Nou» durant", "Entre 0 i 60 dies · 0 = desactivat · per defecte 0 · surt ✨ Nou als articles creats fa poc", 'data-t="newDays" min="0" max="60" step="1"', cfgGet("newDays"), "dies")
+    + row("Cartell NEW durant", "Entre 0 i 60 dies · 0 = desactivat · per defecte 3 · els articles nous surten amb el cartell NEW i a dalt de tot", 'data-t="newDays" min="0" max="60" step="1"', cfgGet("newDays"), "dies")
+    + row("Ordre dels articles", "0 = ordre original · 1 = nom A→Z · 2 = més recents primer · per defecte 0 · els NEW sempre a dalt", 'data-t="sortMode" min="0" max="2" step="1"', cfgGet("sortMode"), "0–2")
+    + row("Foto a la vista llista", "Entre 40 i 120 px · per defecte 76", 'data-t="lph" min="40" max="120" step="2"', cfgGet("lph"), "px")
+    + row("Cantonades arrodonides", "Entre 4 i 28 px · per defecte 14", 'data-t="rad" min="4" max="28" step="1"', cfgGet("rad"), "px")
+    + '</div><div class="cfg"><h3>🎨 Colors</h3><p class="cfn">Colors bàsics de la web. Es comparteixen entre dispositius i també els pots canviar amb l\'assistent d\'ordres («tema verd», «color del fons blau fosc»…).</p>'
+    + '<div class="thpre">' + Object.keys(THEME_PRESETS).map(sw).join("") + '</div>'
+    + crow("accent", "Color principal", "Botons, ubicacions, barres i filtres")
+    + crow("bg", "Color del fons", "Només colors foscos")
+    + crow("ink", "Color del text", "Ha de contrastar amb el fons")
+    + crow("newc", "Color del cartell NEW", "Per defecte vermell")
+    + '<button type="button" class="wtest" id="thReset">↺ Colors per defecte</button>'
+    + '</div><div class="cfg"><h3>📱 Mòbil</h3><p class="cfn">Com es comporta la web al telèfon.</p>'
+    + row("Barra de cerca intel·ligent", "1 = s'amaga en baixar i torna en pujar · 0 = sempre visible · per defecte 1", 'data-t="smartbar" min="0" max="1" step="1"', cfgGet("smartbar"), "0/1")
+    + row("Vibració en tocar", "1 = una petita vibració als botons (Android) · per defecte 0", 'data-t="vib" min="0" max="1" step="1"', cfgGet("vib"), "0/1")
+    + row("Espera del toc simple a l'assistent", "Entre 0,2 i 1 s · per defecte 0,45 · temps per distingir un toc d'un triple toc", 'data-t="aiwait" min="0.2" max="1" step="0.05"', cfgGet("aiwait") / 1000, "s")
     + '</div><div class="cfg"><h3>💬 Xat</h3><p class="cfn">So d\'avís quan t\'arriba un missatge amb el xat tancat (amb la pàgina oberta).</p>'
     + row("Volum de l'avís del xat", "Entre 0 i 100 · 0 = en silenci · per defecte " + CFGD.chatVol, 'data-t="chatVol" min="0" max="100" step="1"', cfgGet("chatVol"), "%")
     + '<button type="button" class="wtest" id="cTest">▶ Prova l\'avís</button>'
     + '</div><div class="cfg"><h3>🧹 Manteniment</h3><p class="cfn">Esborra les fotos que ja no fa servir cap article ni cap canvi de l\'historial. Ajuda a no omplir l\'espai gratuït del núvol.</p>'
     + '<button type="button" class="wtest" id="cClean">🧹 Neteja les fotos sense ús</button>';
 }
-
 /* ---- fotos sense ús ---- */
 function orphanPhotos(){
   if(!cloudLoaded || itemsCache || !histLoaded || !phLoaded) return null;
@@ -3993,6 +4207,149 @@ function rStats(nt){
     + "\n\n📍 Ubicacions: " + (s.byLoc.map(x => x.name + " " + x.n + " (" + x.p + "%)").join(" · ") || "—")
     + "\n🏠 Zones: " + s.byCat.map(x => x.name + " " + x.n + " (" + x.p + "%)").join(" · ")
     + "\n\n💾 Espai al núvol (aprox.): " + mbTxt(s.bytes) + " MB de 1024 MB (" + pct + " %)");
+  return true;
+}
+
+/* =====================================================================
+   v4.0 · Cartell NEW i ordre, colors bàsics, més pendents i mòbil renovat
+   ===================================================================== */
+/* ---- 🆕 NEW: quan caduca, es treu de dalt de tot ---- */
+let lastNewCount = -1;
+setInterval(() => {
+  const n = DATA.filter(c => live(c) && isNew(c)).length;
+  if(lastNewCount < 0){ lastNewCount = n; return; }
+  if(n !== lastNewCount){ lastNewCount = n; render(); }
+}, 60000);
+$("dNew").onclick = () => {
+  const c = DATA[cur]; if(!c) return;
+  saveItem(cur, {nouVist:true}); afterReview();
+  toast("«" + c.item + "» ja no té el cartell NEW.");
+};
+
+/* ---- 🎨 colors al panell d'ajustos ---- */
+const THEME_PRESETS = {
+  turquesa:{name:"Turquesa", accent:"#4fe3d2", bg:"#000000"},
+  blau:{name:"Blau", accent:"#5ea0ff", bg:"#050b1a"},
+  verd:{name:"Verd", accent:"#4ade80", bg:"#031208"},
+  rosa:{name:"Rosa", accent:"#ff6fb5", bg:"#14040d"},
+  taronja:{name:"Taronja", accent:"#ffa040", bg:"#140a02"},
+  lila:{name:"Lila", accent:"#b388ff", bg:"#0b0516"},
+  groc:{name:"Groc", accent:"#ffd23f", bg:"#120f00"},
+  gris:{name:"Gris", accent:"#d4d4d8", bg:"#0a0a0a"},
+  vermell:{name:"Vermell", accent:"#ff6b6b", bg:"#140303"}
+};
+function themeCommit(patch){
+  const T = Object.assign(themeVals(), patch), err = themeCheck(T);
+  if(err) return err;
+  store("inv_theme", themeClean(T)); themeApply();
+  if($("cfdlg").open) cfgRender();
+  return "";
+}
+$("cfBody").addEventListener("change", e => {
+  const t = e.target; if(!t.dataset || !t.dataset.th) return;
+  const err = themeCommit({[t.dataset.th]: t.value});
+  if(err){ toast("⚠️ " + err); cfgRender(); }
+});
+$("cfBody").addEventListener("click", e => {
+  const sw = e.target.closest(".thsw");
+  if(sw){ const p = THEME_PRESETS[sw.dataset.p]; if(!p) return; const err = themeCommit({accent:p.accent, bg:p.bg}); toast(err ? "⚠️ " + err : "🎨 Tema " + p.name.toLowerCase() + "."); return; }
+  if(e.target.closest("#thReset")){
+    if(!Object.keys(themeClean(themeRaw())).length){ toast("Ja estan els colors per defecte."); return; }
+    store("inv_theme", {}); themeApply(); cfgRender(); toast("↺ Colors restaurats.");
+  }
+});
+
+/* ---- 📱 mòbil: barra intel·ligent (s'amaga en baixar, torna en pujar) ---- */
+(function(){
+  const bar = $("fbar"); let lastY = scrollY;
+  addEventListener("scroll", () => {
+    const y = scrollY;
+    if(getComputedStyle(bar).position !== "sticky" || !cfgGet("smartbar")){ bar.classList.remove("hide"); lastY = y; return; }
+    if(y < 90 || y < lastY - 6) bar.classList.remove("hide");
+    else if(y > lastY + 12 && !bar.contains(document.activeElement)) bar.classList.add("hide");
+    lastY = y;
+  }, {passive:true});
+})();
+/* vibració suau en tocar botons (Android) */
+document.addEventListener("pointerdown", e => {
+  if(!cfgGet("vib") || e.pointerType !== "touch" || !navigator.vibrate) return;
+  if(e.target.closest && e.target.closest("button, .chip, .card-btn, label.cfrow")) { try { navigator.vibrate(8); } catch(_){} }
+}, {passive:true});
+/* centra el filtre de zona actiu a la fila horitzontal */
+let chipKeyPrev = "";
+function chipFocus(box){
+  const key = state.cat + "|" + state.review;
+  if(key === chipKeyPrev) return; chipKeyPrev = key;
+  const b = box.querySelector('[aria-pressed="true"]');
+  if(b && box.scrollWidth > box.clientWidth) box.scrollLeft = Math.max(0, b.offsetLeft - (box.clientWidth - b.offsetWidth) / 2);
+}
+
+/* ---- 🤖 assistent d'ordres: colors i ordre ---- */
+const COLOR_NAMES = {
+  "turquesa":"#4fe3d2", "turquesa fosc":"#1aa89a", "cian":"#22d3ee", "cyan":"#22d3ee",
+  "blau":"#3b82f6", "azul":"#3b82f6", "blau cel":"#7dc4ff", "azul cielo":"#7dc4ff", "blau fosc":"#1e40af", "azul oscuro":"#1e40af", "marino":"#1e3a8a",
+  "verd":"#2fd16b", "verde":"#2fd16b", "verd fosc":"#15803d", "verde oscuro":"#15803d", "verd llima":"#a3e635", "lima":"#a3e635",
+  "groc":"#ffd23f", "amarillo":"#ffd23f", "taronja":"#ff8a1f", "naranja":"#ff8a1f", "vermell":"#ef3b3b", "rojo":"#ef3b3b",
+  "rosa":"#ff6fb5", "fucsia":"#e11d9a", "lila":"#b388ff", "morat":"#a855f7", "morado":"#a855f7", "violeta":"#8b5cf6",
+  "marro":"#a0622d", "marron":"#a0622d", "gris":"#9ca3af", "plata":"#d4d4d8", "blanc":"#ffffff", "blanco":"#ffffff", "negre":"#000000", "negro":"#000000",
+  "or":"#f5c242", "oro":"#f5c242", "dorat":"#f5c242"
+};
+const COLOR_KEYS = Object.keys(COLOR_NAMES).sort((a, b) => b.length - a.length);
+const PRESET_OF = {turquesa:"turquesa", cian:"blau", cyan:"blau", blau:"blau", azul:"blau", verd:"verd", verde:"verd", lima:"verd", rosa:"rosa", fucsia:"rosa", taronja:"taronja", naranja:"taronja", lila:"lila", morat:"lila", morado:"lila", violeta:"lila", groc:"groc", amarillo:"groc", gris:"gris", plata:"gris", vermell:"vermell", rojo:"vermell"};
+function rColorFind(n0){
+  const m = /#([0-9a-f]{6}|[0-9a-f]{3})(?![0-9a-f])/i.exec(n0);
+  if(m){ let h = m[1].toLowerCase(); if(h.length === 3) h = h.split("").map(c => c + c).join(""); return {hex:"#" + h, label:"#" + h}; }
+  for(const k of COLOR_KEYS){ if(new RegExp("(^|[^a-z])" + k + "($|[^a-z])").test(n0)) return {hex:COLOR_NAMES[k], label:k, key:k}; }
+  return null;
+}
+function rTheme(nt, t0, n0){
+  if(!/\bcolors?\b|\btema\b|\bpaleta\b|\bfons\b|\bfondo\b|\bcolour\b/.test(nt)) return false;
+  const th = themeVals();
+  if(/(restaura|reinicia|reseteja|torna|treu).*(color|colors|tema|paleta)|(colors?|tema|paleta) per defecte/.test(nt)){
+    if(needSession()) return true;
+    if(!Object.keys(themeClean(themeRaw())).length){ rMsg("bot", "Els colors ja són els originals (turquesa sobre negre)."); return true; }
+    rConfirm("Restauro els colors originals (turquesa sobre negre). Confirmes?", () => { store("inv_theme", {}); themeApply(); if($("cfdlg").open) cfgRender(); return "✓ Colors restaurats."; });
+    return true;
+  }
+  const col = rColorFind(n0);
+  if(!col){
+    rMsg("bot", "🎨 Colors actuals\n• principal: " + th.accent + "\n• fons: " + th.bg + "\n• text: " + th.ink + "\n• cartell NEW: " + th.newc
+      + "\n\nPuc canviar-los així:\n• posa el color principal a blau\n• color del fons blau fosc\n• color del text #ffeecc\n• color del cartell NEW taronja\n• tema verd (rosa, lila, groc, taronja, gris, vermell…)\n• restaura els colors");
+    return true;
+  }
+  if(needSession()) return true;
+  if(/\b(tema|paleta)\b/.test(nt)){
+    const pid = col.key && PRESET_OF[col.key];
+    if(!pid){ rMsg("bot", "Temes disponibles: " + Object.values(THEME_PRESETS).map(p => p.name.toLowerCase()).join(", ") + ". Per exemple: «tema verd»."); return true; }
+    const p = THEME_PRESETS[pid], T = Object.assign(themeVals(), {accent:p.accent, bg:p.bg}), err = themeCheck(T);
+    if(err){ rMsg("bot", "⚠️ " + err); return true; }
+    rConfirm("Poso el tema " + p.name.toLowerCase() + " (color principal " + p.accent + " sobre fons " + p.bg + "). Confirmes?", () => { const e = themeCommit({accent:p.accent, bg:p.bg}); return e ? "⚠️ " + e : "✓ Tema " + p.name.toLowerCase() + " aplicat a tots els dispositius."; });
+    return true;
+  }
+  let tk = "accent";
+  if(/\b(text|lletra|lletres|texto|letra)\b/.test(nt)) tk = "ink";
+  else if(/\b(new|etiqueta|cartell|cartel|distintiu)\b/.test(nt)) tk = "newc";
+  else if(/\b(fons|fondo|background)\b/.test(nt)) tk = "bg";
+  let hex = col.hex, note = "";
+  if(tk === "bg"){
+    const rgb = hexRgb(hex);
+    if(lumOf(rgb) > .6){ rMsg("bot", "El fons només pot ser fosc. Prova amb un color més fosc (per exemple «blau fosc» o «negre»)."); return true; }
+    if(lumOf(rgb) > .012){ hex = rgbHex(mixRgb(rgb, [0, 0, 0], .88)); note = " (versió fosca de " + col.label + ")"; }
+  }
+  const err = themeCheck(Object.assign({}, th, {[tk]:hex}));
+  if(err){ rMsg("bot", "⚠️ " + err + " Prova amb un altre color."); return true; }
+  if(th[tk] === hex){ rMsg("bot", "Ja té aquest color."); return true; }
+  rConfirm("Canvio el " + THEME_NAME[tk].toLowerCase().replace(" new", " NEW") + ": " + th[tk] + " → " + hex + note + ". Confirmes?", () => { const e = themeCommit({[tk]:hex}); return e ? "⚠️ " + e : "✓ Fet. Es veu a tots els dispositius."; });
+  return true;
+}
+function rSort(nt){
+  if(!/\b(ordena|ordenar|ordenats?|ordre)\b/.test(nt)) return false;
+  const v = /alfab|\bnom\b|\ba z\b|a-z/.test(nt) ? 1 : /recent|nous|novetat|data|darrer|ultim/.test(nt) ? 2 : /original|defecte|normal|inici/.test(nt) ? 0 : null;
+  if(v === null){ rMsg("bot", "Com els vols ordenar? «ordena per nom», «ordena per recents» o «ordre original»."); return true; }
+  if(needSession()) return true;
+  const nm = ["l'ordre original", "nom A→Z", "els més recents primer"];
+  if(cfgGet("sortMode") === v){ rMsg("bot", "Ja estan ordenats així."); return true; }
+  rConfirm("Poso l'ordre dels articles: " + nm[v] + ". Els NEW sempre surten a dalt. Confirmes?", () => { cfgCommit(c => { c.sortMode = v; }); return "✓ Fet."; });
   return true;
 }
 
