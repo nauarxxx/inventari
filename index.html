@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v4.0">
+<meta name="generator" content="Inventari de casa v5.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -853,6 +853,192 @@ body.list #out .newtag{font-size:8.5px;padding:3px 6px 3px 5px;border-radius:0 0
   .savebtn .ic{font-size:18px;line-height:1}
   main{padding-bottom:130px}
 }
+
+/* ===== v5.0: botons de filtre amb dial, dashboard, confeti i Nau&Noa House ===== */
+.fsel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:8px;padding:8px 0 4px}
+.fbtn{position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;gap:9px;min-width:0;min-height:60px;padding:8px 12px;border-radius:18px;border:2px solid var(--line);
+  background:radial-gradient(130% 150% at 0% 0%,color-mix(in srgb,var(--accent) 16%,#000) 0%,var(--surface2) 60%);color:var(--ink);font:inherit;text-align:left;cursor:pointer;
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;transition:border-color .2s,box-shadow .2s,transform .12s}
+.fbtn:hover{border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.fbtn:active,.fbtn.pressing{transform:scale(.97)}
+.fbtn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.fbtn[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.18),0 0 18px rgba(var(--accent-rgb),.3)}
+.fbtn .fbg{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.fbtn .fbg i{display:block;height:100%;background:linear-gradient(90deg,rgba(47,201,183,.5),rgba(var(--accent-rgb),.26));box-shadow:inset -3px 0 0 var(--accent);transition:width .5s ease}
+.fbtn .fbg i[style*="width:0%"]{box-shadow:none;background:none}
+.fbtn .fic{flex:none;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;border-radius:50%}
+.fbtn .fic.ini{background:rgba(var(--accent-rgb),.16);border:2px solid var(--accent);font-size:13px;font-weight:800}
+.fbtn .fic .globe{width:36px;height:36px}
+.fbtn .ft{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.fbtn .ft b{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fbtn .ft small{font-size:11px;color:var(--muted);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fbtn .fn{flex:none;font-weight:800;font-size:15px;padding:2px 11px;border-radius:999px;background:#000;border:1px solid var(--line);color:var(--muted)}
+.fbtn[aria-pressed="true"] .fn{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.fbtn:not([aria-pressed="true"]) .mer{animation-play-state:paused}
+.fbtn.house{border-color:#ffd23f;box-shadow:0 0 0 3px rgba(255,210,63,.18),0 0 20px rgba(255,210,63,.35)}
+.fbtn.house .fbg i{background:linear-gradient(90deg,rgba(255,210,63,.45),rgba(255,126,182,.3));box-shadow:inset -3px 0 0 #ffd23f}
+.fbtn.frev{flex-direction:column;justify-content:center;gap:0;min-width:64px;padding:6px 10px;border-style:dashed;text-align:center}
+.fbtn.frev .fic{width:auto;height:auto;font-size:19px}
+.fbtn.frev .fn{padding:0 9px;font-size:13px}
+.fbtn.frev small{font-size:10.5px;color:var(--muted);font-weight:700}
+.fbtn.frev[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.fbtn.frev[aria-pressed="true"] small{color:var(--accent-ink)}
+@media (max-width:600px){
+  .fsel{gap:6px;padding:6px 0 2px;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 54px}
+  .fbtn{min-height:54px;padding:6px 7px;gap:6px;border-radius:16px}
+  .fbtn .fic{width:30px;height:30px;font-size:19px}
+  .fbtn .fic .globe{width:30px;height:30px}
+  .fbtn .ft b{font-size:14px}
+  .fbtn .ft small{font-size:10.5px}
+  .fbtn .ft small .hint{display:none}
+  .fbtn:not(.frev) .fn{display:none}
+  .fbtn.frev{min-width:0;padding:4px 2px}
+  .fbtn.frev .fic{font-size:17px}
+}
+/* ---- dial ---- */
+.dial{position:fixed;inset:0;z-index:80;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.dial[hidden]{display:none}
+.dial .dbg{position:absolute;inset:0;background:radial-gradient(90% 70% at var(--ox,50%) var(--oy,0%),rgba(var(--accent-rgb),.16),rgba(0,0,0,.84) 70%);animation:dFade .18s ease-out}
+@keyframes dFade{from{opacity:0}to{opacity:1}}
+.dial .dorg{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:3px solid var(--accent);box-shadow:0 0 0 0 rgba(var(--accent-rgb),.5);animation:dPulse 1.2s ease-out infinite;pointer-events:none}
+@keyframes dPulse{0%{box-shadow:0 0 0 0 rgba(var(--accent-rgb),.55)}100%{box-shadow:0 0 0 24px rgba(var(--accent-rgb),0)}}
+.dial .dhub{position:absolute;transform:translate(-50%,-50%);width:150px;text-align:center;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.15}
+.dial .dhub .hi1{font-size:30px;line-height:1.1;min-height:34px;display:flex;align-items:center;justify-content:center}
+.dial .dhub .hi1 em{font-style:normal;font-size:20px;font-weight:800;border:2px solid var(--accent);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(var(--accent-rgb),.16)}
+.dial .dhub b{font-size:16px;font-weight:800;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dial .dhub small{font-size:12px;color:var(--muted);font-weight:600}
+.dial .dhub.hint b{font-size:14px;color:var(--accent-hi)}
+.ditem{position:absolute;left:0;top:0;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;font-size:22px;font-weight:800;padding:0;cursor:pointer;
+  box-shadow:0 6px 16px rgba(0,0,0,.55);transition:transform .24s cubic-bezier(.2,1.35,.4,1),opacity .16s,background .15s,border-color .15s;will-change:transform;touch-action:none}
+.ditem.mv{transition:transform .07s linear,background .12s,border-color .12s}
+.ditem .di{pointer-events:none;line-height:1}
+.ditem .di.t{font-size:.6em}
+.ditem .dn{position:absolute;right:-4px;bottom:-4px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#000;border:1.5px solid var(--line);color:var(--muted);font-size:10.5px;font-weight:800;line-height:16px;text-align:center;pointer-events:none}
+.ditem.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 24%,#000)}
+.ditem.act{background:var(--accent);border-color:#fff;color:var(--accent-ink);box-shadow:0 0 0 4px rgba(var(--accent-rgb),.35),0 10px 26px rgba(0,0,0,.6)}
+.ditem.act .dn{background:#fff;color:#000;border-color:#fff}
+.ditem.house{border-color:#ffd23f;background:linear-gradient(140deg,#4a3500,#2a0f22)}
+.ditem.house.act{background:linear-gradient(140deg,#ffd23f,#ff7eb6);color:#2a0a1a}
+.ditem:focus-visible{outline:3px solid #fff;outline-offset:2px}
+body.dialing{overflow:hidden}
+/* ---- botó del dashboard ---- */
+.hgrp{grid-area:h;justify-self:end;display:flex;align-items:center;gap:10px}
+.hbtn#dashBtn svg{color:#ffd23f}
+@media (max-width:600px){.hgrp{gap:8px}}
+/* ---- dashboard ---- */
+.dash{position:fixed;inset:0;z-index:30;background:radial-gradient(120% 60% at 50% 0%,color-mix(in srgb,var(--accent) 12%,var(--bg)) 0%,var(--bg) 60%);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.dash[hidden]{display:none}
+.dh{display:flex;align-items:center;gap:12px;padding:12px 14px 8px}
+.dh .dht{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.dh .dht b{font-size:22px;font-weight:800;letter-spacing:-.01em}
+.dh .dht small{font-size:12.5px;color:var(--muted)}
+.dnav{display:flex;gap:6px;overflow-x:auto;padding:4px 14px 10px;scrollbar-width:none;border-bottom:1px solid var(--line)}
+.dnav::-webkit-scrollbar{display:none}
+.dnav button{flex:none;font:inherit;font-size:13px;font-weight:800;padding:7px 13px;border-radius:999px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);cursor:pointer}
+.dnav button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.dbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:6px 14px calc(36px + env(safe-area-inset-bottom,0px))}
+.dsec{margin-top:22px;scroll-margin-top:8px}
+.dsec>h2{margin:0 0 4px;font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
+.dsec>p.ds-n{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+.dsgrid{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:760px){.dsgrid.k{grid-template-columns:repeat(3,minmax(0,1fr))}.dsgrid.c{grid-template-columns:repeat(3,minmax(0,1fr))}.dsgrid.w{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1100px){.dsgrid.c{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.dcard{position:relative;background:linear-gradient(160deg,color-mix(in srgb,var(--surface) 80%,var(--accent)) 0%,var(--surface) 70%);border:2px solid var(--line);border-radius:18px;padding:12px 13px;overflow:hidden;min-width:0}
+.dcard.click{cursor:pointer;transition:transform .12s,border-color .2s}
+.dcard.click:hover{border-color:var(--accent)}
+.dcard.click:active{transform:scale(.985)}
+.dcard .dl{font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px;line-height:1.2}
+.dcard .dv{font-size:30px;font-weight:800;line-height:1.05;margin-top:2px;letter-spacing:-.02em}
+.dcard .ds{font-size:12px;color:var(--muted);margin-top:2px}
+.dcard.k{display:flex;align-items:center;gap:10px}
+.dcard.k .kt{flex:1;min-width:0}
+.dcard .dsring{flex:none}
+.dsring .rb{fill:none;stroke:var(--line);stroke-width:7}
+.dsring .rf{fill:none;stroke-width:7;stroke-linecap:round;stroke-dasharray:0 var(--C);transition:stroke-dasharray 1.1s cubic-bezier(.2,.8,.2,1)}
+.go .dsring .rf,.noanim .dsring .rf{stroke-dasharray:var(--L) var(--C)}
+.dsbar{height:9px;border-radius:99px;background:#000;border:1px solid var(--line);overflow:hidden;margin-top:7px;display:flex}
+.dsbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent-lo),var(--accent-hi));transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.dsbar i+i{border-left:1px solid #000}
+.go .dsbar i,.noanim .dsbar i{width:var(--w)}
+.dsbar.gold i{background:linear-gradient(90deg,#ffd23f,#ff7eb6)}
+.dsbar.ok i{background:linear-gradient(90deg,#1fbf5b,#7ef0c4)}
+.dcard .row2{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11.5px;color:var(--muted)}
+.dcard .row2 b{color:var(--ink)}
+.dcard .pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#000;color:var(--muted)}
+.dcard.house{border-color:#ffd23f;background:linear-gradient(160deg,#2b2100 0%,#1c0d18 70%)}
+.dhero{position:relative;overflow:hidden;border-radius:22px;border:2px solid #ffd23f;background:radial-gradient(120% 140% at 0% 0%,rgba(255,210,63,.28),rgba(255,126,182,.14) 45%,rgba(79,227,210,.10) 80%),#0c0910;padding:16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.dhero .hr{flex:none}
+.dhero .ht{flex:1;min-width:200px}
+.dhero .ht h3{margin:0;font-size:20px;font-weight:800}
+.dhero .ht .big{font-size:34px;font-weight:800;line-height:1.05;margin-top:4px}
+.dhero .ht p{margin:4px 0 0;font-size:13px;color:#e8d9b0}
+.dhero .ft2{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.dhero .ft2 button{font:inherit;font-size:12px;font-weight:800;padding:5px 11px;border-radius:999px;border:2px solid rgba(255,210,63,.6);background:rgba(0,0,0,.4);color:#ffe9a0;cursor:pointer}
+.dhero .confbtn{border-color:#ffd23f!important;background:linear-gradient(140deg,#ffd23f,#ff7eb6)!important;color:#2a0a1a!important}
+.dsdon{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.dsdon svg{flex:none;width:150px;height:150px}
+.dsdon .dn circle{fill:none;stroke-width:26;stroke-dasharray:0 var(--C);transition:stroke-dasharray 1s cubic-bezier(.2,.8,.2,1)}
+.go .dsdon .dn circle,.noanim .dsdon .dn circle{stroke-dasharray:var(--L) var(--Cm)}
+.dsdon .leg{flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px;font-size:12.5px}
+.dsdon .leg div{display:flex;align-items:center;gap:7px}
+.dsdon .leg i{width:10px;height:10px;border-radius:3px;flex:none}
+.dsdon .leg span{margin-left:auto;font-weight:800}
+.dsdon .ctr{font-size:26px;font-weight:800;fill:var(--ink);text-anchor:middle}
+.dsdon .cts{font-size:11px;fill:var(--muted);text-anchor:middle}
+.dsmx{display:grid;gap:3px;font-size:11.5px;overflow-x:auto;padding-bottom:4px}
+.dsmx .h{font-weight:800;color:var(--muted);text-align:center;padding:4px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dsmx .r{font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:5px;padding:0 6px 0 0}
+.dsmx .c{border-radius:9px;min-height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;border:1px solid var(--line);cursor:pointer;background:rgba(var(--accent-rgb),var(--a,0));color:var(--ink);transition:transform .1s}
+.dsmx .c:active{transform:scale(.94)}
+.dsmx .c.z{color:var(--muted);font-weight:500;cursor:default}
+.dsact{width:100%;height:auto;display:block}
+.dsact text{font-size:8.5px;fill:var(--muted);text-anchor:middle}
+.dsact .dsb{transform:scaleY(0);transform-origin:bottom;transform-box:fill-box;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.go .dsact .dsb,.noanim .dsact .dsb{transform:scaleY(1)}
+.dsleg{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+.dsleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.dsusr{display:flex;gap:10px;align-items:flex-start}
+.dsusr .av{flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#04110f}
+.dsusr .av.nau{background:linear-gradient(140deg,var(--accent-hi),var(--accent-lo))}
+.dsusr .av.noa{background:linear-gradient(140deg,#ffb3d9,#ff7eb6);color:#2a0a1a}
+.dsusr .av.unk{background:var(--line);color:#fff}
+.dsusr .ut{flex:1;min-width:0}
+.dsusr .ut b{font-size:16px}
+.dsusr .ut .st{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.dsusr .ut .st div{background:#000;border:1px solid var(--line);border-radius:10px;padding:5px 7px;text-align:center}
+.dsusr .ut .st b{display:block;font-size:18px;line-height:1.1}
+.dsusr .ut .st small{font-size:10.5px;color:var(--muted)}
+.dslist{display:flex;flex-direction:column;gap:6px}
+.dsitem{display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:14px;border:1px solid var(--line);background:var(--surface);cursor:pointer;text-align:left;font:inherit;color:var(--ink);width:100%}
+.dsitem:hover{border-color:var(--accent)}
+.dsitem .th{flex:none;width:42px;height:42px;border-radius:10px;background:#000;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px}
+.dsitem .th img{width:100%;height:100%;object-fit:cover}
+.dsitem .tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.dsitem .tx b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsitem .tx small{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsitem .rk{flex:none;font-weight:800;font-size:15px;color:var(--accent)}
+.dsitem .mb{flex:none;width:70px}
+.dsempty{padding:18px 10px;text-align:center;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:14px}
+/* ---- confeti ---- */
+#fx{display:none;position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;overflow:hidden;pointer-events:none;z-index:9000}
+#fx.on{display:block}
+#fxc{position:absolute;inset:0;width:100%;height:100%}
+#fxflash{position:absolute;inset:0;opacity:0;background:radial-gradient(60% 50% at 50% 55%,rgba(255,226,140,.5),rgba(255,126,182,.22) 45%,transparent 75%)}
+#fxflash.go{animation:fxFl 1.3s ease-out}
+@keyframes fxFl{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+#fxban{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;animation:fxBan var(--bt,3.6s) cubic-bezier(.2,1.3,.4,1) both;width:min(92vw,560px)}
+#fxban[hidden]{display:none}
+#fxban .e{font-size:64px;line-height:1;filter:drop-shadow(0 6px 18px rgba(0,0,0,.6))}
+#fxban b{display:block;font-size:clamp(28px,8vw,46px);font-weight:800;line-height:1.05;margin-top:6px;background:linear-gradient(100deg,#ffe08a,#ff9ccb 50%,#8af7eb);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 14px rgba(0,0,0,.7))}
+#fxban small{display:block;margin-top:8px;font-size:clamp(14px,4vw,19px);font-weight:700;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.85)}
+@keyframes fxBan{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-6deg)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(1.5deg)}20%{transform:translate(-50%,-50%) scale(1) rotate(0)}82%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-60%) scale(.95)}}
+@media (prefers-reduced-motion:reduce){#fxban{animation-duration:var(--bt,3s)}}
+
+.dsgrid.u{grid-template-columns:1fr}
+@media (min-width:760px){.dsgrid.u{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dcard.k .dl{align-items:flex-start}
+.dsusr .ut .nm{display:flex;flex-direction:column;line-height:1.2}
+.dsusr .ut .nm small{color:var(--muted);font-size:11.5px}
 </style>
 </head>
 <body>
@@ -867,19 +1053,24 @@ body.list #out .newtag{font-size:8.5px;padding:3px 6px 3px 5px;border-radius:0 0
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v4.0</span></h1>
+      <h1>Inventari de casa <span class="ver">v5.0</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6A8.4 8.4 0 0 1 12.5 3H13a8.5 8.5 0 0 1 8 8z"/></svg>
       <span>Xat</span><b id="chatN" class="hn cbadge" hidden aria-live="polite"></b>
     </button>
-    <button id="histBtn" class="hbtn" type="button" aria-haspopup="dialog" aria-controls="hdlg" title="Historial de canvis: desfés el que has fet">
+    <div class="hgrp">
+  <button id="dashBtn" class="hbtn" type="button" aria-haspopup="dialog" aria-controls="dash" title="Dashboard: estadístiques de l'inventari">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-6M11 20V5M17 20v-9"/><path d="M3 20h18"/></svg>
+    <span>Dashboard</span>
+  </button>
+  <button id="histBtn" class="hbtn" type="button" aria-haspopup="dialog" aria-controls="hdlg" title="Historial de canvis: desfés el que has fet">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
       <span>Desfés</span><b id="histN" class="hn" hidden></b>
     </button>
   </div>
-  <div id="locs" class="lp" role="group" aria-label="Filtra per ubicació"></div>
+  </div>
 </header>
 <div id="fbar" class="fbar">
   <div class="srow">
@@ -887,7 +1078,7 @@ body.list #out .newtag{font-size:8.5px;padding:3px 6px 3px 5px;border-radius:0 0
     <span class="vbar" role="group" aria-label="Vista"><button type="button" data-v="grid" title="Imatges" aria-label="Vista imatges">▦</button><button type="button" data-v="list" title="Llista" aria-label="Vista llista">☰</button><button type="button" data-v="check" title="Check" aria-label="Vista check">☑</button></span>
     <button id="createBtn" class="crt" type="button" aria-haspopup="dialog" aria-controls="cdlg" title="Crea un article, una ubicació o una zona"><span aria-hidden="true">＋</span><b>Crea</b></button>
   </div>
-  <div id="chips" class="chips" role="group" aria-label="Filtra per zona"></div>
+  <div id="chips" class="fsel" role="group" aria-label="Filtres d'ubicació i zona"></div>
   <button id="reset" class="reset" type="button" hidden="">Treu tots els filtres</button>
 </div>
 <button id="totop" class="btn totop" type="button" hidden="">↑ Dalt</button>
@@ -1175,6 +1366,13 @@ body.list #out .newtag{font-size:8.5px;padding:3px 6px 3px 5px;border-radius:0 0
   <button type="button" class="lbnav n" id="lbxNext" aria-label="Foto següent">›</button>
 </div>
 
+<div id="dash" class="dash" role="dialog" aria-modal="true" aria-label="Dashboard" hidden>
+  <div class="dh"><div class="dht"><b>📊 Dashboard</b><small id="dashSub"></small></div><button class="btn" id="dashClose" type="button">Tanca</button></div>
+  <nav id="dashNav" class="dnav" aria-label="Seccions del dashboard"></nav>
+  <div id="dashBody" class="dbody"></div>
+</div>
+<div id="dial" class="dial" role="group" aria-label="Tria un filtre" hidden></div>
+<div id="fx" popover="manual" aria-hidden="true"><canvas id="fxc"></canvas><div id="fxflash"></div><div id="fxban" hidden></div></div>
 <script>
 /* Còpia exacta de la pàgina tal com s'ha obert: el botó Desa la torna a escriure amb els canvis */
 const SAVED = {keys:{}};
@@ -1192,10 +1390,15 @@ const CATS = [
 const PENDENTS = {"cuina": ["Paella gran", "Paella petita", "Olla gran", "Cassola", "Cassó per a llet o salses", "Colador / escorredor de pasta", "Ratllador", "Obrellaunes", "Llevataps", "Cullerot", "Varetes de batre", "Bàscula de cuina", "Gerra mesuradora", "Motlle per al forn", "Manyoples de forn", "Carmanyoles (tuppers)", "Escorreplats", "Plats plans i fondos (6 o més)", "Coberts de taula (6 o més)", "Gerra d'aigua", "Cubells de reciclatge"], "menjador": ["Taula de menjador", "Cadires", "Sofà", "Moble de TV", "Llum de peu o de sostre", "Catifa", "Cortines", "Coixins de sofà", "Manta de sofà", "Prestatgeria", "Rellotge de paret", "Quadres o decoració de paret"], "bany": ["Tovalloles de dutxa", "Tovalloles de mans", "Cortina o mampara de dutxa", "Penjador de tovalloles", "Portaraspalls de dents", "Mirall de bany", "Portarotlles de paper", "Bàscula de bany", "Termòmetre", "Gases i esparadrap", "Tisores d'ungles", "Organitzador de dutxa"], "dormitori": ["Llit i matalàs", "Protector de matalàs", "Coixins", "Jocs de llençols (2)", "Funda nòrdica i edredó", "Manta", "Tauletes de nit", "Llum de tauleta", "Cortines opaques", "Despertador", "Cistell de roba bruta", "Organitzadors d'armari"], "office": ["Taula d'escriptori", "Cadira d'oficina", "Llum d'escriptori", "Regleta amb interruptor", "Impressora", "Disc dur extern o USB", "Auriculars amb micròfon", "Webcam", "Cables HDMI / DisplayPort", "Paper DIN A4", "Grapadora", "Tisores", "Cinta adhesiva", "Notes adhesives", "Arxivadors i carpetes"], "eines": ["Martell", "Joc de tornavisos", "Alicates", "Clau anglesa", "Cinta mètrica", "Escala", "Tacs i cargols", "Brides", "Cinta americana", "Silicona i pistola", "Allargador elèctric", "Piles AA i AAA", "Bombetes de recanvi", "Detector de fum", "Extintor"], "electro": ["Nevera", "Rentadora", "Rentaplats", "Forn", "Microones", "Placa de cocció", "Campana extractora", "Torradora", "Bullidor d'aigua", "Planxa de roba", "Televisor", "Fregidora d'aire"], "neteja": ["Escombra i recollidor", "Pal de fregar i galleda", "Plomall per a la pols", "Guants de neteja", "Fregalls", "Estenedor de roba", "Pinces de roba", "Taula de planxar", "Desembussador", "Bosses d'escombraries", "Detergent de rentadora", "Rentavaixelles", "Lleixiu", "Netejador multiusos", "Netejavidres"]};
 const ESTAT = {ok:"Verificat", conf:"Quantitat per confirmar", sin:"Sense foto"};
 const FIAB = {alta:"Alta", mitjana:"Mitjana", baixa:"Baixa"};
+const HOUSE = "Nau&Noa House";
 const LOC_PRIORITY = ["Cunit","Garatge iaios"];
 let LOCS = [];
 function refreshLocs(){
-  LOCS = [...new Set(DATA.filter(live).flatMap(c=>c.locs).concat(window.__userLocs||[]))].sort((a,b)=>{
+  const set = new Set(DATA.filter(live).flatMap(c=>c.locs).concat(window.__userLocs||[]));
+  if(cfgGet("houseShow")) set.add(HOUSE);
+  LOCS = [...set].sort((a,b)=>{
+    if(a===HOUSE) return b===HOUSE ? 0 : 1;
+    if(b===HOUSE) return -1;
     const ia=LOC_PRIORITY.indexOf(a), ib=LOC_PRIORITY.indexOf(b);
     return (ia<0?99:ia)-(ib<0?99:ib) || a.localeCompare(b);
   });
@@ -1280,8 +1483,8 @@ const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c))
 const totAll = () => DATA.filter(live).length;
 const pctOf = (n, tot) => (!tot || !n) ? 0 : Math.max(1, Math.min(100, Math.round(n / tot * 100)));
 /* v3.3: valors per defecte (els de la v3.2) i límits dels ajustos */
-const CFGD = {sortMode:0, lph:76, rad:14, aiwait:450, smartbar:1, vib:0, toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:3, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
-const CFGR = {sortMode:[0, 2], lph:[40, 120], rad:[4, 28], aiwait:[200, 1000], smartbar:[0, 1], vib:[0, 1], toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
+const CFGD = {fxOn:1, fxN:160, fxT:3500, fxPal:0, fxVol:0, houseOn:1, houseShow:1, houseN:420, houseT:7000, houseR:34, houseBan:1, dialHold:350, dialS:46, dialR:140, dialMax:175, dialTap:1, dialVib:1, dashOn:1, dashDays:14, dashTop:5, dashAnim:1, sortMode:0, lph:76, rad:14, aiwait:450, smartbar:1, vib:0, toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:3, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
+const CFGR = {fxOn:[0, 1], fxN:[20, 600], fxT:[1000, 12000], fxPal:[0, 3], fxVol:[0, 100], houseOn:[0, 1], houseShow:[0, 1], houseN:[50, 900], houseT:[2000, 15000], houseR:[0, 80], houseBan:[0, 1], dialHold:[150, 1500], dialS:[34, 64], dialR:[90, 220], dialMax:[110, 260], dialTap:[0, 1], dialVib:[0, 1], dashOn:[0, 1], dashDays:[7, 60], dashTop:[3, 15], dashAnim:[0, 1], sortMode:[0, 2], lph:[40, 120], rad:[4, 28], aiwait:[200, 1000], smartbar:[0, 1], vib:[0, 1], toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
 function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
 function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
 const totLoc = l => DATA.filter(c => live(c) && c.locs.includes(l)).length;
@@ -1289,55 +1492,8 @@ const totCat = id => DATA.filter(c => live(c) && catsOf(c).includes(id)).length;
 /* v4.0: un article és NEW els primers dies (ord = moment de creació) fins que el treguis amb «Treu el NEW» */
 const NEWCAT = {id:"__new", label:"Nous", short:"Nous", icon:"🆕"};
 const isNew = c => { const d = cfgGet("newDays"); return d > 0 && !c.nouVist && typeof c.ord === "number" && c.ord > 1e12 && c.ord > Date.now() - d * 864e5; };
-function renderLocs(){
-  const box = $("locs"), sl0 = box.scrollLeft; box.innerHTML = "";
-  const GLOBE = '<span class="globe" aria-hidden="true"><svg viewBox="0 0 34 34" fill="none" stroke="rgba(2,26,23,.55)" stroke-width="1.3">'
-    +'<path d="M2 12h30M1 17h32M2 22h30"/>'
-    +'<g class="mer"><ellipse cx="17" cy="17" rx="6" ry="16"/><ellipse cx="17" cy="17" rx="12" ry="16"/><path d="M17 1v32"/><ellipse cx="51" cy="17" rx="6" ry="16"/><ellipse cx="-17" cy="17" rx="6" ry="16"/></g>'
-    +'<path d="M8 9c3 1 4 4 2 6s1 4 4 4M22 6c-1 3 2 4 4 3M20 24c2-1 4 0 5 3" stroke="rgba(2,26,23,.85)" stroke-width="2.2" stroke-linecap="round"/>'
-    +'</svg></span>';
-  const all = document.createElement("button");
-  all.type = "button"; all.className = "lp-all"; all.setAttribute("aria-pressed", String(state.loc==="all"));
-  all.title = "Totes les ubicacions";
-  all.innerHTML = GLOBE + '<span class="lp-t"><b>Tot el món</b><small>' + LOCS.length + (LOCS.length===1?' ubicació':' ubicacions') + ' · toca\'n una per filtrar</small></span><span class="lp-n">' + count("loc",()=>true) + '</span>';
-  all.onclick = () => { state.loc = "all"; render(); };
-  box.appendChild(all);
-  const grid = document.createElement("div"); grid.className = "lp-grid";
-  const TOT = totAll();
-  LOCS.forEach(l => {
-    const n = totLoc(l), p = pctOf(n, TOT), b = document.createElement("button");
-    b.type = "button"; b.className = "lp-loc"; b.setAttribute("aria-pressed", String(state.loc===l));
-    b.title = n + " de " + TOT + " articles (" + p + "%)";
-    b.innerHTML = '<span class="lp-bar'+(p>=100?' full':'')+'" aria-hidden="true"><i style="width:'+p+'%"></i></span>'
-      + '<span class="lp-top"><span class="lp-pin" aria-hidden="true">📍</span><span class="lp-name">'+esc(l)+'</span><span class="lp-c">'+n+'</span></span>'
-      + '<span class="lp-pct">'+p+'% dels articles</span>';
-    b.onclick = () => { state.loc = (state.loc===l ? "all" : l); render(); };
-    grid.appendChild(b);
-  });
-  box.appendChild(grid); box.scrollLeft = sl0;
-}
-function renderChips(){
-  /* Revisar funciona com una categoria més */
-  const box = $("chips"), sl0 = box.scrollLeft; box.innerHTML = "";
-  const base = (c,i) => live(c) && (state.loc==="all" || c.locs.includes(state.loc)) && (!state.q || qHit(i));
-  const n = f => DATA.filter((c,i)=>base(c,i) && f(c)).length;
-  const add = (label, num, pressed, cls, fn) => {
-    const b = document.createElement("button");
-    b.type="button"; b.className="chip"+(cls?" "+cls:""); b.setAttribute("aria-pressed", String(pressed));
-    if(num && typeof num === "object"){
-      b.classList.add("has-prog"); const TOT = totAll(), p = pctOf(num.t, TOT);
-      b.title = num.t + " de " + TOT + " articles (" + p + "%)";
-      b.innerHTML = '<span class="vfill'+(p>=100?' full':'')+'" aria-hidden="true" style="height:'+p+'%"></span>' + label + '<span class="n">'+num.t+' · '+p+'%</span>';
-    } else b.innerHTML = label + '<span class="n">'+num+'</span>';
-    b.onclick = fn; box.appendChild(b);
-  };
-  add('<span class="ic" aria-hidden="true">📦</span><span class="lb">Totes</span>', n(()=>true), state.cat==="all" && !state.review, "", ()=>{state.cat="all"; state.review=false; render();});
-  CATS.forEach(c=>add('<span class="ic" aria-hidden="true">'+c.icon+'</span><span class="lb">'+c.short+'</span>', {t: totCat(c.id)}, !state.review && state.cat===c.id, "",
-    ()=>{ state.cat = (!state.review && state.cat===c.id) ? "all" : c.id; state.review=false; render(); }));
-  add('<span class="ic" aria-hidden="true">⚠️</span><span class="lb">Revisar</span>', n(needsReview), state.review, "review",
-    ()=>{ state.review = !state.review; state.cat = "all"; render(); });
-  box.scrollLeft = sl0; chipFocus(box);
-}
+function renderLocs(){ /* v5.0: els filtres són dos botons amb dial (renderFilters) */ }
+function renderChips(){ renderFilters(); }
 function card(c,i){
   let ph;
   const qty = '<span class="qty">'+esc(qtyBadge(c.qty))+'</span>';
@@ -1452,6 +1608,7 @@ function placeCards(i){
   });
 }
 function saveItem(i, patch){
+  const prevLocs50 = locsOf(DATA[i]).slice();
   Object.assign(DATA[i], patch); if("cats" in patch && !patch.cats) delete DATA[i].cats; fixItem(DATA[i]); SEARCH[i] = searchText(DATA[i]);
   const ok = cloudSaveItem(DATA[i]);
   if(!ok) toast("No s'ha pogut desar la foto.");
@@ -1459,6 +1616,7 @@ function saveItem(i, patch){
   /* torna a pintar la targeta, a la seva categoria */
   dropCards(i); placeCards(i);
   updateSub(); render();
+  celebrateMove(DATA[i], prevLocs50);
 }
 const CORRECTE = {estado:"ok", fiab:"alta", pend:0};
 function reasons(c){
@@ -1791,6 +1949,7 @@ $("fForm").onsubmit = e => {
     pend:0, inv:0, loc, locs:L, nou:true, pkey: formCtx.key || undefined};
   if(Z.length > 1) c.cats = Z;
   c.ord = Date.now();
+  if(cloudUser) c.by = String(cloudUser.email).toLowerCase();
   if(!cloudSaveItem(c)){ toast("No s'ha pogut desar l'article."); return; }
   if(formCtx.key){ have[formCtx.key] = "art"; store("inv_tinc", have); }
   DATA.push(c); SEARCH.push(searchText(c)); refreshLocs();
@@ -1799,6 +1958,7 @@ $("fForm").onsubmit = e => {
   if(formCtx.free) toast("Article «" + c.item + "» creat a " + zoneOf(c) + " · " + locsTxt(c, ", ") + ".");
   placeCards(i);
   updateSub(); render(); $("fdlg").close();
+  celebrateNew(c);
 };
 
 /* ---- v4.0: ordre (els NEW sempre a dalt) i secció «Nous» ---- */
@@ -3139,8 +3299,8 @@ chatBadge();
    Els ajustos es desen a Firestore (meta/state · camp inv_cfg) i surten a ↶ Desfés.
    ===================================================================== */
 let CHAT_MAX = 300;
-const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «NEW»", sortMode:"Ordre dels articles", lph:"Foto a la vista llista", rad:"Cantonades arrodonides", aiwait:"Espera del toc simple a l'assistent", smartbar:"Barra de cerca intel·ligent", vib:"Vibració en tocar"};
-const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap" || k === "toast" || k === "coin" || k === "aiwait";
+const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «NEW»", sortMode:"Ordre dels articles", lph:"Foto a la vista llista", rad:"Cantonades arrodonides", aiwait:"Espera del toc simple a l'assistent", smartbar:"Barra de cerca intel·ligent", vib:"Vibració en tocar", fxOn:"Confeti en crear", fxN:"Quantitat de confeti", fxT:"Durada del confeti", fxPal:"Colors del confeti", fxVol:"So de la celebració", houseOn:"Celebració de Nau&Noa House", houseShow:"Mostra sempre Nau&Noa House", houseN:"Confeti de la casa", houseT:"Durada de la celebració de la casa", houseR:"Cintes de la casa", houseBan:"Cartell de la casa", dialHold:"Temps per obrir el dial", dialS:"Mida dels botons del dial", dialR:"Radi del dial", dialMax:"Ampliació màxima del dial", dialTap:"Dial amb un toc simple", dialVib:"Vibració del dial", dashOn:"Botó del dashboard", dashDays:"Dies d'activitat del dashboard", dashTop:"Articles als rànquings", dashAnim:"Animacions del dashboard"};
+const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap" || k === "toast" || k === "coin" || k === "aiwait" || k === "fxT" || k === "houseT" || k === "dialHold";
 const cfgDeep = o => o == null ? null : JSON.parse(JSON.stringify(o));
 const fmtSec = ms => String(Math.round(ms / 10) / 100).replace(".", ",") + " s";
 function cfgFlat(o){
@@ -3176,7 +3336,7 @@ function cfgLabels(b, a){
 }
 function cfgClean(o){
   const r = {};
-  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays", "sortMode", "lph", "rad", "aiwait", "smartbar", "vib"].forEach(k => {
+  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays", "sortMode", "lph", "rad", "aiwait", "smartbar", "vib", "fxOn", "fxN", "fxT", "fxPal", "fxVol", "houseOn", "houseShow", "houseN", "houseT", "houseR", "houseBan", "dialHold", "dialS", "dialR", "dialMax", "dialTap", "dialVib", "dashOn", "dashDays", "dashTop", "dashAnim"].forEach(k => {
     const v = o && o[k];
     if(typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] && v !== CFGD[k]) r[k] = v;
   });
@@ -3257,6 +3417,7 @@ function cfgRender(){
   h += '</div><div class="cfg"><h3>🖼️ Aspecte</h3><p class="cfn">Com es veuen les targetes a la vista Imatges.</p>';
   h += row("Articles per fila (mòbil)", "Entre 2 i 6 · per defecte " + CFGD.cols, 'data-t="cols" min="2" max="6" step="1"', cfgGet("cols"), "per fila");
   h += cfgMoreHtml(row);
+  h += cfgV5Html(row);
   h += '</div><div class="cfg"><h3>💾 Còpies de seguretat</h3><p class="cfn">Per crear-ne o restaurar-ne, toca el botó «Còpies de seguretat» de dalt.</p>';
   h += row("Còpies que es guarden", "Entre 1 i 50 · per defecte " + CFGD.bkMax + " · s'esborra la més antiga", 'data-t="bkMax" min="1" max="50" step="1"', cfgGet("bkMax"), "còpies");
   h += row("Còpia automàtica cada…", "Entre 0 i 60 dies · 0 = desactivada · per defecte 0", 'data-t="bkAuto" min="0" max="60" step="1"', cfgGet("bkAuto"), "dies");
@@ -3354,6 +3515,7 @@ const rInt = s => { const m = String(s).match(/\d+/g); return m ? +m[m.length - 
 const rNum = s => { const m = String(s).match(/\d+(?:[.,]\d+)?/g); return m ? parseFloat(m[m.length - 1].replace(",", ".")) : null; };
 function rNames(){
   const L = LOCS.map(l => ({id:l, label:l, n:norm(l)}));
+  if(LOCS.includes(HOUSE)) HOUSE_ALIAS.forEach(a => L.push({id:HOUSE, label:HOUSE, n:a}));
   const C = [];
   CATS.forEach(c => { [c.label, c.short].filter((x, i, a) => x && a.indexOf(x) === i).forEach(nm => C.push({id:c.id, label:c.label, n:norm(nm)})); });
   return {L, C};
@@ -3407,7 +3569,7 @@ const itemDesc = c => qtyBadge(c.qty) + " · " + zonesTxt(c) + " · 📍 " + loc
 /* ---- ordres ---- */
 function rHelp(nt){
   if(!/^(?:ajuda|help|ordres|comandes)\b|que puc fer|que saps fer|que pots fer|com funciones/.test(nt)) return false;
-  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• ordena per nom · ordena per recents · ordre original\n• cantonades a 20 · foto de la llista a 90\n• vibració activada · barra de cerca desactivada\n\n🎨 COLORS\n• posa el color principal a blau\n• color del fons blau fosc · color del text #ffeecc\n• color del cartell NEW taronja\n• tema verd (rosa, lila, groc, taronja, gris…)\n• restaura els colors\n\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
+  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• ordena per nom · ordena per recents · ordre original\n• cantonades a 20 · foto de la llista a 90\n• vibració activada · barra de cerca desactivada\n\n🎨 COLORS\n• posa el color principal a blau\n• color del fons blau fosc · color del text #ffeecc\n• color del cartell NEW taronja\n• tema verd (rosa, lila, groc, taronja, gris…)\n• restaura els colors\n\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n🎉 CONFETI I NAU&NOA HOUSE\n• prova el confeti · prova la celebració de la casa\n• confeti a 300 · durada del confeti a 5 segons\n• desactiva el confeti · colors del confeti a 2\n• confeti de la casa a 600 · cintes de la casa a 50\n• durada de la celebració de la casa a 9 segons\n• volum del confeti a 40\n\n🎛️ FILTRES I DIAL\n• filtra per Cunit · mostra la zona Cuina · treu els filtres\n• temps del dial a 0,5 segons · ampliació del dial a 200\n• radi del dial a 160 · mida del dial a 50\n\n📊 DASHBOARD\n• obre el dashboard · tanca el dashboard\n• dies del dashboard a 30 · top del dashboard a 8\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
   return true;
 }
 function rShow(nt){
@@ -3420,6 +3582,8 @@ function rShow(nt){
     + "\n🔔 Avís del xat: " + cfgGet("chatVol") + "% · NEW: " + (cfgGet("newDays") ? cfgGet("newDays") + " dies" : "desactivat")
     + "\n🎨 Colors: principal " + themeVals().accent + " · fons " + themeVals().bg + " · text " + themeVals().ink + " · NEW " + themeVals().newc
     + "\n↕ Ordre: " + ["original", "nom A→Z", "més recents primer"][cfgGet("sortMode")]
+    + "\n🎉 Confeti: " + (cfgGet("fxOn") ? cfgGet("fxN") + " peces · " + fmtSec(cfgGet("fxT")) : "desactivat") + " · 🏡 Casa: " + (cfgGet("houseOn") ? cfgGet("houseN") + " peces · " + cfgGet("houseR") + " cintes · " + fmtSec(cfgGet("houseT")) : "desactivada")
+    + "\n🎛️ Dial: " + fmtSec(cfgGet("dialHold")) + " per obrir · mida " + cfgGet("dialS") + " px · radi " + cfgGet("dialR") + " px · ampliació " + cfgGet("dialMax") + "% · 📊 Dashboard: " + (cfgGet("dashOn") ? cfgGet("dashDays") + " dies · top " + cfgGet("dashTop") : "botó amagat")
     + "\n💾 Còpies que es guarden: " + cfgGet("bkMax") + " · automàtica cada " + (cfgGet("bkAuto") ? cfgGet("bkAuto") + " dies" : "— (desactivada)") + " · 🖼️ " + cfgGet("cols") + " articles per fila");
   return true;
 }
@@ -3437,7 +3601,9 @@ function rGoal(nt){
 }
 function rTimes(nt){
   let k, name;
-  if(/cantonad|arrodon|\bradi\b/.test(nt)){ k = "rad"; name = "les cantonades arrodonides"; }
+  const k5 = rKeys5(nt);
+  if(k5){ k = k5[0]; name = k5[1]; }
+  else if(/cantonad|arrodon|\bradi\b/.test(nt)){ k = "rad"; name = "les cantonades arrodonides"; }
   else if(/vibraci/.test(nt)){ k = "vib"; name = "la vibració en tocar"; }
   else if(/\bbarra\b/.test(nt) && /cerca|intel/.test(nt)){ k = "smartbar"; name = "la barra de cerca intel·ligent"; }
   else if(/\bfotos?\b/.test(nt) && /llista/.test(nt)){ k = "lph"; name = "la mida de la foto a la vista llista"; }
@@ -3460,7 +3626,7 @@ function rTimes(nt){
   else return false;
   if(needSession()) return true;
   let n = rNum(nt);
-  if(n == null && (k === "vib" || k === "smartbar")) n = /desactiv|apag|\bno\b|\boff\b|sense|treu/.test(nt) ? 0 : 1;
+  if(n == null && (k === "vib" || k === "smartbar" || TOG5.includes(k))) n = /desactiv|apag|\bno\b|\boff\b|sense|treu/.test(nt) ? 0 : 1;
   if(n == null){ rMsg("bot", "Quin valor? Per exemple: «" + (cfgSec(k) ? "doble toc a 0,8 segons" : "historial a 50") + "»."); return true; }
   const v = cfgSec(k) ? (/\bms\b|mil[·.]?lisegon/.test(nt) ? Math.round(n) : Math.round(n * 1000)) : Math.round(n);
   const r = CFGR[k];
@@ -3527,10 +3693,12 @@ function rCreate(nt, t0, n0){
   rConfirm("Creo l'article «" + name + "» · ×" + q + " · " + cat.label + " · 📍 " + loc.id + ". Confirmes?", () => {
     const c = {item:name, cat:cat.id, desc:"", qty:q, estado:"sin", fiab:"alta", note:"Afegit des de l'assistent", photos:[], pend:0, inv:0, loc:loc.id, locs:[loc.id], nou:true};
     c.ord = Date.now();
+    if(cloudUser) c.by = String(cloudUser.email).toLowerCase();
     if(!cloudSaveItem(c)) return "⚠️ No s'ha pogut desar.";
     DATA.push(c); SEARCH.push(searchText(c)); refreshLocs();
     placeCards(DATA.length - 1);
     updateSub(); render();
+    celebrateNew(c);
     return "✓ Article «" + name + "» creat (sense foto: la pots afegir des de la fitxa).";
   });
   return true;
@@ -3620,7 +3788,7 @@ function rAsk(text){
   rMsg("me", text);
   const t0 = text.trim(), n0 = norm(t0).replace(/['’`´]/g, " "), nt = rNorm(t0);
   if(/^(?:hola|bon dia|bones|ei|hey|salut)\b/.test(nt) && nt.split(" ").length < 4){ rMsg("bot", "Hola! Digues-me què vols canviar. Si t'ho vols mirar, escriu «què puc fer?»."); return; }
-  const H = [rHelp, rShow, rStats, rTheme, rSort, rReset, rGoal, rBackup, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
+  const H = [rHelp, rShow, rFx, rStats, rFilter, rTheme, rSort, rReset, rGoal, rBackup, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
   for(const h of H){ if(h(nt, t0, n0) !== false) return; }
   const d = rMsg("bot", "No t'he entès 🤔 Prova amb una ordre com les d'aquests exemples:");
   rSuggest(d, ["Què puc fer?", "Resum de l'inventari", "Quins són els ajustos?"]);
@@ -3632,7 +3800,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "4.0";
+const APP_VER = "5.0";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null, phLoaded = false;
 const __cloudPhotos34 = cloudPhotos;
@@ -4303,6 +4471,7 @@ function rColorFind(n0){
   return null;
 }
 function rTheme(nt, t0, n0){
+  if(/confeti|celebraci/.test(nt)) return false;
   if(!/\bcolors?\b|\btema\b|\bpaleta\b|\bfons\b|\bfondo\b|\bcolour\b/.test(nt)) return false;
   const th = themeVals();
   if(/(restaura|reinicia|reseteja|torna|treu).*(color|colors|tema|paleta)|(colors?|tema|paleta) per defecte/.test(nt)){
@@ -4352,6 +4521,777 @@ function rSort(nt){
   rConfirm("Poso l'ordre dels articles: " + nm[v] + ". Els NEW sempre surten a dalt. Confirmes?", () => { cfgCommit(c => { c.sortMode = v; }); return "✓ Fet."; });
   return true;
 }
+
+/* =====================================================================
+   v5.0 · Filtres amb dial, Dashboard, confeti i Nau&Noa House
+   ===================================================================== */
+const TOG5 = ["fxOn", "houseOn", "houseBan", "houseShow", "dialTap", "dialVib", "dashOn", "dashAnim"];
+const HOUSE_ALIAS = ["nau&noa house", "nau & noa house", "nau noa house", "nau i noa house", "nau&noa", "nau i noa", "nau noa"];
+const vib = ms => { try { if(navigator.vibrate) navigator.vibrate(ms); } catch(_){} };
+const ini = s => { const w = String(s).replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/).filter(Boolean); return (w.length > 1 ? w[0][0] + w[1][0] : (w[0] || "?").slice(0, 2)).toUpperCase(); };
+
+/* ---------- botons de filtre: «Tot el món», «Totes» i «Revisar» ---------- */
+const GLOBE_SVG = '<span class="globe" aria-hidden="true"><svg viewBox="0 0 34 34" fill="none" stroke="rgba(2,26,23,.55)" stroke-width="1.3"><path d="M2 12h30M1 17h32M2 22h30"/><g class="mer"><ellipse cx="17" cy="17" rx="6" ry="16"/><ellipse cx="17" cy="17" rx="12" ry="16"/><path d="M17 1v32"/><ellipse cx="51" cy="17" rx="6" ry="16"/><ellipse cx="-17" cy="17" rx="6" ry="16"/></g><path d="M8 9c3 1 4 4 2 6s1 4 4 4M22 6c-1 3 2 4 4 3M20 24c2-1 4 0 5 3" stroke="rgba(2,26,23,.85)" stroke-width="2.2" stroke-linecap="round"/></svg></span>';
+let FB = null;
+function buildFilters(){
+  const box = $("chips"); box.innerHTML = "";
+  const mk = (id, cls) => { const b = document.createElement("button"); b.type = "button"; b.id = id; b.className = "fbtn " + cls; box.appendChild(b); return b; };
+  FB = {loc:mk("fLocBtn", "floc"), cat:mk("fCatBtn", "fcat"), rev:mk("fRevBtn", "frev")};
+  FB.loc.setAttribute("aria-haspopup", "true"); FB.cat.setAttribute("aria-haspopup", "true");
+  bindDial(FB.loc, "loc"); bindDial(FB.cat, "cat");
+  FB.rev.onclick = () => { state.review = !state.review; state.cat = "all"; render(); };
+}
+function renderFilters(){
+  if(!FB) buildFilters();
+  const TOT = totAll(), fill = p => '<span class="fbg" aria-hidden="true"><i style="width:' + p + '%"></i></span>';
+  /* ubicació */
+  const la = state.loc === "all", nl = la ? TOT : totLoc(state.loc), pl = la ? 0 : pctOf(nl, TOT), hl = state.loc === HOUSE;
+  FB.loc.setAttribute("aria-pressed", String(!la)); FB.loc.classList.toggle("house", hl && !la);
+  FB.loc.innerHTML = fill(pl)
+    + '<span class="fic' + (la || hl ? '' : ' ini') + '">' + (la ? GLOBE_SVG : hl ? '🏡' : esc(ini(state.loc))) + '</span>'
+    + '<span class="ft"><b>' + esc(la ? "Tot el món" : state.loc) + '</b><small>' + esc(la ? LOCS.length + (LOCS.length === 1 ? " ubicació" : " ubicacions") : nl + " art. · " + pl + "%") + '<span class="hint">' + esc(la ? " · mantén premut" : " · toca per treure") + '</span>' + '</small></span>'
+    + '<span class="fn">' + nl + '</span>';
+  FB.loc.setAttribute("aria-label", la ? "Tot el món. Toca o mantén premut per triar una ubicació" : "Ubicació: " + state.loc + ". Toca per treure el filtre");
+  FB.loc.title = la ? "Mantén premut per triar una ubicació" : "Toca per treure el filtre · mantén premut per canviar";
+  /* zona */
+  const ca = state.cat === "all", z = ca ? null : CATS.find(x => x.id === state.cat), nc = ca || !z ? TOT : totCat(z.id), pc = ca || !z ? 0 : pctOf(nc, TOT);
+  FB.cat.setAttribute("aria-pressed", String(!ca));
+  FB.cat.innerHTML = fill(pc)
+    + '<span class="fic">' + (ca || !z ? "📦" : z.icon) + '</span>'
+    + '<span class="ft"><b>' + esc(ca || !z ? "Totes" : z.label) + '</b><small>' + esc(ca || !z ? CATS.length + (CATS.length === 1 ? " zona" : " zones") : nc + " art. · " + pc + "%") + '<span class="hint">' + esc(ca || !z ? " · mantén premut" : " · toca per treure") + '</span>' + '</small></span>'
+    + '<span class="fn">' + nc + '</span>';
+  FB.cat.setAttribute("aria-label", ca ? "Totes les zones. Toca o mantén premut per triar una zona" : "Zona: " + (z ? z.label : "") + ". Toca per treure el filtre");
+  FB.cat.title = ca ? "Mantén premut per triar una zona" : "Toca per treure el filtre · mantén premut per canviar";
+  /* revisar */
+  const nr = DATA.filter((c, i) => live(c) && (state.loc === "all" || c.locs.includes(state.loc)) && (!state.q || qHit(i)) && needsReview(c)).length;
+  FB.rev.setAttribute("aria-pressed", String(state.review));
+  FB.rev.innerHTML = '<span class="fic" aria-hidden="true">⚠️</span><span class="fn">' + nr + '</span><small>Revisar</small>';
+  FB.rev.setAttribute("aria-label", "Revisar: " + nr + " articles");
+}
+
+/* ---------- dial radial: mantén premut i llisca el dit ---------- */
+const DL = {open:false, kind:"", mode:"", items:[], els:[], pos:[], act:-1, S:46, ox:0, oy:0, px:null, py:null, hub:null, hubEl:null, btn:null, down:null, timer:0, moving:false};
+function dialItems(kind){
+  const TOT = totAll(), out = [];
+  if(kind === "loc"){
+    const base = (c, i) => live(c) && (!state.review || needsReview(c)) && (state.cat === "all" || catsOf(c).includes(state.cat)) && (!state.q || qHit(i));
+    out.push({id:"all", icon:"🌍", label:"Tot el món", n:DATA.filter((c, i) => base(c, i)).length, g:TOT, p:100, sel:state.loc === "all", all:true});
+    LOCS.forEach(l => { const g = totLoc(l); out.push({id:l, icon:l === HOUSE ? "🏡" : "", ini:ini(l), label:l, n:DATA.filter((c, i) => base(c, i) && c.locs.includes(l)).length, g, p:pctOf(g, TOT), sel:state.loc === l, house:l === HOUSE}); });
+  } else {
+    const base = (c, i) => live(c) && (state.loc === "all" || c.locs.includes(state.loc)) && (!state.q || qHit(i));
+    out.push({id:"all", icon:"📦", label:"Totes", n:DATA.filter((c, i) => base(c, i)).length, g:TOT, p:100, sel:state.cat === "all" && !state.review, all:true});
+    CATS.forEach(z => { const g = totCat(z.id); out.push({id:z.id, icon:z.icon, label:z.label, n:DATA.filter((c, i) => base(c, i) && catsOf(c).includes(z.id)).length, g, p:pctOf(g, TOT), sel:!state.review && state.cat === z.id}); });
+  }
+  return out;
+}
+function dialGeom(n, ox, oy){
+  const W = innerWidth, H = innerHeight, mx = cfgGet("dialMax") / 100, rad = a => a * Math.PI / 180;
+  let S = cfgGet("dialS"); const R0 = cfgGet("dialR");
+  const hf = s => s * mx * .55 + 4;
+  const needV = R0 + S;
+  let orient = "down";
+  if(H - oy < needV) orient = oy >= needV ? "up" : "full";
+  const full = orient === "full", mid = orient === "down" ? 90 : -90, h0 = 68;
+  /* tram d'angles d'un anell: es redueix perquè no surti per les vores de la pantalla */
+  const spanOf = (r, s) => {
+    if(full) return [-90, 270];
+    const lim = (W / 2 - hf(s) - 4) / r, half = lim >= 1 ? h0 : Math.min(h0, Math.asin(Math.max(.05, lim)) * 180 / Math.PI);
+    return [mid - half, mid + half];
+  };
+  const capOf = (r, s) => { const sp = spanOf(r, s), len = full ? 2 * Math.PI * r : rad(sp[1] - sp[0]) * r; return Math.floor(len / (s + 4)) + (full ? 0 : 1); };
+  const Rv = orient === "down" ? H - oy - hf(S) - 4 : orient === "up" ? oy - hf(S) - 4 : Math.min(oy, H - oy) - hf(S) - 4;
+  const Rb = Math.max(56, Math.min(R0, Rv)), Rcap = Math.max(Rb, Math.min(R0 * 1.25, Rv));
+  let rings = null;
+  for(let s = S; s >= 36 && !rings; s -= 2){ for(let r = Rb; r <= Rcap + .1; r += 6){ if(capOf(r, s) >= n){ S = s; rings = [{R:r, m:n}]; break; } } }
+  if(!rings){
+    S = Math.min(S, 40); rings = []; let left = n, r = Rb;
+    while(left > 0 && rings.length < 5){ const c = Math.max(1, capOf(r, S)), m = Math.min(left, c); rings.push({R:r, m}); left -= m; r += S + 8; }
+    if(left > 0) rings[rings.length - 1].m += left;
+  }
+  let ext = 0;
+  rings.forEach(rg => { rg.sp = spanOf(rg.R, S); ext = Math.max(ext, full ? rg.R : rg.R * Math.sin(rad((rg.sp[1] - rg.sp[0]) / 2))); });
+  ext += hf(S);
+  const cx = ext * 2 > W ? W / 2 : Math.max(ext, Math.min(W - ext, ox));
+  const pos = [];
+  rings.forEach(rg => { for(let j = 0; j < rg.m; j++){
+    const [a0, a1] = rg.sp, a = rg.m === 1 ? (a0 + a1) / 2 : full ? a0 + 360 * j / rg.m : orient === "down" ? a1 - (a1 - a0) * j / (rg.m - 1) : a0 + (a1 - a0) * j / (rg.m - 1);
+    const ux = Math.cos(rad(a)), uy = Math.sin(rad(a));
+    pos.push({x:cx + ux * rg.R, y:oy + uy * rg.R, ux, uy});
+  } });
+  const R1 = rings[0].R;
+  return {S, pos, cx, orient, R:R1, hub:full ? {x:cx, y:oy} : {x:cx, y:oy + (orient === "down" ? 1 : -1) * R1 * .5}};
+}
+function dialHub(i, sticky){
+  const h = DL.hubEl; if(!h) return;
+  if(i < 0 || !DL.items[i]){
+    h.className = "dhub hint";
+    h.innerHTML = '<div class="hi1">' + (DL.kind === "loc" ? "🌍" : "📦") + '</div><b>' + (DL.mode === "sticky" || sticky ? "Toca una opció" : "Llisca i deixa anar") + '</b><small>' + (DL.kind === "loc" ? "Filtra per ubicació" : "Filtra per zona") + '</small>';
+    return;
+  }
+  const it = DL.items[i];
+  h.className = "dhub";
+  h.innerHTML = '<div class="hi1">' + (it.icon ? it.icon : '<em>' + esc(it.ini) + '</em>') + '</div><b>' + esc(it.label) + '</b><small>' + it.n + (it.n === 1 ? ' article' : ' articles') + (it.all ? '' : (it.n !== it.g ? ' (de ' + it.g + ')' : ' · ' + it.p + '%')) + '</small>';
+}
+function dialUpdate(px, py){
+  if(!DL.open) return;
+  const mx = cfgGet("dialMax") / 100, sig = DL.S * 1.7;
+  let best = -1, bd = 1e9;
+  DL.pos.forEach((p, i) => {
+    const d = Math.hypot(px - p.x, py - p.y);
+    if(d < bd){ bd = d; best = i; }
+    const g = Math.exp(-(d * d) / (sig * sig)), s = 1 + (mx - 1) * g, pop = (s - 1) * DL.S * .45, el = DL.els[i];
+    el.style.transform = "translate(-50%,-50%) translate(" + (p.ux * pop).toFixed(1) + "px," + (p.uy * pop).toFixed(1) + "px) scale(" + s.toFixed(3) + ")";
+    el.style.zIndex = String(10 + Math.round(g * 100));
+  });
+  const act = bd <= DL.S * .95 ? best : -1;
+  if(act !== DL.act){
+    DL.els.forEach((e, k) => e.classList.toggle("act", k === act));
+    DL.act = act; dialHub(act);
+    if(act >= 0 && cfgGet("dialVib")) vib(6);
+  }
+}
+function dialOpen(kind, btn, mode, px, py, fromKey){
+  if(DL.open) return;
+  const items = dialItems(kind); if(items.length < 2) return;
+  const r = btn.getBoundingClientRect(), ox = r.left + r.width / 2, oy = r.top + r.height / 2;
+  const g = dialGeom(items.length, ox, oy);
+  Object.assign(DL, {open:true, kind, mode, items, pos:g.pos, S:g.S, hub:g.hub, act:-1, ox, oy, btn, px:px == null ? null : px, py:py == null ? null : py});
+  const el = $("dial"); el.innerHTML = ""; el.hidden = false;
+  el.style.setProperty("--ox", (ox / innerWidth * 100) + "%"); el.style.setProperty("--oy", (oy / innerHeight * 100) + "%");
+  const bg = document.createElement("div"); bg.className = "dbg"; el.appendChild(bg);
+  const org = document.createElement("div"); org.className = "dorg"; org.style.left = ox + "px"; org.style.top = oy + "px"; el.appendChild(org);
+  const hub = document.createElement("div"); hub.className = "dhub hint"; hub.style.left = g.hub.x + "px"; hub.style.top = g.hub.y + "px"; el.appendChild(hub); DL.hubEl = hub;
+  DL.els = items.map((it, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "ditem" + (it.sel ? " sel" : "") + (it.house ? " house" : "");
+    b.style.width = b.style.height = g.S + "px"; b.style.left = g.pos[i].x + "px"; b.style.top = g.pos[i].y + "px"; b.style.fontSize = Math.round(g.S * .5) + "px";
+    b.dataset.i = i; b.setAttribute("aria-label", it.label + " · " + it.n + " articles");
+    b.innerHTML = '<span class="di' + (it.icon ? '' : ' t') + '">' + (it.icon || esc(it.ini)) + '</span><span class="dn">' + it.n + '</span>';
+    b.style.opacity = "0"; b.style.transform = "translate(-50%,-50%) translate(" + (ox - g.pos[i].x) + "px," + (oy - g.pos[i].y) + "px) scale(.2)";
+    el.appendChild(b); return b;
+  });
+  document.body.classList.add("dialing");
+  dialHub(-1);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if(!DL.open) return;
+    DL.els.forEach((b, i) => { b.style.transitionDelay = (i * 14) + "ms"; b.style.opacity = "1"; b.style.transform = "translate(-50%,-50%) scale(1)"; });
+    setTimeout(() => { if(!DL.open) return; DL.els.forEach(b => { b.style.transitionDelay = "0ms"; b.classList.add("mv"); }); if(DL.px != null) dialUpdate(DL.px, DL.py); }, 420);
+  }));
+  window.addEventListener("pointermove", dialPM, {passive:true});
+  window.addEventListener("pointerup", dialPU, true);
+  window.addEventListener("pointercancel", dialPC, true);
+  window.addEventListener("keydown", dialKey, true);
+  if(cfgGet("dialVib")) vib(10);
+  if(fromKey){ const k = Math.max(0, items.findIndex(x => x.sel)); DL.els[k].focus(); }
+}
+function dialPM(e){
+  if(!DL.open) return;
+  if(DL.mode === "hold" && DL.down && e.pointerId !== DL.down.id) return;
+  DL.px = e.clientX; DL.py = e.clientY;
+  if(DL.moving) return; DL.moving = true;
+  requestAnimationFrame(() => { DL.moving = false; if(DL.open && DL.px != null) dialUpdate(DL.px, DL.py); });
+}
+function dialPU(e){
+  if(!DL.open || DL.mode !== "hold") return;
+  if(DL.down && e.pointerId !== DL.down.id) return;
+  DL.px = e.clientX; DL.py = e.clientY; dialUpdate(DL.px, DL.py);
+  const act = DL.act, near = Math.hypot(DL.px - DL.ox, DL.py - DL.oy) < 44;
+  DL.down = null; eatNextClick();
+  if(act >= 0) dialChoose(act);
+  else if(near){ DL.mode = "sticky"; dialHub(-1, true); }
+  else dialClose();
+}
+function dialPC(e){ if(DL.open && DL.mode === "hold" && (!DL.down || e.pointerId === DL.down.id)) dialClose(); }
+function dialKey(e){ if(e.key === "Escape" && DL.open){ e.preventDefault(); e.stopPropagation(); const b = DL.btn; dialClose(); if(b) b.focus(); } }
+function dialChoose(i){
+  const it = DL.items[i], kind = DL.kind; if(!it) return;
+  dialClose();
+  if(kind === "loc") state.loc = it.id; else { state.cat = it.id; state.review = false; }
+  render();
+  if(cfgGet("dialVib")) vib(14);
+}
+function dialClose(){
+  if(!DL.open) return;
+  DL.open = false; clearTimeout(DL.timer);
+  const el = $("dial"); el.hidden = true; el.innerHTML = "";
+  document.body.classList.remove("dialing");
+  window.removeEventListener("pointermove", dialPM);
+  window.removeEventListener("pointerup", dialPU, true);
+  window.removeEventListener("pointercancel", dialPC, true);
+  window.removeEventListener("keydown", dialKey, true);
+  try { if(DL.btn && DL.down) DL.btn.releasePointerCapture(DL.down.id); } catch(_){}
+  DL.down = null; DL.els = []; DL.hubEl = null; eatNextClick();
+}
+function dialTap(kind, btn, fromKey){
+  const active = kind === "loc" ? state.loc !== "all" : state.cat !== "all";
+  if(active){ if(kind === "loc") state.loc = "all"; else state.cat = "all"; render(); return; }
+  if(cfgGet("dialTap") || fromKey) dialOpen(kind, btn, "sticky", null, null, fromKey);
+}
+function bindDial(btn, kind){
+  const cancel = () => { clearTimeout(DL.timer); if(DL.down && !DL.open) DL.down = null; btn.classList.remove("pressing"); };
+  btn.addEventListener("pointerdown", e => {
+    if(e.button > 0 || DL.open) return;
+    DL.down = {id:e.pointerId, x:e.clientX, y:e.clientY, kind, btn, long:false};
+    btn.classList.add("pressing"); clearTimeout(DL.timer);
+    DL.timer = setTimeout(() => {
+      if(!DL.down || DL.down.btn !== btn) return;
+      DL.down.long = true; btn.classList.remove("pressing");
+      try { btn.setPointerCapture(DL.down.id); } catch(_){}
+      dialOpen(kind, btn, "hold", DL.down.x, DL.down.y);
+    }, cfgGet("dialHold"));
+  });
+  btn.addEventListener("pointermove", e => {
+    if(DL.down && !DL.down.long && DL.down.btn === btn && Math.hypot(e.clientX - DL.down.x, e.clientY - DL.down.y) > 12) cancel();
+  });
+  btn.addEventListener("pointerup", e => {
+    if(DL.open || !DL.down || DL.down.btn !== btn || DL.down.long) { btn.classList.remove("pressing"); return; }
+    cancel(); eatNextClick(); dialTap(kind, btn, false);
+  });
+  btn.addEventListener("pointercancel", cancel);
+  btn.addEventListener("pointerleave", e => { if(e.pointerType === "mouse") cancel(); });
+  btn.addEventListener("click", e => { if(e.detail === 0 && !DL.open) dialTap(kind, btn, true); });
+  btn.addEventListener("contextmenu", e => e.preventDefault());
+}
+$("dial").addEventListener("pointerdown", e => {
+  if(!DL.open || DL.mode !== "sticky") return;
+  e.preventDefault();
+  const b = e.target.closest(".ditem"); eatNextClick();
+  if(b){ dialUpdate(e.clientX, e.clientY); dialChoose(+b.dataset.i); } else { const bt = DL.btn; dialClose(); if(bt && !isTouch) bt.focus(); }
+});
+$("dial").addEventListener("click", e => { if(e.detail === 0 && DL.open){ const b = e.target.closest(".ditem"); if(b) dialChoose(+b.dataset.i); } });
+$("dial").addEventListener("contextmenu", e => e.preventDefault());
+let dialW = innerWidth;
+addEventListener("resize", () => { if(DL.open && innerWidth !== dialW) dialClose(); dialW = innerWidth; });
+
+/* ---------- confeti, cintes i celebració de Nau&Noa House ---------- */
+const FX = {parts:[], sched:[], raf:0, last:0, until:0, W:0, H:0, dpr:1, cv:null, ctx:null, vt:3.4, run:false, rm:false};
+const rnd = (a, b) => a + Math.random() * (b - a);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const GOLD = ["#ffd23f", "#f5c242", "#ffe9a0", "#fff7d6", "#d9a21b", "#ffffff"];
+const MULTI = ["#ff4d6d", "#ffd23f", "#4fe3d2", "#5ea0ff", "#b388ff", "#ff9f40", "#7ef0c4", "#ffffff"];
+const NAUNOA = ["#4fe3d2", "#ff7eb6", "#ffd23f", "#ffffff", "#b388ff", "#8af7eb", "#ffb3d9", "#ffe08a"];
+function fxPal(house){
+  const p = cfgGet("fxPal"), cs = getComputedStyle(document.documentElement);
+  const ac = (cs.getPropertyValue("--accent") || "#4fe3d2").trim(), hi = (cs.getPropertyValue("--accent-hi") || "#8af7eb").trim(), lo = (cs.getPropertyValue("--accent-lo") || "#2fc9b7").trim();
+  if(p === 1) return MULTI; if(p === 2) return GOLD; if(p === 3) return [ac, hi, lo, "#ffffff", ac];
+  return house ? NAUNOA : [ac, hi, "#ffd23f", "#ff6fb5", "#ffffff", "#b388ff", "#5ea0ff"];
+}
+function fxResize(){
+  FX.dpr = Math.min(2, devicePixelRatio || 1); FX.W = innerWidth; FX.H = innerHeight;
+  FX.cv.width = Math.round(FX.W * FX.dpr); FX.cv.height = Math.round(FX.H * FX.dpr);
+  FX.ctx.setTransform(FX.dpr, 0, 0, FX.dpr, 0, 0);
+}
+function fxBegin(){
+  const el = $("fx");
+  if(!FX.cv){ FX.cv = $("fxc"); FX.ctx = FX.cv.getContext("2d"); }
+  FX.rm = matchMedia("(prefers-reduced-motion: reduce)").matches; FX.cut = false; FX.n = (FX.n || 0) + 1;
+  el.classList.add("on");
+  try { if(el.showPopover && !el.matches(":popover-open")) el.showPopover(); } catch(_){}
+  fxResize();
+  if(!FX.run){ FX.run = true; FX.last = performance.now(); FX.raf = requestAnimationFrame(fxLoop); }
+}
+function fxEnd(){
+  FX.run = false; cancelAnimationFrame(FX.raf); FX.parts.length = 0; FX.sched.length = 0;
+  if(FX.ctx) FX.ctx.clearRect(0, 0, FX.W, FX.H);
+  const el = $("fx"); el.classList.remove("on");
+  try { if(el.hidePopover && el.matches(":popover-open")) el.hidePopover(); } catch(_){}
+  $("fxban").hidden = true;
+}
+addEventListener("resize", () => { if(FX.run) fxResize(); });
+/* partícules */
+function pRect(x, y, vx, vy, col, sz, max){ FX.parts.push({k:0, x, y, vx, vy, col, w:sz * rnd(.55, 1), h:sz * rnd(1, 1.8), r:rnd(0, 6.28), vr:rnd(-.35, .35), tp:rnd(0, 6.28), tv:rnd(.08, .3), wob:rnd(0, 6.28), wa:rnd(.05, .5), g:.2, dr:.985, vt:FX.vt * rnd(.8, 1.15), life:0, max}); }
+function pDot(x, y, vx, vy, col, sz, max){ FX.parts.push({k:1, x, y, vx, vy, col, w:sz * .45, r:0, vr:0, wob:rnd(0, 6.28), wa:rnd(.05, .4), g:.2, dr:.985, vt:FX.vt * rnd(.8, 1.1), life:0, max}); }
+function pStar(x, y, vx, vy, col, sz, max){ FX.parts.push({k:2, x, y, vx, vy, col, w:sz * .8, r:rnd(0, 6.28), vr:rnd(-.2, .2), wob:rnd(0, 6.28), wa:rnd(.05, .4), g:.18, dr:.985, vt:FX.vt * rnd(.7, 1), life:0, max}); }
+function pSpark(x, y, vx, vy, col, sz, max){ FX.parts.push({k:3, x, y, vx, vy, col, w:sz, g:.06, dr:.955, vt:6, life:0, max}); }
+function pRib(x, y, vx, vy, col, w, n, max, g, dr){ FX.parts.push({k:4, x, y, vx, vy, col, w, n, hist:[], ph:rnd(0, 6.28), fr:rnd(.06, .12), am:rnd(.9, 2.6), tw:rnd(0, 6.28), g:g == null ? .05 : g, dr:dr || .992, vt:FX.vt * rnd(.45, .8), life:0, max}); }
+function fxMake(x, y, vx, vy, pal, max, sc, star){
+  const col = pick(pal), r = Math.random(), sz = rnd(6, 11) * sc, m = Math.round(max * rnd(.8, 1.1));
+  if(star && r < .3) pStar(x, y, vx, vy, col, sz * 1.5, m);
+  else if(r < .74) pRect(x, y, vx, vy, col, sz, m);
+  else if(r < .9) pDot(x, y, vx, vy, col, sz, m);
+  else pRect(x, y, vx, vy, col, sz * 1.25, m);
+}
+function fxAt(at, fn){ FX.sched.push({at, dur:0, n:1, done:0, fn}); }
+function fxStream(at, dur, n, fn){ FX.sched.push({at, dur, n, done:0, fn}); }
+function fxStep(p, dt){
+  p.life += dt;
+  if(p.k === 4){
+    p.vx *= Math.pow(p.dr, dt); p.vy = Math.min(p.vt, p.vy + p.g * dt);
+    p.x += p.vx * dt; p.y += p.vy * dt; p.ph += p.fr * dt; p.tw += .09 * dt;
+    p.hist.push(p.x + Math.sin(p.ph) * p.am * 9, p.y);
+    if(p.hist.length > p.n * 2) p.hist.splice(0, 2);
+    return;
+  }
+  p.vx *= Math.pow(p.dr, dt); p.vy += p.g * dt; if(p.vy > p.vt) p.vy = p.vt;
+  p.x += (p.vx + (p.wa ? Math.sin(p.wob) * p.wa : 0)) * dt; p.y += p.vy * dt;
+  p.wob += .08 * dt; p.r += (p.vr || 0) * dt; if(p.tv) p.tp += p.tv * dt;
+}
+function fxDraw(c, p){
+  const a = Math.max(0, Math.min(1, (p.max - p.life) / (p.max * .28)));
+  if(p.k === 4){
+    const h = p.hist, n = h.length / 2; if(n < 2) return;
+    c.lineCap = "round"; c.lineJoin = "round"; c.strokeStyle = p.col;
+    for(let s = 0; s < n - 1; s += 6){
+      const e = Math.min(n - 1, s + 6);
+      c.globalAlpha = a * (.3 + .7 * s / n); c.lineWidth = p.w * (.3 + .7 * Math.abs(Math.cos(p.tw + s * .32)));
+      c.beginPath(); c.moveTo(h[s * 2], h[s * 2 + 1]);
+      for(let i = s + 1; i <= e; i++) c.lineTo(h[i * 2], h[i * 2 + 1]);
+      c.stroke();
+    }
+    c.globalAlpha = 1; return;
+  }
+  c.globalAlpha = a; c.fillStyle = p.col;
+  if(p.k === 0){
+    c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.scale(1, Math.cos(p.tp)); c.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); c.restore();
+  } else if(p.k === 1){
+    c.beginPath(); c.arc(p.x, p.y, p.w, 0, 6.2832); c.fill();
+  } else if(p.k === 2){
+    c.save(); c.translate(p.x, p.y); c.rotate(p.r); c.beginPath();
+    for(let i = 0; i < 10; i++){ const rr = i % 2 ? p.w * .45 : p.w, an = i * Math.PI / 5 - Math.PI / 2; c.lineTo(Math.cos(an) * rr, Math.sin(an) * rr); }
+    c.closePath(); c.fill(); c.restore();
+  } else {
+    c.globalCompositeOperation = "lighter"; c.beginPath(); c.arc(p.x, p.y, p.w * (.5 + a * .6), 0, 6.2832); c.fill(); c.globalCompositeOperation = "source-over";
+  }
+  c.globalAlpha = 1;
+}
+function fxLoop(ts){
+  if(!FX.run) return;
+  const dt = Math.min(2.2, (ts - FX.last) / 16.667 || 1); FX.last = ts;
+  const c = FX.ctx, H = FX.H;
+  c.clearRect(0, 0, FX.W, H);
+  for(let i = FX.sched.length - 1; i >= 0; i--){
+    const s = FX.sched[i]; if(ts < s.at) continue;
+    const k = s.dur > 0 ? Math.min(1, (ts - s.at) / s.dur) : 1, want = Math.round(s.n * k);
+    while(s.done < want){ s.done++; s.fn(); }
+    if(s.done >= s.n) FX.sched.splice(i, 1);
+  }
+  const P = FX.parts;
+  if(ts > FX.until && !FX.cut){ FX.cut = true; P.forEach(p => { p.max = Math.min(p.max, p.life + 30); }); }
+  if(ts > FX.until + 2500){ fxEnd(); return; }
+  for(let i = P.length - 1; i >= 0; i--){
+    const p = P[i]; fxStep(p, dt);
+    const gone = p.life > p.max || (p.k === 4 ? (p.hist.length > 1 && p.hist[1] > H + 40 && p.vy > 0) : (p.y > H + 70 && p.vy > 0));
+    if(gone){ P.splice(i, 1); continue; }
+    fxDraw(c, p);
+  }
+  if(!P.length && !FX.sched.length && ts > FX.until){ fxEnd(); return; }
+  FX.raf = requestAnimationFrame(fxLoop);
+}
+function fxSound(house){
+  const v = cfgGet("fxVol") / 100; if(v <= 0) return;
+  try {
+    const c = chatCtx(); if(!c) return;
+    const t0 = c.currentTime + .02, notes = house ? [523, 659, 784, 1047, 1319, 1568, 2093] : [784, 988, 1175];
+    notes.forEach((f, i) => {
+      const o = c.createOscillator(), g = c.createGain(), t = t0 + i * (house ? .1 : .08), d = house ? .6 : .32;
+      o.type = house ? "triangle" : "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v * (house ? .5 : .4), t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + .03);
+    });
+  } catch(_){}
+}
+const fxScale = () => Math.max(.65, Math.min(1.5, Math.min(FX.W, FX.H) / 560));
+/* celebració normal: article creat */
+function fxCreate(force){
+  if(!force && !cfgGet("fxOn")) return;
+  fxBegin();
+  const f = FX.rm ? .4 : 1, N = Math.max(10, Math.round(cfgGet("fxN") * f)), T = cfgGet("fxT"), W = FX.W, H = FX.H, now = performance.now(), sc = fxScale(), pal = fxPal(false), max = Math.round(T / 16.667);
+  FX.vt = Math.max(1.5, Math.min(6.5, (H + 60) / (T / 16.667 * .85)));
+  FX.until = Math.max(FX.until, now + T + 500);
+  const nb = Math.round(N * .42), nc = Math.round(N * .14), nr = Math.max(0, N - nb - 2 * nc);
+  for(let i = 0; i < nb; i++){ const a = -Math.PI / 2 + rnd(-2.1, 2.1), v = rnd(5, 17) * sc; fxMake(W / 2 + rnd(-30, 30), H * .56 + rnd(-20, 20), Math.cos(a) * v, Math.sin(a) * v, pal, max, sc); }
+  [[0, -1.0], [W, -2.14]].forEach(([x, ang]) => { for(let i = 0; i < nc; i++){ const a = ang + rnd(-.28, .28), v = rnd(11, 25) * sc; fxMake(x, H * rnd(.78, .9), Math.cos(a) * v, Math.sin(a) * v, pal, max, sc); } });
+  fxStream(now + 80, Math.min(900, T * .4), nr, () => fxMake(rnd(0, W), -14, rnd(-1.5, 1.5), rnd(.5, 3), pal, max, sc));
+  fxSound(false);
+}
+/* celebració gran: article a Nau&Noa House */
+function fxHouse(c, force){
+  if(!force && !cfgGet("houseOn")) return;
+  fxBegin();
+  const f = FX.rm ? .4 : 1, N = Math.max(40, Math.round(cfgGet("houseN") * f)), T = cfgGet("houseT"), R = FX.rm ? 0 : cfgGet("houseR"), W = FX.W, H = FX.H, now = performance.now(), sc = fxScale(), pal = fxPal(true), max = Math.round(T / 16.667 * .95);
+  FX.vt = Math.max(1.3, Math.min(5, (H + 60) / (T / 16.667 * .8)));
+  FX.until = Math.max(FX.until, now + T + 700);
+  /* flaix i cartell */
+  const fl = $("fxflash"); fl.classList.remove("go"); void fl.offsetWidth; fl.classList.add("go");
+  const ban = $("fxban");
+  if(cfgGet("houseBan")){
+    ban.innerHTML = '<div class="e">🏡</div><b>Nau&amp;Noa House</b><small>' + (c ? '«' + esc(c.item) + '» ja és a casa!' : 'Benvinguts a casa!') + '</small>';
+    ban.style.setProperty("--bt", Math.min(T / 1000, 4.6) + "s"); ban.hidden = false; ban.style.animation = "none"; void ban.offsetWidth; ban.style.animation = "";
+  } else ban.hidden = true;
+  const nb = Math.round(N * .24), nc = Math.round(N * .09), nv = Math.round(N * .05), nr = Math.max(0, N - nb - 2 * nc - 5 * (nv + nc));
+  const boom = (x, y, n, v0, v1, star) => { for(let i = 0; i < n; i++){ const a = rnd(0, 6.2832), v = rnd(v0, v1) * sc; fxMake(x, y, Math.cos(a) * v, Math.sin(a) * v, pal, max, sc, star); } };
+  const cannons = n => [[0, -1.0], [W, -2.14]].forEach(([x, ang]) => { for(let i = 0; i < n; i++){ const a = ang + rnd(-.3, .3), v = rnd(13, 28) * sc; fxMake(x, H * rnd(.78, .92), Math.cos(a) * v, Math.sin(a) * v, pal, max, sc, true); } });
+  boom(W / 2, H * .5, nb, 5, 19, true); cannons(nc);
+  for(let i = 0; i < 14 && !FX.rm; i++){ const a = rnd(0, 6.2832), v = rnd(2, 9) * sc; pSpark(W / 2, H * .5, Math.cos(a) * v, Math.sin(a) * v, "#ffe9a0", rnd(3, 6) * sc, 50); }
+  [450, 900, 1400, 2000, 2800].forEach(dt => fxAt(now + dt, () => {
+    if(dt > T * .8) return;
+    cannons(nc >> 1);
+    const x = rnd(W * .15, W * .85), y = rnd(H * .14, H * .46);
+    boom(x, y, nv, 3, 12, true);
+    for(let i = 0; i < 18; i++){ const a = rnd(0, 6.2832), v = rnd(2, 8) * sc; pSpark(x, y, Math.cos(a) * v, Math.sin(a) * v, pick(["#ffe9a0", "#ffffff", "#ff9ccb", "#8af7eb"]), rnd(2.5, 5) * sc, 46); }
+  }));
+  fxStream(now + 150, T * .7, nr, () => fxMake(rnd(0, W), -14, rnd(-1.4, 1.4), rnd(.4, 2.4), pal, max, sc, true));
+  /* cintes: cauen de dalt i es llancen des dels racons */
+  for(let j = 0; j < R; j++){
+    fxAt(now + rnd(0, T * .45), () => {
+      const n = Math.round(rnd(60, 110) * Math.min(1.3, sc));
+      pRib(rnd(-10, W + 10), -rnd(10, 90), rnd(-.5, .5), rnd(.8, 2), pick(pal), rnd(5, 11) * sc, n, max + 60);
+    });
+  }
+  for(let j = 0; j < Math.min(14, Math.round(R / 3)); j++){
+    fxAt(now + 120 + j * 90, () => {
+      const left = j % 2 === 0, a = left ? rnd(-1.25, -.75) : rnd(-2.4, -1.9), v = rnd(13, 21) * sc;
+      pRib(left ? 0 : W, H * rnd(.82, .95), Math.cos(a) * v, Math.sin(a) * v, pick(pal), rnd(6, 11) * sc, Math.round(rnd(70, 120)), max + 40, .32, .975);
+    });
+  }
+  fxSound(true);
+  vib(30);
+}
+function celebrateNew(c){
+  try { if(c && c.locs && c.locs.includes(HOUSE) && cfgGet("houseOn")) fxHouse(c); else fxCreate(); } catch(e){ console.error(e); }
+}
+function celebrateMove(c, prev){
+  try { if(c && !prev.includes(HOUSE) && locsOf(c).includes(HOUSE)) fxHouse(c); } catch(e){ console.error(e); }
+}
+addEventListener("pointerdown", () => { if(cfgGet("fxVol") > 0){ try { chatCtx(); } catch(_){} } }, {passive:true});
+
+/* ---------- dashboard ---------- */
+let dashOpenF = false, dashSoonT = 0;
+const DSC = ["#4fe3d2", "#5ea0ff", "#ffd23f", "#ff6fb5", "#b388ff", "#ffa040", "#4ade80", "#ff6b6b", "#22d3ee", "#a3e635", "#f472b6", "#fb7185"];
+const dsP = (n, t) => t ? Math.round(n / t * 100) : 0;
+const dsU = c => typeof c.qty === "number" ? c.qty : 0;
+const dsN = n => Number(n).toLocaleString("ca");
+function dsRing(p, col, size){
+  const r = 26, C = 2 * Math.PI * r, L = C * Math.max(0, Math.min(100, p)) / 100;
+  return '<svg class="dsring" viewBox="0 0 64 64" width="' + (size || 60) + '" height="' + (size || 60) + '" aria-hidden="true"><circle cx="32" cy="32" r="' + r + '" class="rb"/><circle cx="32" cy="32" r="' + r + '" class="rf" style="--L:' + L.toFixed(1) + ';--C:' + C.toFixed(1) + ';stroke:' + col + '" transform="rotate(-90 32 32)"/></svg>';
+}
+function dsDonut(segs, center, sub){
+  const r = 56, C = 2 * Math.PI * r, T = segs.reduce((s, x) => s + x.n, 0) || 1;
+  let acc = 0, h = '<svg viewBox="0 0 160 160" class="dn" aria-hidden="true"><circle cx="80" cy="80" r="' + r + '" fill="none" stroke="var(--line)" stroke-width="26" style="stroke-dasharray:none;opacity:.5"/><g transform="rotate(-90 80 80)">';
+  segs.forEach(s => { if(!s.n) return; const L = Math.max(.5, C * s.n / T - 2); h += '<circle cx="80" cy="80" r="' + r + '" style="--L:' + L.toFixed(1) + ';--C:' + C.toFixed(1) + ';--Cm:' + (C - L).toFixed(1) + ';stroke:' + s.col + ';stroke-dashoffset:' + (-acc).toFixed(1) + '"/>'; acc += C * s.n / T; });
+  return h + '</g><text x="80" y="82" class="ctr">' + center + '</text><text x="80" y="98" class="cts">' + sub + '</text></svg>';
+}
+function dashDaily(L, n){
+  const days = [], today = new Date(); today.setHours(0, 0, 0, 0);
+  for(let i = n - 1; i >= 0; i--){ const d = new Date(today); d.setDate(d.getDate() - i); days.push({t:d.getTime(), cr:0, ed:0, lab:d.getDate(), mo:d.getMonth()}); }
+  const idx = ts => { const d = new Date(ts); d.setHours(0, 0, 0, 0); const k = Math.round((d.getTime() - days[0].t) / 864e5); return k >= 0 && k < n ? k : -1; };
+  L.forEach(c => { if(typeof c.ord === "number" && c.ord > 1e12){ const k = idx(c.ord); if(k >= 0) days[k].cr++; } });
+  HIST.forEach(h => {
+    if(h.of) return;
+    const creation = (h.parts || []).length && h.parts.every(p => p.k === "item" && !p.before && p.after);
+    if(creation) return;
+    const k = idx(h.ts); if(k >= 0) days[k].ed++;
+  });
+  return days;
+}
+function dsBars(days){
+  const W = 320, G = 3, n = days.length, bw = (W - G * (n - 1)) / n, mx = Math.max(1, ...days.map(d => d.cr + d.ed)), HH = 96, step = Math.ceil(n / 8);
+  let s = '<svg class="dsact" viewBox="0 0 ' + W + ' 112" role="img" aria-label="Activitat per dies">';
+  [.25, .5, .75, 1].forEach(f => { s += '<line x1="0" x2="' + W + '" y1="' + (HH - HH * f).toFixed(1) + '" y2="' + (HH - HH * f).toFixed(1) + '" stroke="var(--line)" stroke-width=".5" opacity=".6"/>'; });
+  days.forEach((d, i) => {
+    const x = i * (bw + G), hc = d.cr / mx * HH, he = d.ed / mx * HH;
+    s += '<g><title>' + d.lab + '/' + (d.mo + 1) + ' · ' + d.cr + ' creats · ' + d.ed + ' canvis</title>';
+    if(d.ed) s += '<rect class="dsb" x="' + x.toFixed(1) + '" y="' + (HH - hc - he).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + he.toFixed(1) + '" rx="2" fill="rgba(255,255,255,.38)" style="transition-delay:' + (i * 25) + 'ms"/>';
+    if(d.cr) s += '<rect class="dsb" x="' + x.toFixed(1) + '" y="' + (HH - hc).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + hc.toFixed(1) + '" rx="2" fill="var(--accent)" style="transition-delay:' + (i * 25) + 'ms"/>';
+    if(!d.cr && !d.ed) s += '<rect x="' + x.toFixed(1) + '" y="' + (HH - 2) + '" width="' + bw.toFixed(1) + '" height="2" rx="1" fill="var(--line)"/>';
+    if((n - 1 - i) % step === 0) s += '<text x="' + (x + bw / 2).toFixed(1) + '" y="108">' + d.lab + '</text>';
+    s += '</g>';
+  });
+  return s + '</svg>';
+}
+function dashUsers(L){
+  const idWho = {};
+  [...HIST].reverse().forEach(h => (h.parts || []).forEach(p => { if(p.k === "item" && !p.before && p.after && !idWho[p.id]) idWho[p.id] = h.who; }));
+  const cr = {}; let unk = 0;
+  L.forEach(c => { const w = String(c.by || idWho[c.id] || "").toLowerCase(); if(w) cr[w] = (cr[w] || 0) + 1; else unk++; });
+  const list = ALLOWED.map(e => {
+    const mine = HIST.filter(h => String(h.who).toLowerCase() === e.toLowerCase());
+    const msgs = CHAT.filter(m => m.from === e.toLowerCase()).length;
+    const last = Math.max(0, ...mine.map(h => h.ts || 0), ...CHAT.filter(m => m.from === e.toLowerCase()).map(m => m.ts));
+    return {e, name:chatName(e), who:whoName(e), cr:cr[e.toLowerCase()] || 0, ch:mine.filter(h => !h.of).length, un:mine.filter(h => h.of).length, msgs, last};
+  });
+  return {list, unk};
+}
+function dashData(){
+  const L = DATA.filter(live), tot = L.length, d = {L, tot}, now = Date.now();
+  d.units = L.reduce((s, c) => s + dsU(c), 0);
+  d.withPh = L.filter(c => c.photos.length).length; d.rev = L.filter(needsReview).length; d.newN = L.filter(isNew).length;
+  d.wk = L.filter(c => typeof c.ord === "number" && c.ord > 1e12 && c.ord > now - 7 * 864e5).length;
+  let pd = 0, pt = 0; CATS.forEach(z => { const r = pendRows(z.id); pt += r.length; pd += r.filter(x => have[x.key]).length; }); d.pd = pd; d.pt = pt;
+  d.byLoc = LOCS.map(l => { const it = L.filter(c => c.locs.includes(l)), zs = {}; it.forEach(c => catsOf(c).forEach(z => { zs[z] = (zs[z] || 0) + 1; })); return {id:l, n:it.length, units:it.reduce((s, c) => s + dsU(c), 0), ph:it.filter(c => c.photos.length).length, rev:it.filter(needsReview).length, zs, prim:L.filter(c => c.loc === l).length}; });
+  d.byCat = CATS.map((z, k) => { const it = L.filter(c => catsOf(c).includes(z.id)), ls = {}; it.forEach(c => c.locs.forEach(l => { ls[l] = (ls[l] || 0) + 1; })); const rows = pendRows(z.id), top = Object.entries(ls).sort((a, b) => b[1] - a[1])[0]; return {z, k, n:it.length, units:it.reduce((s, c) => s + dsU(c), 0), rev:it.filter(needsReview).length, pd:rows.filter(x => have[x.key]).length, pt:rows.length, top:top ? top[0] : "", prim:L.filter(c => c.cat === z.id).length}; });
+  d.house = L.filter(c => c.locs.includes(HOUSE));
+  const rest = {}; L.filter(c => !c.locs.includes(HOUSE)).forEach(c => { rest[c.loc] = (rest[c.loc] || 0) + 1; });
+  d.rest = Object.entries(rest).sort((a, b) => b[1] - a[1]);
+  d.st = {ok:L.filter(c => c.estado === "ok").length, conf:L.filter(c => c.estado === "conf").length, sin:L.filter(c => c.estado === "sin").length};
+  d.fi = {alta:L.filter(c => c.fiab === "alta").length, mitjana:L.filter(c => c.fiab === "mitjana").length, baixa:L.filter(c => c.fiab === "baixa").length};
+  d.days = dashDaily(L, cfgGet("dashDays"));
+  d.users = dashUsers(L);
+  d.top = L.map((c, i) => ({c, i:DATA.indexOf(c)})).filter(x => dsU(x.c) > 0).sort((a, b) => dsU(b.c) - dsU(a.c)).slice(0, cfgGet("dashTop"));
+  d.latest = L.map(c => ({c, i:DATA.indexOf(c)})).filter(x => typeof x.c.ord === "number" && x.c.ord > 1e12).sort((a, b) => b.c.ord - a.c.ord).slice(0, cfgGet("dashTop"));
+  d.stats = invStats();
+  return d;
+}
+const dsSec = (id, ico, title, note, body) => '<section class="dsec" id="ds-' + id + '"><h2><span aria-hidden="true">' + ico + '</span>' + title + '</h2>' + (note ? '<p class="ds-n">' + note + '</p>' : '') + body + '</section>';
+const dsKpi = (ico, label, v, sub, p, col) => '<div class="dcard k"><div class="kt"><div class="dl"><span aria-hidden="true">' + ico + '</span>' + label + '</div><div class="dv"><span class="cu" data-v="' + v + '">' + dsN(v) + '</span></div><div class="ds">' + sub + '</div></div>' + (p == null ? '' : dsRing(p, col || 'var(--accent)', 58)) + '</div>';
+function dashHtml(d){
+  const tot = d.tot, nav = [];
+  const sec = (id, label, html) => { nav.push([id, label]); return html; };
+  let h = "";
+  /* resum */
+  h += sec("resum", "Resum", dsSec("resum", "✨", "Resum", "Una mirada ràpida a tot l'inventari.", '<div class="dsgrid k">'
+    + dsKpi("📦", "Articles", tot, dsN(d.units) + " unitats en total", null)
+    + dsKpi("📷", "Amb foto", d.withPh, dsP(d.withPh, tot) + "% de l'inventari", dsP(d.withPh, tot), "#4fe3d2")
+    + dsKpi("⚠️", "Per revisar", d.rev, dsP(d.rev, tot) + "% de l'inventari", dsP(d.rev, tot), "#ffd166")
+    + dsKpi("☑", "Pendents aconseguits", d.pd, d.pt - d.pd + " encara per aconseguir", dsP(d.pd, d.pt), "#7ef0c4")
+    + dsKpi("🆕", cfgGet("newDays") ? "Nous (" + cfgGet("newDays") + " dies)" : "Creats (7 dies)", cfgGet("newDays") ? d.newN : d.wk, "Articles afegits fa poc", null)
+    + dsKpi("🏡", "A Nau&amp;Noa House", d.house.length, dsP(d.house.length, tot) + "% ja és a casa", dsP(d.house.length, tot), "#ffd23f")
+    + '</div>'));
+  /* casa */
+  const hp = dsP(d.house.length, tot), units = d.house.reduce((s, c) => s + dsU(c), 0);
+  h += sec("casa", "Casa", dsSec("casa", "🏡", "Nau&amp;Noa House", "El destí final de tots els articles.",
+    '<div class="dhero"><div class="hr">' + dsRing(hp, "#ffd23f", 104) + '</div><div class="ht"><h3>' + (tot ? (hp >= 100 ? "Tot és a casa! 🎉" : "La mudança va al " + hp + "%") : "Encara no hi ha articles") + '</h3>'
+    + '<div class="big"><span class="cu" data-v="' + d.house.length + '">' + dsN(d.house.length) + '</span> <small style="font-size:15px;font-weight:700;color:#e8d9b0">de ' + dsN(tot) + ' articles · ' + dsN(units) + ' unitats</small></div>'
+    + '<div class="dsbar gold"><i style="--w:' + hp + '%"></i></div>'
+    + '<p>' + (d.rest.length ? 'Encara falten per portar: ' + d.rest.slice(0, 4).map(x => '<b>' + x[1] + '</b> de ' + esc(x[0])).join(' · ') + '.' : (tot ? 'No en queda cap per portar.' : '')) + '</p>'
+    + '<div class="ft2"><button type="button" data-a="loc" data-v="' + esc(HOUSE) + '">Veure què hi ha a casa</button>'
+    + (d.rest.length ? '<button type="button" data-a="loc" data-v="' + esc(d.rest[0][0]) + '">Falten a ' + esc(d.rest[0][0]) + '</button>' : '') + '<button type="button" class="confbtn" data-a="confh">🎉 Prova la celebració</button></div></div></div>'));
+  /* ubicacions */
+  h += sec("ubic", "Ubicacions", dsSec("ubic", "📍", "Ubicacions", "Toca'n una per veure els seus articles.", '<div class="dsgrid c">' + d.byLoc.map((l, k) => {
+    const zs = Object.entries(l.zs).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const bar = zs.map(([z, n]) => '<i style="--w:' + dsP(n, l.n) + '%;background:' + DSC[CATS.findIndex(x => x.id === z) % DSC.length] + '"></i>').join("");
+    return '<div class="dcard click' + (l.id === HOUSE ? ' house' : '') + '" data-a="loc" data-v="' + esc(l.id) + '" tabindex="0" role="button"><div class="dl"><span aria-hidden="true">' + (l.id === HOUSE ? "🏡" : "📍") + '</span>' + esc(l.id) + '</div>'
+      + '<div class="dv"><span class="cu" data-v="' + l.n + '">' + dsN(l.n) + '</span> <small style="font-size:13px;color:var(--muted);font-weight:700">' + dsP(l.n, tot) + '%</small></div>'
+      + '<div class="dsbar' + (l.id === HOUSE ? ' gold' : '') + '"><i style="--w:' + dsP(l.n, tot) + '%"></i></div>'
+      + '<div class="dsbar" title="Zones">' + (bar || '') + '</div>'
+      + '<div class="row2"><span><b>' + dsN(l.units) + '</b> unitats</span><span><b>' + dsP(l.ph, l.n) + '%</b> amb foto</span><span><b>' + l.rev + '</b> per revisar</span></div></div>';
+  }).join("") + '</div>'));
+  /* zones */
+  const dz = d.byCat.map(x => ({n:x.prim, col:DSC[x.k % DSC.length], label:x.z.icon + " " + x.z.label}));
+  const dl = d.byLoc.map((x, k) => ({n:x.prim, col:x.id === HOUSE ? "#ffd23f" : DSC[(k + 3) % DSC.length], label:x.id}));
+  const leg = a => '<div class="leg">' + a.map(s => '<div><i style="background:' + s.col + '"></i>' + esc(s.label) + '<span>' + s.n + '</span></div>').join("") + '</div>';
+  h += sec("zones", "Zones", dsSec("zones", "🏠", "Zones de la casa", "Distribució i pendents per aconseguir.",
+    '<div class="dsgrid w"><div class="dcard"><div class="dl">Per zona principal</div><div class="dsdon">' + dsDonut(dz, tot, "articles") + leg(dz) + '</div></div>'
+    + '<div class="dcard"><div class="dl">Per ubicació principal</div><div class="dsdon">' + dsDonut(dl, tot, "articles") + leg(dl) + '</div></div></div>'
+    + '<div class="dsgrid c" style="margin-top:10px">' + d.byCat.map(x => '<div class="dcard click" data-a="cat" data-v="' + esc(x.z.id) + '" tabindex="0" role="button"><div class="dl"><span aria-hidden="true">' + x.z.icon + '</span>' + esc(x.z.label) + '</div>'
+      + '<div class="dv"><span class="cu" data-v="' + x.n + '">' + dsN(x.n) + '</span> <small style="font-size:13px;color:var(--muted);font-weight:700">' + dsP(x.n, tot) + '%</small></div>'
+      + '<div class="dsbar"><i style="--w:' + dsP(x.n, tot) + '%;background:' + DSC[x.k % DSC.length] + '"></i></div>'
+      + '<div class="dsbar ok" title="Pendents aconseguits"><i style="--w:' + dsP(x.pd, x.pt) + '%"></i></div>'
+      + '<div class="row2"><span><b>' + x.pd + '/' + x.pt + '</b> pendents</span><span><b>' + dsN(x.units) + '</b> unitats</span>' + (x.rev ? '<span><b>' + x.rev + '</b> per revisar</span>' : '') + (x.top ? '<span class="pill">📍 ' + esc(x.top) + '</span>' : '') + '</div></div>').join("") + '</div>'));
+  /* mapa */
+  const mxv = Math.max(1, ...d.byCat.flatMap(x => d.byLoc.map(l => d.L.filter(c => catsOf(c).includes(x.z.id) && c.locs.includes(l.id)).length)));
+  let cells = '<div class="h"></div>' + d.byLoc.map(l => '<div class="h" title="' + esc(l.id) + '">' + esc(l.id === HOUSE ? "🏡" : (l.id.length > 9 ? l.id.slice(0, 8) + "…" : l.id)) + '</div>').join("");
+  d.byCat.forEach(x => { cells += '<div class="r"><span aria-hidden="true">' + x.z.icon + '</span>' + esc(x.z.label.length > 11 ? x.z.short : x.z.label) + '</div>';
+    d.byLoc.forEach(l => { const n = d.L.filter(c => catsOf(c).includes(x.z.id) && c.locs.includes(l.id)).length;
+      cells += n ? '<div class="c" style="--a:' + (.12 + .7 * n / mxv).toFixed(2) + '" data-a="cell" data-l="' + esc(l.id) + '" data-z="' + esc(x.z.id) + '" role="button" tabindex="0" title="' + esc(x.z.label + " · " + l.id) + '">' + n + '</div>' : '<div class="c z">·</div>'; }); });
+  h += sec("mapa", "Mapa", dsSec("mapa", "🗺️", "Mapa zona × ubicació", "Més intens = més articles. Toca una casella per filtrar-la.", '<div class="dcard"><div class="dsmx" style="grid-template-columns:auto repeat(' + d.byLoc.length + ',minmax(34px,1fr))">' + cells + '</div></div>'));
+  /* activitat */
+  const tcr = d.days.reduce((s, x) => s + x.cr, 0), ted = d.days.reduce((s, x) => s + x.ed, 0);
+  h += sec("act", "Activitat", dsSec("act", "📈", "Activitat", "Últims " + d.days.length + " dies. Els articles antics no tenen data de creació.", '<div class="dcard">' + dsBars(d.days)
+    + '<div class="dsleg"><span><i style="background:var(--accent)"></i>Articles creats <b>' + tcr + '</b></span><span><i style="background:rgba(255,255,255,.38)"></i>Altres canvis <b>' + ted + '</b></span></div></div>'));
+  /* usuaris */
+  const U = d.users, maxcr = Math.max(1, ...U.list.map(u => u.cr), U.unk);
+  const when = ts => ts ? ago(ts) : "—";
+  h += sec("usuaris", "Usuaris", dsSec("usuaris", "👥", "Qui fa què", "Articles creats, canvis fets i missatges al xat.", '<div class="dsgrid u">' + U.list.map(u => '<div class="dcard"><div class="dsusr"><div class="av ' + u.name.toLowerCase() + '">' + esc(u.name) + '</div><div class="ut"><div class="nm"><b>' + esc(u.who) + '</b><small>Última activitat: ' + esc(when(u.last)) + '</small></div>'
+    + '<div class="dsbar"><i style="--w:' + dsP(u.cr, maxcr) + '%"></i></div><div class="st"><div><b class="cu" data-v="' + u.cr + '">' + u.cr + '</b><small>articles creats</small></div><div><b class="cu" data-v="' + u.ch + '">' + u.ch + '</b><small>canvis</small></div><div><b class="cu" data-v="' + u.msgs + '">' + u.msgs + '</b><small>missatges</small></div></div></div></div></div>').join("")
+    + '</div>' + (U.unk ? '<p class="ds-n" style="margin-top:8px">' + U.unk + ' articles anteriors no tenen autor registrat. A partir d\'ara es guarda qui crea cada article.</p>' : '')));
+  /* estat */
+  const seg = (a, cols) => '<div class="dsbar">' + a.map((n, i) => '<i style="--w:' + dsP(n, tot) + '%;background:' + cols[i] + '"></i>').join("") + '</div>';
+  h += sec("estat", "Estat", dsSec("estat", "🩺", "Estat de l'inventari", "", '<div class="dsgrid w"><div class="dcard"><div class="dl">Verificació</div>' + seg([d.st.ok, d.st.conf, d.st.sin], ["#7ef0c4", "#ffd166", "#ff8a7a"])
+    + '<div class="row2"><span>Verificat <b>' + d.st.ok + '</b></span><span>Per confirmar <b>' + d.st.conf + '</b></span><span>Sense foto <b>' + d.st.sin + '</b></span></div></div>'
+    + '<div class="dcard"><div class="dl">Fiabilitat de la informació</div>' + seg([d.fi.alta, d.fi.mitjana, d.fi.baixa], ["#4fe3d2", "#ffd166", "#ff8a7a"])
+    + '<div class="row2"><span>Alta <b>' + d.fi.alta + '</b></span><span>Mitjana <b>' + d.fi.mitjana + '</b></span><span>Baixa <b>' + d.fi.baixa + '</b></span></div></div></div>'));
+  /* tops */
+  const li = (x, rank, sub) => '<button type="button" class="dsitem" data-a="item" data-v="' + x.i + '"><span class="th">' + (x.c.photos.length ? '<img alt="" src="' + x.c.photos[0] + '">' : '📦') + '</span><span class="tx"><b>' + esc(x.c.item) + '</b><small>' + sub + '</small></span><span class="rk">' + rank + '</span></button>';
+  h += sec("tops", "Rànquings", dsSec("tops", "🏆", "Rànquings", "", '<div class="dsgrid w"><div><div class="dl" style="font-weight:800;margin:0 0 6px;color:var(--ink)">Amb més unitats</div><div class="dslist">'
+    + (d.top.length ? d.top.map((x, k) => li(x, "×" + dsN(dsU(x.c)), '#' + (k + 1) + ' · ' + esc(locsTxt(x.c, ", ")))).join("") : '<div class="dsempty">Encara no hi ha articles.</div>') + '</div></div>'
+    + '<div><div class="dl" style="font-weight:800;margin:0 0 6px;color:var(--ink)">Últims afegits</div><div class="dslist">'
+    + (d.latest.length ? d.latest.map(x => li(x, ago(x.c.ord), esc(zonesTxt(x.c)) + ' · ' + esc(locsTxt(x.c, ", ")))).join("") : '<div class="dsempty">Cap article nou amb data.</div>') + '</div></div></div>'));
+  /* núvol */
+  const s = d.stats, pct = Math.min(100, s.bytes / FREE_BYTES * 100);
+  h += sec("nuvol", "Núvol", dsSec("nuvol", "☁️", "Núvol i dades", "", '<div class="dcard"><div class="dl">Espai usat (aprox.)</div><div class="dv"><span>' + mbTxt(s.bytes) + ' MB</span> <small style="font-size:13px;color:var(--muted);font-weight:700">de 1024 MB · ' + pct.toFixed(1).replace(".", ",") + '%</small></div>'
+    + '<div class="dsbar ' + (pct >= 85 ? '' : 'ok') + '"><i style="--w:' + Math.max(1, pct).toFixed(1) + '%"></i></div><div class="row2"><span><b>' + s.phN + '</b> fotos (' + mbTxt(s.phBytes) + ' MB)</span><span><b>' + s.bkN + '</b> còpies</span><span><b>' + HIST.length + '</b> canvis a Desfés</span><span><b>' + CHAT.length + '</b> missatges al xat</span></div></div>'));
+  return {html:h, nav};
+}
+function dashRender(keep){
+  const body = $("dashBody"), st = body.scrollTop, d = dashData(), r = dashHtml(d);
+  body.className = "dbody" + (keep ? " go" : "") + (cfgGet("dashAnim") ? "" : " noanim");
+  body.innerHTML = r.html;
+  $("dashNav").innerHTML = r.nav.map(([id, l]) => '<button type="button" data-n="' + id + '">' + l + '</button>').join("");
+  $("dashSub").textContent = d.tot + " articles · " + LOCS.length + " ubicacions · " + CATS.length + " zones";
+  body.scrollTop = st; dashSpy();
+  if(!keep){ requestAnimationFrame(() => requestAnimationFrame(() => { if(dashOpenF) body.classList.add("go"); })); dashCount(body); }
+}
+function dashCount(root){
+  if(!cfgGet("dashAnim")) return;
+  const els = [...root.querySelectorAll(".cu")], t0 = performance.now(), D = 900;
+  els.forEach(e => { e.textContent = "0"; });
+  const f = now => {
+    const k = Math.min(1, (now - t0) / D), ez = 1 - Math.pow(1 - k, 3);
+    els.forEach(e => { e.textContent = dsN(Math.round(+e.dataset.v * ez)); });
+    if(k < 1 && dashOpenF) requestAnimationFrame(f); else els.forEach(e => { e.textContent = dsN(+e.dataset.v); });
+  };
+  requestAnimationFrame(f);
+}
+function dashSpy(){
+  const body = $("dashBody"), top = body.getBoundingClientRect().top; let cur = "";
+  body.querySelectorAll(".dsec").forEach(s => { if(s.getBoundingClientRect().top - top <= 60) cur = s.id.slice(3); });
+  $("dashNav").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.n === (cur || "resum")));
+}
+function dashSoon(){ clearTimeout(dashSoonT); dashSoonT = setTimeout(() => { if(dashOpenF) dashRender(true); }, 250); }
+function dashOpen(){
+  dashOpenF = true; $("dash").hidden = false; document.body.classList.add("lock");
+  $("dashBody").scrollTop = 0; dashRender(false);
+  try { $("dashClose").focus({preventScroll:true}); } catch(_){}
+}
+function dashClose(){
+  if(!dashOpenF) return;
+  dashOpenF = false; $("dash").hidden = true;
+  if(!$("dlg").classList.contains("open")) document.body.classList.remove("lock");
+  try { $("dashBtn").focus({preventScroll:true}); } catch(_){}
+}
+function dashGo(loc, cat){
+  dashClose(); resetFilters();
+  if(loc) state.loc = loc; if(cat) state.cat = cat;
+  render(); scrollTo({top:0, behavior:"auto"});
+}
+$("dashBtn").onclick = dashOpen;
+$("dashClose").onclick = dashClose;
+$("dashNav").addEventListener("click", e => {
+  const b = e.target.closest("button[data-n]"); if(!b) return;
+  const s = $("ds-" + b.dataset.n); if(s) s.scrollIntoView({behavior:"smooth", block:"start"});
+});
+$("dashBody").addEventListener("scroll", () => { clearTimeout(dashSpy.t); dashSpy.t = setTimeout(dashSpy, 60); }, {passive:true});
+function dashAct(t){
+  const a = t.dataset.a;
+  if(a === "loc") dashGo(t.dataset.v, null);
+  else if(a === "cat") dashGo(null, t.dataset.v);
+  else if(a === "cell") dashGo(t.dataset.l, t.dataset.z);
+  else if(a === "item"){ const i = +t.dataset.v; dashClose(); if(!order.includes(i)) resetFilters(); openDlg(i); }
+  else if(a === "confh") fxHouse(null, true);
+}
+$("dashBody").addEventListener("click", e => { const t = e.target.closest("[data-a]"); if(t) dashAct(t); });
+$("dashBody").addEventListener("keydown", e => { if((e.key === "Enter" || e.key === " ") && e.target.matches("[data-a][tabindex]")){ e.preventDefault(); dashAct(e.target); } });
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape" && dashOpenF && !document.querySelector("dialog[open]") && !DL.open){ e.preventDefault(); dashClose(); }
+});
+
+/* ---------- ajustos nous ---------- */
+function cfgV5Html(row){
+  const sec = k => String(CFGD[k] / 1000).replace(".", ",");
+  return '</div><div class="cfg"><h3>🎉 Confeti en crear un article</h3><p class="cfn">Pluja de confeti a tota la pantalla quan afegeixes un article. Les proves fan servir els valors ja desats.</p>'
+    + row("Confeti en crear", "1 = activat · 0 = desactivat · per defecte 1", 'data-t="fxOn" min="0" max="1" step="1"', cfgGet("fxOn"), "0/1")
+    + row("Quantitat de confeti", "Entre 20 i 600 peces · per defecte " + CFGD.fxN, 'data-t="fxN" min="20" max="600" step="10"', cfgGet("fxN"), "peces")
+    + row("Durada del confeti", "Entre 1 i 12 s · per defecte " + sec("fxT"), 'data-t="fxT" min="1" max="12" step="0.5"', cfgGet("fxT") / 1000, "s")
+    + row("Colors del confeti", "0 = automàtic · 1 = multicolor · 2 = daurat · 3 = color del tema · per defecte 0", 'data-t="fxPal" min="0" max="3" step="1"', cfgGet("fxPal"), "0–3")
+    + row("So de la celebració", "Entre 0 i 100 · 0 = en silenci · per defecte 0", 'data-t="fxVol" min="0" max="100" step="1"', cfgGet("fxVol"), "%")
+    + '<button type="button" class="wtest" id="fxTest">🎉 Prova el confeti</button>'
+    + '</div><div class="cfg"><h3>🏡 Nau&amp;Noa House</h3><p class="cfn">Ubicació de destí de tots els articles. En posar-hi un article, la celebració és molt més gran: confeti, cintes, focs i un cartell.</p>'
+    + row("Celebració de la casa", "1 = activada · 0 = desactivada · per defecte 1", 'data-t="houseOn" min="0" max="1" step="1"', cfgGet("houseOn"), "0/1")
+    + row("Mostra sempre la ubicació", "1 = sempre visible, encara que sigui buida · 0 = només quan hi ha articles · per defecte 1", 'data-t="houseShow" min="0" max="1" step="1"', cfgGet("houseShow"), "0/1")
+    + row("Confeti de la casa", "Entre 50 i 900 peces · per defecte " + CFGD.houseN, 'data-t="houseN" min="50" max="900" step="10"', cfgGet("houseN"), "peces")
+    + row("Durada de la celebració", "Entre 2 i 15 s · per defecte " + sec("houseT"), 'data-t="houseT" min="2" max="15" step="0.5"', cfgGet("houseT") / 1000, "s")
+    + row("Cintes", "Entre 0 i 80 · 0 = sense cintes · per defecte " + CFGD.houseR, 'data-t="houseR" min="0" max="80" step="1"', cfgGet("houseR"), "cintes")
+    + row("Cartell de benvinguda", "1 = mostra «Nau&Noa House» al mig · 0 = amagat · per defecte 1", 'data-t="houseBan" min="0" max="1" step="1"', cfgGet("houseBan"), "0/1")
+    + '<button type="button" class="wtest" id="fxTestH">🏡 Prova Nau&amp;Noa House</button>'
+    + '</div><div class="cfg"><h3>🎛️ Dial dels filtres</h3><p class="cfn">Mantén premut «Tot el món» o «Totes» i llisca el dit: els botons creixen quan hi passes a sobre.</p>'
+    + row("Temps per obrir el dial", "Entre 0,15 i 1,5 s · per defecte " + sec("dialHold"), 'data-t="dialHold" min="0.15" max="1.5" step="0.05"', cfgGet("dialHold") / 1000, "s")
+    + row("Mida dels botons", "Entre 34 i 64 px · per defecte " + CFGD.dialS, 'data-t="dialS" min="34" max="64" step="1"', cfgGet("dialS"), "px")
+    + row("Radi del dial", "Entre 90 i 220 px · per defecte " + CFGD.dialR, 'data-t="dialR" min="90" max="220" step="5"', cfgGet("dialR"), "px")
+    + row("Ampliació màxima", "Entre 110 i 260 % · per defecte " + CFGD.dialMax, 'data-t="dialMax" min="110" max="260" step="5"', cfgGet("dialMax"), "%")
+    + row("Obrir amb un toc simple", "1 = un toc al botó (sense filtre) també obre el dial · 0 = només mantenint premut · per defecte 1", 'data-t="dialTap" min="0" max="1" step="1"', cfgGet("dialTap"), "0/1")
+    + row("Vibració al dial", "1 = vibra en passar per sobre d'un botó (Android) · per defecte 1", 'data-t="dialVib" min="0" max="1" step="1"', cfgGet("dialVib"), "0/1")
+    + '</div><div class="cfg"><h3>📊 Dashboard</h3><p class="cfn">La pàgina d\'estadístiques que s\'obre amb el botó 📊 de dalt.</p>'
+    + row("Botó del dashboard", "1 = visible · 0 = amagat · per defecte 1", 'data-t="dashOn" min="0" max="1" step="1"', cfgGet("dashOn"), "0/1")
+    + row("Dies d'activitat", "Entre 7 i 60 dies · per defecte " + CFGD.dashDays, 'data-t="dashDays" min="7" max="60" step="1"', cfgGet("dashDays"), "dies")
+    + row("Articles als rànquings", "Entre 3 i 15 · per defecte " + CFGD.dashTop, 'data-t="dashTop" min="3" max="15" step="1"', cfgGet("dashTop"), "articles")
+    + row("Animacions", "1 = comptadors i barres animats · 0 = directe · per defecte 1", 'data-t="dashAnim" min="0" max="1" step="1"', cfgGet("dashAnim"), "0/1")
+    + '<button type="button" class="wtest" id="dashTest">📊 Obre el dashboard</button>';
+}
+$("cfBody").addEventListener("click", e => {
+  if(e.target.closest("#fxTest")) fxCreate(true);
+  else if(e.target.closest("#fxTestH")) fxHouse(null, true);
+  else if(e.target.closest("#dashTest")){ $("cfdlg").close(); dashOpen(); }
+});
+
+/* ---------- assistent d'ordres: confeti, casa, dial, dashboard i filtres ---------- */
+function rKeys5(nt){
+  const has = re => re.test(nt), num = /\d/.test(nt);
+  if(has(/\bdial\b/)){
+    if(has(/vibraci|haptic/)) return ["dialVib", "la vibració del dial"];
+    if(has(/\btoc\b|clic|\btap\b|obrir amb/) && !has(/mantenir|premut/)) return ["dialTap", "obrir el dial amb un toc simple"];
+    if(has(/temps|espera|durada|mantenir|premut|\bhold\b|segons/)) return ["dialHold", "el temps de mantenir premut per obrir el dial"];
+    if(has(/ampliaci|zoom|escala|magnifi|creix|augment/)) return ["dialMax", "l'ampliació màxima del dial (%)"];
+    if(has(/radi|radio|distancia|obertura|separaci/)) return ["dialR", "el radi del dial"];
+    if(has(/mida|tamany|grandaria|boto|botons/)) return ["dialS", "la mida dels botons del dial"];
+    return null;
+  }
+  const casa = has(/\b(casa|house)\b|nau.?noa|celebraci/);
+  if(casa && has(/confeti|cint[ae]s?|serpentin|celebraci|banner|cartell|durada|particul|intensitat|mostra|amaga|visible/)){
+    if(has(/cint[ae]s?|serpentin/)) return ["houseR", "les cintes de Nau&Noa House"];
+    if(has(/banner|cartell|missatge/)) return ["houseBan", "el cartell de Nau&Noa House"];
+    if(num && has(/durada|temps|segons/)) return ["houseT", "la durada de la celebració de Nau&Noa House"];
+    if(num && has(/confeti|particul|intensitat|quantitat/)) return ["houseN", "el confeti de Nau&Noa House"];
+    if(has(/mostra|amaga|visible|sempre/) && has(/ubicaci/)) return ["houseShow", "mostrar sempre la ubicació Nau&Noa House"];
+    if(has(/celebraci|activ|desactiv|confeti/)) return ["houseOn", "la celebració de Nau&Noa House"];
+    return null;
+  }
+  if(has(/confeti/)){
+    if(has(/volum|\bso\b|sonor/)) return ["fxVol", "el volum de la celebració"];
+    if(has(/paleta|colors?|tonalitat/)) return ["fxPal", "els colors del confeti (0 auto · 1 multicolor · 2 daurat · 3 tema)"];
+    if(num && has(/durada|temps|segons/)) return ["fxT", "la durada del confeti"];
+    if(num) return ["fxN", "la quantitat de confeti"];
+    return ["fxOn", "el confeti en crear articles"];
+  }
+  if(has(/dashboard|quadre de comandament/)){
+    if(has(/dies|periode|historic|activitat/)) return ["dashDays", "els dies d'activitat del dashboard"];
+    if(has(/\btop\b|rank|millors|principals|llista/)) return ["dashTop", "els articles dels rànquings del dashboard"];
+    if(has(/animaci|moviment/)) return ["dashAnim", "les animacions del dashboard"];
+    return ["dashOn", "el botó del dashboard"];
+  }
+  return null;
+}
+function rFx(nt){
+  const has = re => re.test(nt), num = /\d/.test(nt);
+  if(has(/\bdashboard\b|quadre de comandament/)){
+    if(has(/^(tanca|tancar|amaga|surt)\b/) && !has(/boto/)){ dashClose(); rMsg("bot", "Dashboard tancat."); return true; }
+    if(has(/^(obre|obrir|mostra|ensenya|veure|vull veure|ves a|anem a|dashboard|quadre)\b/) && !num && !has(/dies|periode|\btop\b|rank|animaci|boto|desactiv|activa|amaga|visible/)){
+      dashOpen(); rMsg("bot", "📊 Dashboard obert." + (cfgGet("dashOn") ? "" : " (El botó està amagat als ajustos, però l'obro igualment.)")); return true;
+    }
+    return false;
+  }
+  if(!num && has(/^(prova|proba|llanca|dispara|tira|fes|mostra|veure|celebra)\b/) && has(/confeti|celebraci|serpentin|cint[ae]s/)){
+    if(has(/casa|house|nau.?noa|gran|imponent|^celebra/)){ fxHouse(null, true); rMsg("bot", "🏡 Celebració de Nau&Noa House!"); }
+    else { fxCreate(true); rMsg("bot", "🎉 Confeti!"); }
+    return true;
+  }
+  if(!num && has(/^celebra\b/)){ fxHouse(null, true); rMsg("bot", "🏡 Celebració de Nau&Noa House!"); return true; }
+  return false;
+}
+function rFilter(nt, t0){
+  if(/^(treu|neteja|esborra|reinicia|reseteja|restaura|sense)\b.*\bfiltres?\b/.test(nt)){ resetFilters(); rMsg("bot", "✓ He tret tots els filtres: es veu tot l'inventari."); return true; }
+  if(!/^(filtra|filtre|mostra|ensenya|veure|vull veure|ves a|anem a|obre)\b/.test(nt)) return false;
+  if(/ajust|configuraci|dashboard|estadistiq|copia|resum|vista|xat|historial|desfes/.test(nt)) return false;
+  const {L, C} = rNames(), fl = rFind(t0, L), fz = rFind(t0, C);
+  if(!fl && !fz) return false;
+  resetFilters();
+  if(fl) state.loc = fl.x.id;
+  if(fz) state.cat = fz.x.id;
+  render(); scrollTo({top:0, behavior:"auto"});
+  rMsg("bot", "✓ Filtre aplicat: " + [fl ? "📍 " + fl.x.label : "", fz ? "🏠 " + fz.x.label : ""].filter(Boolean).join(" · ") + ".");
+  return true;
+}
+
+/* ---------- connexió amb la resta de la web ---------- */
+const __cfgApply50 = cfgApply;
+cfgApply = function(){
+  refreshLocs(); if(state.loc !== "all" && !LOCS.includes(state.loc)) state.loc = "all";
+  __cfgApply50();
+  $("dashBtn").hidden = !cfgGet("dashOn");
+  if(dashOpenF) dashSoon();
+};
+const __render50 = render;
+render = function(){ __render50(); if(dashOpenF) dashSoon(); };
+$("dashBtn").hidden = !cfgGet("dashOn");
 
 gate("wait", "Connectant…");
 cloudSetStatus();
