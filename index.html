@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v5.0">
+<meta name="generator" content="Inventari de casa v5.1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -1039,6 +1039,32 @@ body.dialing{overflow:hidden}
 .dcard.k .dl{align-items:flex-start}
 .dsusr .ut .nm{display:flex;flex-direction:column;line-height:1.2}
 .dsusr .ut .nm small{color:var(--muted);font-size:11.5px}
+
+/* ===== v5.1: dial en cercle complet i icones de les ubicacions ===== */
+.lic{display:block;flex:none}
+.dial .ddisc{position:absolute;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.82) 0,rgba(0,0,0,.74) 52%,rgba(var(--accent-rgb),.10) 100%);
+  border:2px solid rgba(var(--accent-rgb),.34);box-shadow:0 0 44px rgba(var(--accent-rgb),.22),inset 0 0 34px rgba(var(--accent-rgb),.10);animation:dDisc .28s cubic-bezier(.2,1.2,.4,1) both}
+@keyframes dDisc{from{opacity:0;transform:translate(-50%,-50%) scale(.55)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.dial .dinner{position:absolute;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);border:1.5px dashed rgba(var(--accent-rgb),.3)}
+.dial .dptr{position:absolute;height:3px;margin-top:-1.5px;border-radius:3px;pointer-events:none;transform-origin:0 50%;opacity:0;transition:opacity .12s;background:linear-gradient(90deg,transparent,var(--accent))}
+.dial .dptr.on{opacity:.85}
+.dial .dhub .hi1 svg{color:var(--accent)}
+.dial .dhub.house .hi1 svg,.dial .dhub.house b{color:#ffd23f}
+.ditem .di{display:flex;align-items:center;justify-content:center}
+.ditem.house{color:#ffd23f}
+.ditem.house.act{color:#2a0a1a}
+.fbtn .fic svg{display:block}
+.fbtn .fic.ini{color:var(--accent);font-size:0}
+.fbtn.house .fic.ini{border-color:#ffd23f;color:#ffd23f;background:rgba(255,210,63,.14)}
+.fbtn .fic .globe{font-size:0}
+.lpic{flex:none;display:flex;color:var(--accent)}
+.dcard .dl svg{color:var(--muted)}
+.dcard.house .dl svg{color:#ffd23f}
+.fdlg .cfrow select{width:148px;max-width:44vw;background:#000;border:2px solid #5a1010;color:#fff;border-radius:10px;padding:8px 8px;font-size:14px}
+.fdlg .cfrow select:focus{outline:0;border-color:#ff3b3b;box-shadow:0 0 0 3px rgba(255,59,59,.25)}
+.cficon{flex:none;width:40px;height:40px;border-radius:50%;background:#000;border:2px solid #5a1010;color:#ff8f8f;display:flex;align-items:center;justify-content:center}
+@media (max-width:600px){.fdlg .cfrow select{width:128px}}
 </style>
 </head>
 <body>
@@ -1053,7 +1079,7 @@ body.dialing{overflow:hidden}
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v5.0</span></h1>
+      <h1>Inventari de casa <span class="ver">v5.1</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -1556,7 +1582,7 @@ function themeApply(){
   if(meta) meta.setAttribute("content", T.bg);
 }
 
-const FILE_KEYS = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_nous","inv_cats","inv_edits","inv_locs","inv_del","inv_cfg","inv_theme"];
+const FILE_KEYS = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_nous","inv_cats","inv_edits","inv_locs","inv_del","inv_cfg","inv_theme","inv_locicons"];
 const STATE = JSON.parse(JSON.stringify(SAVED.keys || {}));
 try { const tc = JSON.parse(localStorage.getItem("inv_theme_cache") || "null"); if(tc && typeof tc === "object" && STATE.inv_theme === undefined) STATE.inv_theme = tc; } catch(e){}
 themeApply();
@@ -1566,7 +1592,7 @@ const load = (k,def) => {
   try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e){ return def; }
 };
 /* v3.0: les dades compartides es desen a Firestore (meta/state); la resta, al dispositiu */
-const KEYS_CLOUD = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_cats","inv_locs","inv_cfg","inv_theme"];
+const KEYS_CLOUD = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_cats","inv_locs","inv_cfg","inv_theme","inv_locicons"];
 const pendKeys = new Set();
 const store = (k,v) => {
   if(FILE_KEYS.includes(k)){
@@ -2962,6 +2988,9 @@ function partLabel(p){
     L.push(cfgLabels(b, a));
   } else if(p.f === "inv_theme"){
     L.push(themeLabels(b, a));
+  } else if(p.f === "inv_locicons"){
+    const B = b || {}, A = a || {}, nm = k => (LOCICONS[k] ? LOCICONS[k].n : "automàtica");
+    new Set([...Object.keys(B), ...Object.keys(A)]).forEach(k => { if(stable(B[k]) !== stable(A[k])) L.push("🖼️ Icona de «" + k + "»: " + nm(B[k]) + " → " + nm(A[k])); });
   }
   return L.join(" · ");
 }
@@ -2983,7 +3012,7 @@ function metaRevert(f, b, a, cur, keepCats){
     new Set([...Object.keys(B), ...Object.keys(A)]).forEach(p => { if(stable(B[p]) !== stable(A[p])) cfgSet(o, p, B[p]); });
     return o;
   }
-  if(f === "inv_tinc" || f === "inv_pend_tret" || f === "inv_theme"){
+  if(f === "inv_tinc" || f === "inv_pend_tret" || f === "inv_theme" || f === "inv_locicons"){
     const o = cur && typeof cur === "object" && !Array.isArray(cur) ? cur : {}, B = b || {}, A = a || {};
     new Set([...Object.keys(B), ...Object.keys(A)]).forEach(k => { if(stable(B[k]) === stable(A[k])) return; if(B[k] === undefined) delete o[k]; else o[k] = deep(B[k]); });
     return o;
@@ -3418,6 +3447,7 @@ function cfgRender(){
   h += row("Articles per fila (mòbil)", "Entre 2 i 6 · per defecte " + CFGD.cols, 'data-t="cols" min="2" max="6" step="1"', cfgGet("cols"), "per fila");
   h += cfgMoreHtml(row);
   h += cfgV5Html(row);
+  h += cfgLocIconsHtml();
   h += '</div><div class="cfg"><h3>💾 Còpies de seguretat</h3><p class="cfn">Per crear-ne o restaurar-ne, toca el botó «Còpies de seguretat» de dalt.</p>';
   h += row("Còpies que es guarden", "Entre 1 i 50 · per defecte " + CFGD.bkMax + " · s'esborra la més antiga", 'data-t="bkMax" min="1" max="50" step="1"', cfgGet("bkMax"), "còpies");
   h += row("Còpia automàtica cada…", "Entre 0 i 60 dies · 0 = desactivada · per defecte 0", 'data-t="bkAuto" min="0" max="60" step="1"', cfgGet("bkAuto"), "dies");
@@ -3569,7 +3599,7 @@ const itemDesc = c => qtyBadge(c.qty) + " · " + zonesTxt(c) + " · 📍 " + loc
 /* ---- ordres ---- */
 function rHelp(nt){
   if(!/^(?:ajuda|help|ordres|comandes)\b|que puc fer|que saps fer|que pots fer|com funciones/.test(nt)) return false;
-  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• ordena per nom · ordena per recents · ordre original\n• cantonades a 20 · foto de la llista a 90\n• vibració activada · barra de cerca desactivada\n\n🎨 COLORS\n• posa el color principal a blau\n• color del fons blau fosc · color del text #ffeecc\n• color del cartell NEW taronja\n• tema verd (rosa, lila, groc, taronja, gris…)\n• restaura els colors\n\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n🎉 CONFETI I NAU&NOA HOUSE\n• prova el confeti · prova la celebració de la casa\n• confeti a 300 · durada del confeti a 5 segons\n• desactiva el confeti · colors del confeti a 2\n• confeti de la casa a 600 · cintes de la casa a 50\n• durada de la celebració de la casa a 9 segons\n• volum del confeti a 40\n\n🎛️ FILTRES I DIAL\n• filtra per Cunit · mostra la zona Cuina · treu els filtres\n• temps del dial a 0,5 segons · ampliació del dial a 200\n• radi del dial a 160 · mida del dial a 50\n\n📊 DASHBOARD\n• obre el dashboard · tanca el dashboard\n• dies del dashboard a 30 · top del dashboard a 8\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
+  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• ordena per nom · ordena per recents · ordre original\n• cantonades a 20 · foto de la llista a 90\n• vibració activada · barra de cerca desactivada\n\n🎨 COLORS\n• posa el color principal a blau\n• color del fons blau fosc · color del text #ffeecc\n• color del cartell NEW taronja\n• tema verd (rosa, lila, groc, taronja, gris…)\n• restaura els colors\n\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n🎉 CONFETI I NAU&NOA HOUSE\n• prova el confeti · prova la celebració de la casa\n• confeti a 300 · durada del confeti a 5 segons\n• desactiva el confeti · colors del confeti a 2\n• confeti de la casa a 600 · cintes de la casa a 50\n• durada de la celebració de la casa a 9 segons\n• volum del confeti a 40\n\n🎛️ FILTRES I DIAL\n• icona de Cunit a platja · icona de Garatge iaios automàtica\n• quines icones hi ha?\n• filtra per Cunit · mostra la zona Cuina · treu els filtres\n• temps del dial a 0,5 segons · ampliació del dial a 200\n• radi del dial a 160 · mida del dial a 50\n\n📊 DASHBOARD\n• obre el dashboard · tanca el dashboard\n• dies del dashboard a 30 · top del dashboard a 8\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
   return true;
 }
 function rShow(nt){
@@ -3788,7 +3818,7 @@ function rAsk(text){
   rMsg("me", text);
   const t0 = text.trim(), n0 = norm(t0).replace(/['’`´]/g, " "), nt = rNorm(t0);
   if(/^(?:hola|bon dia|bones|ei|hey|salut)\b/.test(nt) && nt.split(" ").length < 4){ rMsg("bot", "Hola! Digues-me què vols canviar. Si t'ho vols mirar, escriu «què puc fer?»."); return; }
-  const H = [rHelp, rShow, rFx, rStats, rFilter, rTheme, rSort, rReset, rGoal, rBackup, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
+  const H = [rHelp, rShow, rFx, rIcon, rStats, rFilter, rTheme, rSort, rReset, rGoal, rBackup, rTimes, rView, rCreate, rDelete, rRename, rQty, rPlace];
   for(const h of H){ if(h(nt, t0, n0) !== false) return; }
   const d = rMsg("bot", "No t'he entès 🤔 Prova amb una ordre com les d'aquests exemples:");
   rSuggest(d, ["Què puc fer?", "Resum de l'inventari", "Quins són els ajustos?"]);
@@ -3800,7 +3830,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "5.0";
+const APP_VER = "5.1";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null, phLoaded = false;
 const __cloudPhotos34 = cloudPhotos;
@@ -4143,7 +4173,7 @@ function lpRender(){
   const all = [...new Set([...LOCS, ...lpSel])];
   $("lpList").innerHTML = all.map(l => {
     const on = lpSel.includes(l);
-    return '<button type="button" class="lpi' + (on ? ' on' : '') + '" data-l="' + esc(l) + '" aria-pressed="' + on + '"><span class="lpk" aria-hidden="true">' + (on ? '✓' : '') + '</span><span class="lpn">' + esc(l) + '</span>'
+    return '<button type="button" class="lpi' + (on ? ' on' : '') + '" data-l="' + esc(l) + '" aria-pressed="' + on + '"><span class="lpk" aria-hidden="true">' + (on ? '✓' : '') + '</span><span class="lpic">' + locIconSvg(locIconKey(l), 20) + '</span><span class="lpn">' + esc(l) + '</span>'
       + (on && lpSel.length > 1 && lpSel[0] === l ? '<em>principal</em>' : '') + '</button>';
   }).join("");
   $("lpSave").disabled = !lpSel.length;
@@ -4548,7 +4578,7 @@ function renderFilters(){
   const la = state.loc === "all", nl = la ? TOT : totLoc(state.loc), pl = la ? 0 : pctOf(nl, TOT), hl = state.loc === HOUSE;
   FB.loc.setAttribute("aria-pressed", String(!la)); FB.loc.classList.toggle("house", hl && !la);
   FB.loc.innerHTML = fill(pl)
-    + '<span class="fic' + (la || hl ? '' : ' ini') + '">' + (la ? GLOBE_SVG : hl ? '🏡' : esc(ini(state.loc))) + '</span>'
+    + '<span class="fic' + (la ? '' : ' ini') + '">' + (la ? GLOBE_SVG : locIconSvg(locIconKey(state.loc), 24)) + '</span>'
     + '<span class="ft"><b>' + esc(la ? "Tot el món" : state.loc) + '</b><small>' + esc(la ? LOCS.length + (LOCS.length === 1 ? " ubicació" : " ubicacions") : nl + " art. · " + pl + "%") + '<span class="hint">' + esc(la ? " · mantén premut" : " · toca per treure") + '</span>' + '</small></span>'
     + '<span class="fn">' + nl + '</span>';
   FB.loc.setAttribute("aria-label", la ? "Tot el món. Toca o mantén premut per triar una ubicació" : "Ubicació: " + state.loc + ". Toca per treure el filtre");
@@ -4570,13 +4600,13 @@ function renderFilters(){
 }
 
 /* ---------- dial radial: mantén premut i llisca el dit ---------- */
-const DL = {open:false, kind:"", mode:"", items:[], els:[], pos:[], act:-1, S:46, ox:0, oy:0, px:null, py:null, hub:null, hubEl:null, btn:null, down:null, timer:0, moving:false};
+const DL = {open:false, kind:"", mode:"", items:[], els:[], pos:[], act:-1, S:46, ox:0, oy:0, cx:0, cy:0, R:0, inner:40, multi:false, moved:false, px:null, py:null, hubEl:null, ptrEl:null, btn:null, down:null, timer:0, moving:false};
 function dialItems(kind){
   const TOT = totAll(), out = [];
   if(kind === "loc"){
     const base = (c, i) => live(c) && (!state.review || needsReview(c)) && (state.cat === "all" || catsOf(c).includes(state.cat)) && (!state.q || qHit(i));
-    out.push({id:"all", icon:"🌍", label:"Tot el món", n:DATA.filter((c, i) => base(c, i)).length, g:TOT, p:100, sel:state.loc === "all", all:true});
-    LOCS.forEach(l => { const g = totLoc(l); out.push({id:l, icon:l === HOUSE ? "🏡" : "", ini:ini(l), label:l, n:DATA.filter((c, i) => base(c, i) && c.locs.includes(l)).length, g, p:pctOf(g, TOT), sel:state.loc === l, house:l === HOUSE}); });
+    out.push({id:"all", ik:"globe", label:"Tot el món", n:DATA.filter((c, i) => base(c, i)).length, g:TOT, p:100, sel:state.loc === "all", all:true});
+    LOCS.forEach(l => { const g = totLoc(l); out.push({id:l, ik:locIconKey(l), label:l, n:DATA.filter((c, i) => base(c, i) && c.locs.includes(l)).length, g, p:pctOf(g, TOT), sel:state.loc === l, house:l === HOUSE}); });
   } else {
     const base = (c, i) => live(c) && (state.loc === "all" || c.locs.includes(state.loc)) && (!state.q || qHit(i));
     out.push({id:"all", icon:"📦", label:"Totes", n:DATA.filter((c, i) => base(c, i)).length, g:TOT, p:100, sel:state.cat === "all" && !state.review, all:true});
@@ -4584,69 +4614,86 @@ function dialItems(kind){
   }
   return out;
 }
+/* v5.1: cercle COMPLET. Tots els botons es reparteixen per igual al voltant d'un cercle (el primer, a dalt, en sentit horari).
+   Si n'hi ha molts, els botons es fan més petits perquè hi càpiguen tots i, si encara no hi caben, es posa un segon anell. */
 function dialGeom(n, ox, oy){
   const W = innerWidth, H = innerHeight, mx = cfgGet("dialMax") / 100, rad = a => a * Math.PI / 180;
-  let S = cfgGet("dialS"); const R0 = cfgGet("dialR");
-  const hf = s => s * mx * .55 + 4;
-  const needV = R0 + S;
-  let orient = "down";
-  if(H - oy < needV) orient = oy >= needV ? "up" : "full";
-  const full = orient === "full", mid = orient === "down" ? 90 : -90, h0 = 68;
-  /* tram d'angles d'un anell: es redueix perquè no surti per les vores de la pantalla */
-  const spanOf = (r, s) => {
-    if(full) return [-90, 270];
-    const lim = (W / 2 - hf(s) - 4) / r, half = lim >= 1 ? h0 : Math.min(h0, Math.asin(Math.max(.05, lim)) * 180 / Math.PI);
-    return [mid - half, mid + half];
-  };
-  const capOf = (r, s) => { const sp = spanOf(r, s), len = full ? 2 * Math.PI * r : rad(sp[1] - sp[0]) * r; return Math.floor(len / (s + 4)) + (full ? 0 : 1); };
-  const Rv = orient === "down" ? H - oy - hf(S) - 4 : orient === "up" ? oy - hf(S) - 4 : Math.min(oy, H - oy) - hf(S) - 4;
-  const Rb = Math.max(56, Math.min(R0, Rv)), Rcap = Math.max(Rb, Math.min(R0 * 1.25, Rv));
-  let rings = null;
-  for(let s = S; s >= 36 && !rings; s -= 2){ for(let r = Rb; r <= Rcap + .1; r += 6){ if(capOf(r, s) >= n){ S = s; rings = [{R:r, m:n}]; break; } } }
-  if(!rings){
-    S = Math.min(S, 40); rings = []; let left = n, r = Rb;
-    while(left > 0 && rings.length < 5){ const c = Math.max(1, capOf(r, S)), m = Math.min(left, c); rings.push({R:r, m}); left -= m; r += S + 8; }
-    if(left > 0) rings[rings.length - 1].m += left;
+  const half = Math.min(W, H) / 2 - 4, S0 = cfgGet("dialS"), R0 = cfgGet("dialR");
+  const hf = s => s * (mx / 2 + (mx - 1) * .45) + 6;                 /* espai que cal perquè el botó ampliat no surti de la pantalla */
+  const Rm = s => Math.max(46, half - hf(s));
+  const cap = (r, s) => Math.max(1, Math.floor(2 * Math.PI * r / (s + 6)));
+  let S = S0, rings = null;
+  for(let s = S0; s >= 32 && !rings; s -= 2){                          /* 1 anell: es va reduint la mida i, si cal, s'agrandeix el radi */
+    const rm = Rm(s);
+    for(let r = Math.min(R0, rm); r <= rm + .1; r += 4){ if(cap(r, s) >= n){ S = s; rings = [{R:r, m:n}]; break; } }
   }
-  let ext = 0;
-  rings.forEach(rg => { rg.sp = spanOf(rg.R, S); ext = Math.max(ext, full ? rg.R : rg.R * Math.sin(rad((rg.sp[1] - rg.sp[0]) / 2))); });
-  ext += hf(S);
-  const cx = ext * 2 > W ? W / 2 : Math.max(ext, Math.min(W - ext, ox));
+  const multi = s => {
+    const rs = []; let r = Rm(s), tot = 0;
+    while(rs.length < 5 && (r >= s * 1.15 + 14 || !rs.length) && tot < n){ const c = cap(r, s); rs.push({R:r, c}); tot += c; r -= s + 10; }
+    return {rs, tot};
+  };
+  const dist = (rs, tot) => {
+    const ms = rs.map(r => Math.min(r.c, Math.floor(n * r.c / tot)));
+    let left = n - ms.reduce((a, b) => a + b, 0);
+    for(let k = 0; left > 0 && k < 400; k++){ const i = k % rs.length; if(ms[i] < rs[i].c){ ms[i]++; left--; } }
+    if(left > 0) ms[0] += left;
+    return rs.map((r, i) => ({R:r.R, m:ms[i]})).filter(x => x.m > 0);
+  };
+  for(let s = Math.min(S0, 34); s >= 22 && !rings; s -= 2){            /* 2 o més anells concèntrics */
+    const {rs, tot} = multi(s);
+    if(tot >= n){ S = s; rings = dist(rs, tot); }
+  }
+  if(!rings){ S = 22; const {rs, tot} = multi(22); rings = dist(rs, Math.max(1, tot)); }
+  const ext = rings[0].R + hf(S);
+  const cx = 2 * ext >= W ? W / 2 : Math.max(ext, Math.min(W - ext, ox));
+  const cy = 2 * ext >= H ? H / 2 : Math.max(ext, Math.min(H - ext, oy));
   const pos = [];
-  rings.forEach(rg => { for(let j = 0; j < rg.m; j++){
-    const [a0, a1] = rg.sp, a = rg.m === 1 ? (a0 + a1) / 2 : full ? a0 + 360 * j / rg.m : orient === "down" ? a1 - (a1 - a0) * j / (rg.m - 1) : a0 + (a1 - a0) * j / (rg.m - 1);
-    const ux = Math.cos(rad(a)), uy = Math.sin(rad(a));
-    pos.push({x:cx + ux * rg.R, y:oy + uy * rg.R, ux, uy});
-  } });
-  const R1 = rings[0].R;
-  return {S, pos, cx, orient, R:R1, hub:full ? {x:cx, y:oy} : {x:cx, y:oy + (orient === "down" ? 1 : -1) * R1 * .5}};
+  rings.forEach((rg, k) => {
+    const off = k % 2 ? 180 / rg.m : 0;
+    for(let j = 0; j < rg.m; j++){ const th = rad(-90 + off + 360 * j / rg.m); pos.push({x:cx + Math.cos(th) * rg.R, y:cy + Math.sin(th) * rg.R, ux:Math.cos(th), uy:Math.sin(th), a:th, R:rg.R, k}); }
+  });
+  const Rin = rings[rings.length - 1].R, multiRing = rings.length > 1;
+  return {S, pos, cx, cy, R:rings[0].R, Rin, multi:multiRing, inner:Math.max(26, Rin * (multiRing ? .5 : .42))};
 }
+function dialGlyph(it, size){ return it.ik ? locIconSvg(it.ik, size) : it.icon; }
 function dialHub(i, sticky){
   const h = DL.hubEl; if(!h) return;
   if(i < 0 || !DL.items[i]){
     h.className = "dhub hint";
-    h.innerHTML = '<div class="hi1">' + (DL.kind === "loc" ? "🌍" : "📦") + '</div><b>' + (DL.mode === "sticky" || sticky ? "Toca una opció" : "Llisca i deixa anar") + '</b><small>' + (DL.kind === "loc" ? "Filtra per ubicació" : "Filtra per zona") + '</small>';
+    h.innerHTML = '<div class="hi1">' + (DL.kind === "loc" ? locIconSvg("globe", 34) : "📦") + '</div><b>' + (DL.mode === "sticky" || sticky ? "Toca una opció" : "Llisca i deixa anar") + '</b><small>' + (DL.kind === "loc" ? "Filtra per ubicació" : "Filtra per zona") + '</small>';
     return;
   }
   const it = DL.items[i];
-  h.className = "dhub";
-  h.innerHTML = '<div class="hi1">' + (it.icon ? it.icon : '<em>' + esc(it.ini) + '</em>') + '</div><b>' + esc(it.label) + '</b><small>' + it.n + (it.n === 1 ? ' article' : ' articles') + (it.all ? '' : (it.n !== it.g ? ' (de ' + it.g + ')' : ' · ' + it.p + '%')) + '</small>';
+  h.className = "dhub" + (it.house ? " house" : "");
+  h.innerHTML = '<div class="hi1">' + dialGlyph(it, 38) + '</div><b>' + esc(it.label) + '</b><small>' + it.n + (it.n === 1 ? ' article' : ' articles') + (it.all ? '' : (it.n !== it.g ? ' (de ' + it.g + ')' : ' · ' + it.p + '%')) + '</small>';
 }
 function dialUpdate(px, py){
   if(!DL.open) return;
-  const mx = cfgGet("dialMax") / 100, sig = DL.S * 1.7;
+  const mx = cfgGet("dialMax") / 100, S = DL.S, sig = S * 1.6;
+  const dx = px - DL.cx, dy = py - DL.cy, d = Math.hypot(dx, dy), ang = Math.atan2(dy, dx);
+  if(!DL.moved && DL.mode === "hold" && Math.hypot(px - DL.ox, py - DL.oy) > 26) DL.moved = true;
+  const live = DL.mode === "sticky" || DL.moved;
+  const angular = !DL.multi && DL.mode === "hold";                       /* 1 anell mantenint premut: tria l'angle, el dit pot ser a qualsevol lloc del cercle */
+  const amp = !live ? 0 : angular ? Math.max(0, Math.min(1, (d - DL.inner) / (DL.inner * .6 + 1))) : 1;
   let best = -1, bd = 1e9;
   DL.pos.forEach((p, i) => {
-    const d = Math.hypot(px - p.x, py - p.y);
-    if(d < bd){ bd = d; best = i; }
-    const g = Math.exp(-(d * d) / (sig * sig)), s = 1 + (mx - 1) * g, pop = (s - 1) * DL.S * .45, el = DL.els[i];
+    let dd;
+    if(angular){ const da = Math.atan2(Math.sin(ang - p.a), Math.cos(ang - p.a)); dd = Math.abs(da) * p.R; }
+    else dd = Math.hypot(px - p.x, py - p.y);
+    if(dd < bd){ bd = dd; best = i; }
+    const g = live ? Math.exp(-(dd * dd) / (sig * sig)) * amp : 0, s = 1 + (mx - 1) * g, pop = (s - 1) * S * .45, el = DL.els[i];
     el.style.transform = "translate(-50%,-50%) translate(" + (p.ux * pop).toFixed(1) + "px," + (p.uy * pop).toFixed(1) + "px) scale(" + s.toFixed(3) + ")";
     el.style.zIndex = String(10 + Math.round(g * 100));
   });
-  const act = bd <= DL.S * .95 ? best : -1;
+  const lim = DL.R + S * 1.15;
+  const act = !live ? -1 : angular ? (d > DL.inner * 1.25 && d < lim ? best : -1) : (bd <= S * .95 ? best : -1);
   if(act !== DL.act){
     DL.els.forEach((e, k) => e.classList.toggle("act", k === act));
     DL.act = act; dialHub(act);
+    if(DL.ptrEl){
+      if(act >= 0){ DL.ptrEl.style.transform = "rotate(" + (DL.pos[act].a * 180 / Math.PI).toFixed(1) + "deg)"; DL.ptrEl.classList.add("on"); }
+      else DL.ptrEl.classList.remove("on");
+    }
     if(act >= 0 && cfgGet("dialVib")) vib(6);
   }
 }
@@ -4655,17 +4702,22 @@ function dialOpen(kind, btn, mode, px, py, fromKey){
   const items = dialItems(kind); if(items.length < 2) return;
   const r = btn.getBoundingClientRect(), ox = r.left + r.width / 2, oy = r.top + r.height / 2;
   const g = dialGeom(items.length, ox, oy);
-  Object.assign(DL, {open:true, kind, mode, items, pos:g.pos, S:g.S, hub:g.hub, act:-1, ox, oy, btn, px:px == null ? null : px, py:py == null ? null : py});
+  Object.assign(DL, {open:true, kind, mode, items, pos:g.pos, S:g.S, cx:g.cx, cy:g.cy, R:g.R, inner:g.inner, multi:g.multi, moved:false, act:-1, ox, oy, btn, px:px == null ? null : px, py:py == null ? null : py});
   const el = $("dial"); el.innerHTML = ""; el.hidden = false;
-  el.style.setProperty("--ox", (ox / innerWidth * 100) + "%"); el.style.setProperty("--oy", (oy / innerHeight * 100) + "%");
-  const bg = document.createElement("div"); bg.className = "dbg"; el.appendChild(bg);
-  const org = document.createElement("div"); org.className = "dorg"; org.style.left = ox + "px"; org.style.top = oy + "px"; el.appendChild(org);
-  const hub = document.createElement("div"); hub.className = "dhub hint"; hub.style.left = g.hub.x + "px"; hub.style.top = g.hub.y + "px"; el.appendChild(hub); DL.hubEl = hub;
+  el.style.setProperty("--ox", (g.cx / innerWidth * 100) + "%"); el.style.setProperty("--oy", (g.cy / innerHeight * 100) + "%");
+  const add = (cls, css) => { const d = document.createElement("div"); d.className = cls; Object.assign(d.style, css); el.appendChild(d); return d; };
+  add("dbg", {});
+  const D = 2 * (g.R + g.S * .85);
+  add("ddisc", {left:g.cx + "px", top:g.cy + "px", width:D + "px", height:D + "px"});
+  const Di = 2 * (g.Rin - g.S * .78); if(Di > 44) add("dinner", {left:g.cx + "px", top:g.cy + "px", width:Di + "px", height:Di + "px"});
+  DL.ptrEl = add("dptr", {left:g.cx + "px", top:g.cy + "px", width:Math.max(20, g.Rin - g.S * .6) + "px"});
+  if(Math.hypot(ox - g.cx, oy - g.cy) > g.inner * 1.1) add("dorg", {left:ox + "px", top:oy + "px"});   /* marca d'on has premut (s'amaga si coincideix amb el centre) */
+  DL.hubEl = add("dhub hint", {left:g.cx + "px", top:g.cy + "px", width:Math.max(70, Math.min(150, 2 * (g.Rin - g.S * .75))) + "px"});
   DL.els = items.map((it, i) => {
     const b = document.createElement("button"); b.type = "button"; b.className = "ditem" + (it.sel ? " sel" : "") + (it.house ? " house" : "");
     b.style.width = b.style.height = g.S + "px"; b.style.left = g.pos[i].x + "px"; b.style.top = g.pos[i].y + "px"; b.style.fontSize = Math.round(g.S * .5) + "px";
     b.dataset.i = i; b.setAttribute("aria-label", it.label + " · " + it.n + " articles");
-    b.innerHTML = '<span class="di' + (it.icon ? '' : ' t') + '">' + (it.icon || esc(it.ini)) + '</span><span class="dn">' + it.n + '</span>';
+    b.innerHTML = '<span class="di">' + dialGlyph(it, Math.round(g.S * .58)) + '</span><span class="dn">' + it.n + '</span>';
     b.style.opacity = "0"; b.style.transform = "translate(-50%,-50%) translate(" + (ox - g.pos[i].x) + "px," + (oy - g.pos[i].y) + "px) scale(.2)";
     el.appendChild(b); return b;
   });
@@ -4673,8 +4725,8 @@ function dialOpen(kind, btn, mode, px, py, fromKey){
   dialHub(-1);
   requestAnimationFrame(() => requestAnimationFrame(() => {
     if(!DL.open) return;
-    DL.els.forEach((b, i) => { b.style.transitionDelay = (i * 14) + "ms"; b.style.opacity = "1"; b.style.transform = "translate(-50%,-50%) scale(1)"; });
-    setTimeout(() => { if(!DL.open) return; DL.els.forEach(b => { b.style.transitionDelay = "0ms"; b.classList.add("mv"); }); if(DL.px != null) dialUpdate(DL.px, DL.py); }, 420);
+    DL.els.forEach((b, i) => { b.style.transitionDelay = (i * 12) + "ms"; b.style.opacity = "1"; b.style.transform = "translate(-50%,-50%) scale(1)"; });
+    setTimeout(() => { if(!DL.open) return; DL.els.forEach(b => { b.style.transitionDelay = "0ms"; b.classList.add("mv"); }); if(DL.px != null) dialUpdate(DL.px, DL.py); }, 430);
   }));
   window.addEventListener("pointermove", dialPM, {passive:true});
   window.addEventListener("pointerup", dialPU, true);
@@ -4694,10 +4746,10 @@ function dialPU(e){
   if(!DL.open || DL.mode !== "hold") return;
   if(DL.down && e.pointerId !== DL.down.id) return;
   DL.px = e.clientX; DL.py = e.clientY; dialUpdate(DL.px, DL.py);
-  const act = DL.act, near = Math.hypot(DL.px - DL.ox, DL.py - DL.oy) < 44;
+  const act = DL.act, moved = DL.moved;
   DL.down = null; eatNextClick();
-  if(act >= 0) dialChoose(act);
-  else if(near){ DL.mode = "sticky"; dialHub(-1, true); }
+  if(!moved){ DL.mode = "sticky"; dialHub(-1, true); dialUpdate(DL.px, DL.py); }   /* has deixat anar sense moure't: el dial es queda obert */
+  else if(act >= 0) dialChoose(act);
   else dialClose();
 }
 function dialPC(e){ if(DL.open && DL.mode === "hold" && (!DL.down || e.pointerId === DL.down.id)) dialClose(); }
@@ -5059,7 +5111,7 @@ function dashHtml(d){
   h += sec("ubic", "Ubicacions", dsSec("ubic", "📍", "Ubicacions", "Toca'n una per veure els seus articles.", '<div class="dsgrid c">' + d.byLoc.map((l, k) => {
     const zs = Object.entries(l.zs).sort((a, b) => b[1] - a[1]).slice(0, 5);
     const bar = zs.map(([z, n]) => '<i style="--w:' + dsP(n, l.n) + '%;background:' + DSC[CATS.findIndex(x => x.id === z) % DSC.length] + '"></i>').join("");
-    return '<div class="dcard click' + (l.id === HOUSE ? ' house' : '') + '" data-a="loc" data-v="' + esc(l.id) + '" tabindex="0" role="button"><div class="dl"><span aria-hidden="true">' + (l.id === HOUSE ? "🏡" : "📍") + '</span>' + esc(l.id) + '</div>'
+    return '<div class="dcard click' + (l.id === HOUSE ? ' house' : '') + '" data-a="loc" data-v="' + esc(l.id) + '" tabindex="0" role="button"><div class="dl"><span aria-hidden="true">' + locIconSvg(locIconKey(l.id), 18) + '</span>' + esc(l.id) + '</div>'
       + '<div class="dv"><span class="cu" data-v="' + l.n + '">' + dsN(l.n) + '</span> <small style="font-size:13px;color:var(--muted);font-weight:700">' + dsP(l.n, tot) + '%</small></div>'
       + '<div class="dsbar' + (l.id === HOUSE ? ' gold' : '') + '"><i style="--w:' + dsP(l.n, tot) + '%"></i></div>'
       + '<div class="dsbar" title="Zones">' + (bar || '') + '</div>'
@@ -5292,6 +5344,129 @@ cfgApply = function(){
 const __render50 = render;
 render = function(){ __render50(); if(dashOpenF) dashSoon(); };
 $("dashBtn").hidden = !cfgGet("dashOn");
+
+/* ---- v5.1: icones minimalistes de les ubicacions (SVG de línia, agafen el color del tema) ---- */
+const LOCICONS = {
+  globe:     {n:"Món",              p:'<circle cx="24" cy="24" r="17"/><ellipse cx="24" cy="24" rx="7.5" ry="17"/><path d="M7 24h34M10 14.5h28M10 33.5h28"/>'},
+  house:     {n:"Casa",             p:'<path d="M6 23 24 8l18 15"/><path d="M11 20v20h26V20"/><path d="M20 40V28h8v12"/>'},
+  seahouse:  {n:"Casa de platja",   p:'<path d="M9 21 24 8l15 13"/><path d="M13 19v13h22V19"/><path d="M21 32v-7h6v7"/><path d="M5 41q3.5-4.5 7 0t7 0 7 0 7 0 7 0"/>'},
+  hearthouse:{n:"Casa amb cor",     p:'<path d="M6 23 24 8l18 15"/><path d="M11 20v20h26V20"/><path d="M24 35.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.9 3.4 3.4 0 0 1 5.6 3.9z"/>'},
+  garage:    {n:"Garatge",          p:'<path d="M6 40V19L24 8l18 11v21"/><path d="M13 40V26h22v14"/><path d="M13 31h22M13 36h22"/>'},
+  bed:       {n:"Habitació",        p:'<path d="M6 11v29"/><path d="M6 32h36v8"/><path d="M42 32v-5a5 5 0 0 0-5-5H21v10"/><circle cx="13.5" cy="25" r="3.6"/>'},
+  building:  {n:"Pis / edifici",    p:'<path d="M12 41V8h24v33"/><path d="M8 41h32"/><path d="M18 15h4M26 15h4M18 22h4M26 22h4M18 29h4M26 29h4"/><path d="M21 41v-6h6v6"/>'},
+  box:       {n:"Magatzem",         p:'<path d="M24 7 8 15v18l16 8 16-8V15z"/><path d="M8 15l16 8 16-8M24 23v18"/>'},
+  sofa:      {n:"Sala / menjador",  p:'<path d="M11 24v-5a5 5 0 0 1 5-5h16a5 5 0 0 1 5 5v5"/><path d="M6 27a4 4 0 0 1 8 0v5h20v-5a4 4 0 0 1 8 0v10H6z"/><path d="M12 37v4M36 37v4"/>'},
+  pot:       {n:"Cuina",            p:'<path d="M10 22h28v12a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6z"/><path d="M5 26h5M38 26h5"/><path d="M14 22a10 8 0 0 1 20 0"/><path d="M24 11V8"/>'},
+  bath:      {n:"Bany",             p:'<path d="M6 26h36v4a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z"/><path d="M11 26V14a4.5 4.5 0 0 1 9 0"/><path d="M13 38l-2 4M35 38l2 4"/>'},
+  desk:      {n:"Oficina",          p:'<rect x="7" y="9" width="34" height="23" rx="3"/><path d="M17 41h14M24 32v9"/>'},
+  leaf:      {n:"Jardí / terrassa", p:'<path d="M24 41V22"/><path d="M24 29c-9 0-13-5.5-13-13 9 0 13 5.5 13 13z"/><path d="M24 24c6.5 0 10.5-4 10.5-10.5-6.5 0-10.5 4-10.5 10.5z"/><path d="M16 41h16"/>'},
+  car:       {n:"Cotxe / parking",  p:'<path d="M8 29l4-10a3 3 0 0 1 3-2h18a3 3 0 0 1 3 2l4 10"/><path d="M6 29h36v9H6z"/><circle cx="14" cy="38" r="3.4"/><circle cx="34" cy="38" r="3.4"/>'},
+  beach:     {n:"Platja",           p:'<path d="M7 24a17 17 0 0 1 34 0z"/><path d="M24 24v15"/><path d="M8 41q4-4 8 0t8 0 8 0 8 0"/>'},
+  mountain:  {n:"Muntanya",         p:'<path d="M4 39 18 13l9 16 5-8 12 18z"/><path d="M14 20l4 5 4-3"/>'},
+  tools:     {n:"Taller / eines",   p:'<rect x="7" y="18" width="34" height="21" rx="3"/><path d="M18 18v-3a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3"/><path d="M7 28h34"/><path d="M21 26h6v5h-6z"/>'},
+  pin:       {n:"Xinxeta",          p:'<path d="M24 42s13-12 13-22a13 13 0 0 0-26 0c0 10 13 22 13 22z"/><circle cx="24" cy="20" r="4.6"/>'}
+};
+/* paraules (sense accents) que fan triar la icona sola segons el nom de la ubicació; la primera que coincideix guanya */
+const LOCICON_AUTO = [
+  ["hearthouse", /nau.?noa|\bhouse\b/],
+  ["seahouse",   /\bcunit\b/],
+  ["beach",      /platj|playa|\bmar\b|costa|beach|sitges|salou|cambrils/],
+  ["garage",     /garatge|garaje|garage/],
+  ["bed",        /habitaci|dormitori|dormitorio|cambra|llit|bedroom|\bhab\b/],
+  ["bath",       /\bbany|\bbano|bath|lavabo/],
+  ["pot",        /cuina|cocina|kitchen/],
+  ["sofa",       /menjador|\bsala\b|salon|living|sofa|\bsaló\b/],
+  ["desk",       /oficina|despatx|despacho|\boffice\b|escriptori|estudi\b/],
+  ["leaf",       /jardi|\bhort\b|terrassa|terraza|balco|\bpati\b|patio|exterior/],
+  ["car",        /cotxe|coche|\bcar\b|parking|aparcament|pàrquing/],
+  ["tools",      /taller|eines|herramient|workshop|\bbricolatge/],
+  ["box",        /magatzem|almacen|trasters?\b|trastero|storage|caixes|cajas/],
+  ["mountain",   /andorra|muntanya|montana|xalet|chalet|cabana|pirineu|\bski\b|esqui/],
+  ["building",   /\bpis\b|piso|apart|\bflat\b|edifici|\bbloc\b|oficines/],
+  ["house",      /\bcasa\b|\bllar\b|hogar|\bhome\b|iaios|avis\b|abuel|\bpares\b|padres|familia/]
+];
+/* noms que l'assistent entén («icona de Cunit a platja») */
+const LOCICON_WORDS = [
+  ["seahouse", ["casa de platja", "casa platja", "casa al mar"]], ["hearthouse", ["casa amb cor", "casa cor"]],
+  ["house", ["casa", "llar", "hogar"]], ["garage", ["garatge", "garaje"]], ["bed", ["habitacio", "dormitori", "cambra", "llit"]],
+  ["building", ["edifici", "apartament", "pis", "bloc"]], ["box", ["magatzem", "trastero", "caixa", "caixes"]], ["sofa", ["menjador", "sofa", "sala"]],
+  ["pot", ["cuina", "olla"]], ["bath", ["banyera", "bany"]], ["desk", ["escriptori", "oficina", "despatx"]], ["leaf", ["jardi", "terrassa", "planta", "balco", "hort"]],
+  ["car", ["cotxe", "parking", "aparcament"]], ["beach", ["platja", "parasol", "para sol"]], ["mountain", ["muntanya", "xalet", "andorra", "pirineu"]],
+  ["tools", ["taller", "eines"]], ["pin", ["xinxeta", "ubicacio", "pin"]], ["globe", ["globus", "planeta", "mon"]]
+];
+function locIconSvg(k, size){
+  const d = LOCICONS[k] || LOCICONS.pin, z = size || 24;
+  return '<svg class="lic" viewBox="0 0 48 48" width="' + z + '" height="' + z + '" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + d.p + '</svg>';
+}
+function locIconAuto(l){
+  if(l === HOUSE) return "hearthouse";
+  const t = norm(l);
+  for(const [k, re] of LOCICON_AUTO) if(re.test(t)) return k;
+  return "pin";
+}
+function locIconOver(l){
+  const m = STATE.inv_locicons;
+  return m && typeof m === "object" && !Array.isArray(m) && LOCICONS[m[l]] ? m[l] : "";
+}
+const locIconKey = l => locIconOver(l) || locIconAuto(l);
+
+/* =====================================================================
+   v5.1 · Dial en cercle complet i icones de les ubicacions
+   ===================================================================== */
+/* ---- icones de les ubicacions: tria manual (es desa al núvol) ---- */
+function locIconSet(l, key){
+  const cur = deep(STATE.inv_locicons);
+  const m = cur && typeof cur === "object" && !Array.isArray(cur) ? cur : {};
+  if(key && LOCICONS[key]) m[l] = key; else delete m[l];
+  store("inv_locicons", m);
+  render();
+  if($("cfdlg").open) cfgRender();
+}
+function cfgLocIconsHtml(){
+  const opts = k => Object.keys(LOCICONS).map(x => '<option value="' + x + '"' + (x === k ? ' selected' : '') + '>' + esc(LOCICONS[x].n) + '</option>').join("");
+  let h = '</div><div class="cfg"><h3>🖼️ Icones de les ubicacions</h3><p class="cfn">La imatge de cada ubicació al dial i al botó de filtre. Es tria sola segons el nom, i aquí la pots canviar. Les ubicacions noves reben la seva icona sola.</p>';
+  LOCS.forEach(l => {
+    const ov = locIconOver(l), cur = ov || locIconAuto(l);
+    h += '<label class="cfrow"><span class="cft"><b>' + esc(l) + '</b><small>' + (ov ? 'Triada per tu' : 'Automàtica: ' + esc(LOCICONS[cur].n)) + '</small></span>'
+      + '<span class="cfin"><span class="cficon">' + locIconSvg(cur, 26) + '</span><select data-li="' + esc(l) + '" aria-label="Icona de ' + esc(l) + '"><option value="">Automàtica</option>' + opts(ov) + '</select></span></label>';
+  });
+  if(!LOCS.length) h += '<p class="cfn">Encara no hi ha cap ubicació.</p>';
+  return h;
+}
+$("cfBody").addEventListener("change", e => {
+  const t = e.target; if(!t.dataset || t.dataset.li === undefined) return;
+  locIconSet(t.dataset.li, t.value);
+  toast(t.value ? "🖼️ Icona de «" + t.dataset.li + "»: " + LOCICONS[t.value].n + "." : "🖼️ «" + t.dataset.li + "» torna a la icona automàtica.");
+});
+/* ---- assistent d'ordres: «icona de Cunit a platja» ---- */
+function rIcon(nt, t0, n0){
+  if(!/\bicon[ae]s?\b|\bimatge\b|\bdibuix\b/.test(nt)) return false;
+  const list = Object.keys(LOCICONS).map(k => LOCICONS[k].n).join(", ");
+  if(/quines|llista|disponibles|opcions|quina icona hi ha/.test(nt) && !/\b(a|per|com)\s+\w+/.test(nt.replace(/quines icones.*/, ""))){
+    rMsg("bot", "🖼️ Icones disponibles: " + list + ".\n\nPer exemple: «icona de Cunit a platja» o «icona de Garatge iaios automàtica».");
+    return true;
+  }
+  if(/(restaura|reinicia|reseteja|torna|treu).*icon|icon.*(per defecte|originals|automatiques)\b.*\btotes\b|totes les icones.*(auto|defecte)/.test(nt)){
+    if(needSession()) return true;
+    const m = STATE.inv_locicons;
+    if(!m || !Object.keys(m).length){ rMsg("bot", "Totes les ubicacions ja tenen la icona automàtica."); return true; }
+    rConfirm("Poso totes les icones de les ubicacions en automàtic (" + Object.keys(m).length + " canvis). Confirmes?", () => { store("inv_locicons", {}); render(); if($("cfdlg").open) cfgRender(); return "✓ Fet."; });
+    return true;
+  }
+  const {L} = rNames(), fl = rFind(t0, L);
+  if(!fl){ rMsg("bot", "De quina ubicació? Ubicacions: " + (LOCS.join(", ") || "—") + ".\nExemple: «icona de " + (LOCS[0] || "Cunit") + " a platja»."); return true; }
+  const nn = norm(t0), rest = " " + nn.slice(0, fl.s) + " " + nn.slice(fl.e) + " ";
+  const auto = /\b(auto|automatic|automatica|defecte|original)\b/.test(rest);
+  let key = null, bl = 0;
+  if(!auto) LOCICON_WORDS.forEach(([k, ws]) => ws.forEach(w => { if(w.length > bl && new RegExp("(^|[^a-z])" + escRe(w) + "($|[^a-z])").test(rest)){ key = k; bl = w.length; } }));
+  if(!auto && !key){ rMsg("bot", "Quina icona? Opcions: " + list + ".\nExemple: «icona de " + fl.x.label + " a platja»."); return true; }
+  if(needSession()) return true;
+  const id = fl.x.id, cur = locIconKey(id);
+  const target = auto ? locIconAuto(id) : key;
+  if(cur === target && (auto ? !locIconOver(id) : locIconOver(id) === key)){ rMsg("bot", "«" + id + "» ja té aquesta icona."); return true; }
+  rConfirm("Poso la icona de «" + id + "»: " + LOCICONS[cur].n + " → " + LOCICONS[target].n + (auto ? " (automàtica)" : "") + ". Confirmes?", () => { locIconSet(id, auto ? "" : key); return "✓ Fet. Es veu a tots els dispositius."; });
+  return true;
+}
 
 gate("wait", "Connectant…");
 cloudSetStatus();
