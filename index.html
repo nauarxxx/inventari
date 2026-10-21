@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v5.1">
+<meta name="generator" content="Inventari de casa v5.2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -1065,6 +1065,88 @@ body.dialing{overflow:hidden}
 .fdlg .cfrow select:focus{outline:0;border-color:#ff3b3b;box-shadow:0 0 0 3px rgba(255,59,59,.25)}
 .cficon{flex:none;width:40px;height:40px;border-radius:50%;background:#000;border:2px solid #5a1010;color:#ff8f8f;display:flex;align-items:center;justify-content:center}
 @media (max-width:600px){.fdlg .cfrow select{width:128px}}
+
+/* ===== v5.2: formulari d'article compacte, sense scroll en cap mòbil (iPhone inclòs) ===== */
+#fdlg{width:min(460px,calc(100vw - 16px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));max-width:none;overflow:hidden}
+#fdlg form{display:flex;flex-direction:column;gap:8px;padding:12px 14px 14px}
+#fdlg h2{font-size:18px;line-height:1.2}
+#fdlg label{font-size:12px;gap:3px}
+#fdlg input:not([type=checkbox]),#fdlg select,#fdlg textarea{font-size:16px;padding:8px 10px;min-height:40px;border-radius:10px}
+#fdlg textarea{min-height:0;height:52px;resize:none;line-height:1.25}
+#fdlg .fhint.pf{font-size:12px;line-height:1.3;padding:6px 9px;border-radius:9px}
+.frow2{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:8px}
+.fsel2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.fsel2 select{text-overflow:ellipsis}
+#fdlg .fnew{grid-template-columns:86px minmax(0,1fr);gap:8px;padding:6px}
+.fpick{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.pk{display:flex;align-items:center;gap:8px;min-width:0;min-height:44px;padding:5px 10px;border-radius:12px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pk:active{transform:scale(.98)}
+.pk:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.pk .pi{flex:none;font-size:18px;line-height:1}
+.pk .pt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.pk .pt small{font-size:11px;color:var(--muted);font-weight:600}
+.pk .pt b{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pk .pc{flex:none;font-size:20px;color:var(--muted);line-height:1}
+.pk.has{border-color:var(--accent)}
+.pk.has .pt b{color:var(--accent)}
+#fdlg .fphoto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 56px;gap:6px 8px;align-items:center}
+#fdlg .fphoto .flab{grid-column:1/-1;font-size:12px;line-height:1.2}
+#fdlg .fpbtns{display:contents}
+#fdlg .pbtn{min-height:52px;padding:6px 6px;font-size:14px;border-radius:12px;min-width:0}
+#fdlg .pbtn small{font-size:10.5px;line-height:1.15}
+.fprevw{position:relative;width:56px;height:56px}
+#fdlg .fprev{width:56px;height:56px;border-radius:10px;border-width:2px;font-size:10px;line-height:1.1;text-align:center;padding:2px}
+#fdlg .fprev img{width:100%;height:100%;object-fit:cover}
+#fdlg .fpdel{position:absolute;top:-6px;right:-6px;width:24px;height:24px;padding:0;border-radius:50%;border:2px solid #fff;background:#e5484d;color:#fff;font:inherit;font-size:13px;font-weight:800;line-height:1;text-decoration:none;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:0}
+#fdlg .fpdel::after{content:"";position:absolute;inset:-4px}
+#fdlg .factions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:8px}
+#fdlg .factions .link{grid-column:1/-1;margin:0;padding:2px 4px;text-align:center}
+#fdlg .factions .btn{padding:10px 12px;min-height:44px}
+#fdlg .factions .go{font-size:16px;padding:10px 12px}
+#fdlg.kb{overflow-y:auto}
+#fdlg.scaled{position:fixed;inset:auto;left:50%;top:50%;margin:0;transform:translate(-50%,-50%) scale(var(--fk,1));transform-origin:center center}
+/* selector «més ubicacions / més zones» */
+.mpdlg .mpbody{max-height:min(46dvh,300px);overflow-y:auto;overscroll-behavior:contain}
+.mpdlg .fchips{gap:6px}
+.mpdlg .factions{display:flex}
+@media (min-width:600px) and (min-height:700px){#fdlg form{gap:10px;padding:16px}#fdlg textarea{height:60px}}
+/* mòbil en horitzontal: dues columnes perquè càpiga tot */
+@media (orientation:landscape) and (max-height:520px){
+  #fdlg{width:min(880px,calc(100vw - 16px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)))}
+  #fdlg form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 14px;padding:10px 14px 12px;align-items:start}
+  #fdlg h2,#fdlg .fhint.pf{grid-column:1/-1}
+  #fdlg .fhint.pf{display:none}
+  #fdlg .frow2,#fdlg textarea,#fdlg #fNoteL,#fdlg label.fds{grid-column:1}
+  #fdlg .fsel2,#fdlg #fNewLoc,#fdlg #fNewCat,#fdlg .fpick,#fdlg .fphoto,#fdlg .factions{grid-column:2}
+  #fdlg .frow2{grid-row:2}#fdlg label.fds{grid-row:3}#fdlg #fNoteL{grid-row:4}
+  #fdlg .fsel2{grid-row:2}#fdlg .fpick{grid-row:3}#fdlg .fphoto{grid-row:4}#fdlg .factions{grid-row:5}
+  #fdlg #fNewLoc{grid-row:6}#fdlg #fNewCat{grid-row:7}
+  #fdlg textarea{height:48px}
+  #fdlg .pbtn{min-height:44px}
+  #fdlg .pbtn small{display:none}
+  #fdlg .factions .btn{min-height:40px;padding:8px 10px}
+}
+@media (max-width:420px){#fdlg .pbtn small{display:none}#fdlg .pbtn{min-height:48px}}
+
+/* pantalles baixes (iPhone SE, mòbils antics): una mica més compacte perquè hi càpiga a mida real */
+@media (max-height:640px){
+  #fdlg form{gap:6px;padding:10px 12px 12px}
+  #fdlg h2{font-size:17px}
+  #fdlg input:not([type=checkbox]),#fdlg select{min-height:38px;padding:7px 10px}
+  #fdlg textarea{height:44px;padding:7px 10px}
+  .pk{min-height:40px}
+  #fdlg .pbtn{min-height:44px}
+  #fdlg .factions .btn{min-height:42px;padding:8px 10px}
+  #fdlg .fhint.pf{padding:5px 8px;font-size:11.5px}
+}
+@media (max-width:380px){
+  .pk .pi{display:none}
+  #fdlg .pbtn{font-size:13px;line-height:1.15;padding:6px 3px}
+  #fdlg .factions .btn{white-space:nowrap;font-size:15px}
+  #fdlg .factions .go{font-size:15px}
+}
+#fdlg #fSave,#fdlg #fCancel{white-space:normal;line-height:1.15;overflow-wrap:anywhere}
+#fTitle:focus{outline:none}
 </style>
 </head>
 <body>
@@ -1079,7 +1161,7 @@ body.dialing{overflow:hidden}
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v5.1</span></h1>
+      <h1>Inventari de casa <span class="ver">v5.2</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -1144,38 +1226,50 @@ body.dialing{overflow:hidden}
   <div id="none" class="empty-msg" hidden=""><p>Cap article coincideix. Prova una altra cerca o treu els filtres.</p><button class="btn" type="button">Treu els filtres</button></div>
 </main>
 
-<dialog id="fdlg" class="fdlg" aria-labelledby="fTitle">
+<dialog id="fdlg" class="fdlg nofit" aria-labelledby="fTitle">
   <form id="fForm">
-    <h2 id="fTitle">Nou article</h2>
+    <h2 id="fTitle" tabindex="-1" autofocus>Nou article</h2>
     <p class="fhint pf" id="fHint" hidden=""></p>
-    <label>Nom<input id="fName" required="" maxlength="80"></label>
-    <label>Informació<textarea id="fDesc" maxlength="300" placeholder="Marca, model, mida, color…"></textarea></label>
-    <div class="frow">
-      <label>Quantitat<input id="fQty" type="number" min="1" value="1" inputmode="numeric"></label>
+    <div class="frow2">
+      <label class="fnm">Nom<input id="fName" required="" maxlength="80" autocomplete="off"></label>
+      <label class="fqt">Quantitat<input id="fQty" type="number" min="1" value="1" inputmode="numeric"></label>
+    </div>
+    <label class="fds">Informació<textarea id="fDesc" rows="2" maxlength="300" placeholder="Marca, model, mida, color…"></textarea></label>
+    <div class="fsel2">
       <label>Ubicació principal<select id="fLoc"></select></label>
+      <label>Zona principal<select id="fCat"></select></label>
     </div>
     <input id="fNewLoc" class="fnewin" placeholder="Nom de la nova ubicació" maxlength="40" aria-label="Nova ubicació" autocomplete="off" hidden="">
-    <div class="fmulti"><span class="flab">També és a <small>· compta a cada ubicació</small></span><div class="fchips" id="fLocs2"></div></div>
-    <label>Zona principal <small style="font-weight:500">· on surt a «Totes»</small><select id="fCat"></select></label>
-    <div id="fNewCat" class="frow fnew" hidden=""><label>Icona<select id="fIcon"><option>🏠</option><option>🍳</option><option>🍽️</option><option>🛋️</option><option>🛏️</option><option>🚽</option><option>🧺</option><option>🧽</option><option>💻</option><option>🧰</option><option>🔌</option><option>🚗</option><option>🌿</option><option>🌞</option><option>👶</option><option>🐾</option><option>🎮</option><option>📚</option><option>🧳</option><option>🏊</option><option>🏋️</option><option>🍷</option><option>📦</option></select></label><label>Nova zona<input id="fCatName" maxlength="30" placeholder="Per exemple: Terrassa" autocomplete="off"></label></div>
-    <div class="fmulti"><span class="flab">També és a <small>· altres zones · compta a cadascuna i surt en filtrar-la</small></span><div class="fchips" id="fCats2"></div></div>
-    <label id="fNoteL" hidden="">Nota<input id="fNote" maxlength="200"></label>
+    <div id="fNewCat" class="frow fnew" hidden=""><label>Icona<select id="fIcon"><option>🏠</option><option>🍳</option><option>🍽️</option><option>🛋️</option><option>🛏️</option><option>🚽</option><option>🧺</option><option>🧽</option><option>💻</option><option>🧰</option><option>🔌</option><option>🚗</option><option>🌿</option><option>🌞</option><option>👶</option><option>🐾</option><option>🎮</option><option>📚</option><option>🧳</option><option>🏊</option><option>🏋️</option><option>🍷</option><option>📦</option></select></label><label>Nova zona<input id="fCatName" maxlength="30" placeholder="Ex.: Terrassa" autocomplete="off"></label></div>
+    <div class="fpick">
+      <button type="button" class="pk" id="fLocsBtn" aria-haspopup="dialog" aria-controls="mpdlg"><span class="pi" aria-hidden="true">📍</span><span class="pt"><small>Més ubicacions</small><b id="fLocsTxt">Cap altra</b></span><span class="pc" aria-hidden="true">›</span></button>
+      <button type="button" class="pk" id="fCatsBtn" aria-haspopup="dialog" aria-controls="mpdlg"><span class="pi" aria-hidden="true">🏠</span><span class="pt"><small>Més zones</small><b id="fCatsTxt">Cap altra</b></span><span class="pc" aria-hidden="true">›</span></button>
+    </div>
+    <label id="fNoteL" hidden="">Nota<input id="fNote" maxlength="200" autocomplete="off"></label>
     <div class="fphoto"><span class="flab">Foto <small style="font-weight:500">· qualsevol foto o captura</small></span>
       <div class="fpbtns">
         <button type="button" class="pbtn" id="fGalBtn">🖼️ Adjunta foto<small>De la galeria o l'ordinador</small></button>
         <button type="button" class="pbtn cam" id="fCamBtn">📷 Fes una foto<small>Amb la càmera, ara mateix</small></button>
       </div>
+      <div class="fprevw"><div class="fprev" id="fPrev"><span>Sense foto</span></div><button type="button" class="fpdel" id="fPhDel" aria-label="Treu la foto" title="Treu la foto" hidden="">✕</button></div>
       <input id="fPhoto" type="file" accept="image/*" hidden="">
       <input id="fCam" type="file" accept="image/*" capture="environment" hidden="">
     </div>
-    <div class="fprev" id="fPrev"><span>Sense foto</span></div>
-    <button type="button" class="link fpdel" id="fPhDel" hidden="">✕ Treu la foto</button>
     <div class="factions">
       <button type="button" class="link" id="fOnly">Només marca'l com a tingut</button>
       <button type="button" class="btn" id="fCancel">Cancel·la</button>
       <button type="submit" class="btn primary" id="fSave">Desa l'article</button>
     </div>
+    <div id="fHold" hidden=""><div class="fchips" id="fLocs2"></div><div class="fchips" id="fCats2"></div></div>
   </form>
+</dialog>
+<dialog id="mpdlg" class="fdlg mpdlg" aria-labelledby="mpTitle">
+  <div class="cform">
+    <h2 id="mpTitle"></h2>
+    <p class="fhint" id="mpHint"></p>
+    <div id="mpBody" class="mpbody"></div>
+    <div class="factions"><button type="button" class="btn" id="mpNone">Cap</button><button type="button" class="btn primary" id="mpOk">Fet</button></div>
+  </div>
 </dialog>
 
 <dialog id="cdlg" class="fdlg" aria-labelledby="cTitle">
@@ -1821,7 +1915,7 @@ function openEdit(i){
   formPhotoBase = c.photos.length ? '<img alt="" src="'+c.photos[0]+'">' : '<span>Sense foto</span>';
   $("fPrev").innerHTML = formPhotoBase;
   $("fOnly").hidden = true; $("fSave").textContent = "Desa i marca com a correcte"; $("fSave").classList.remove("go"); $("fHint").hidden = true;
-  $("fdlg").showModal(); $("fName").focus();
+  $("fdlg").showModal(); if(!isTouch) $("fName").focus(); else { try { document.activeElement.blur(); } catch(_){} }
 }
 function openForm(catId, name, key){
   formCtx = {catId, key}; formPhoto = null;
@@ -1837,7 +1931,7 @@ function openForm(catId, name, key){
   if(state.loc !== "all" && LOCS.includes(state.loc)) setTimeout(()=>{ $("fLoc").value = state.loc; fillMulti([], []); });
   formPhotoBase = '<span>Sense foto</span>'; $("fPrev").innerHTML = formPhotoBase;
   const q0 = qtyFromName(name); if(q0) $("fQty").value = q0;
-  $("fdlg").showModal(); $("fName").focus();
+  $("fdlg").showModal(); if(!isTouch) $("fName").focus(); else { try { document.activeElement.blur(); } catch(_){} }
 }
 /* v3.8: es pot pujar QUALSEVOL foto (càmera del mòbil, galeria o captura de pantalla, PNG o JPG, de qualsevol mida).
    Es redueix sola, sense que calgui configurar res, perquè càpiga al núvol (Firestore: menys d'1 MB per document).
@@ -2341,6 +2435,7 @@ $("aiForm").onsubmit = e => { e.preventDefault(); const q = $("aiIn").value.trim
 /* ---- Tots els popups caben a la pantalla: si no hi caben, es redueixen (zoom) en lloc de fer scroll ---- */
 const FIT_MIN = .5;
 function fitModal(d){
+  if(d && d.id === "fdlg"){ if(typeof fitForm === "function") fitForm(); return; }
   if(!d || !d.open || d.classList.contains("nofit")) return;
   const vh = innerHeight - 24, vw = Math.min(460, innerWidth - 24);
   d.style.maxHeight = "none"; d.style.maxWidth = "none"; d.style.overflow = "hidden";
@@ -2433,7 +2528,7 @@ function openNewArticle(){
   $("fNoteL").hidden = false; $("fNote").value = "";
   $("fOnly").hidden = true; $("fSave").textContent = "✓ Crea l'article"; $("fSave").classList.add("go"); $("fHint").hidden = true;
   formPhotoBase = '<span>Sense foto</span>'; $("fPrev").innerHTML = formPhotoBase;
-  $("fdlg").showModal(); $("fName").focus();
+  $("fdlg").showModal(); if(!isTouch) $("fName").focus(); else { try { document.activeElement.blur(); } catch(_){} }
 }
 function openNewLoc(){
   $("lForm").reset();
@@ -3830,7 +3925,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "5.1";
+const APP_VER = "5.2";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null, phLoaded = false;
 const __cloudPhotos34 = cloudPhotos;
@@ -5467,6 +5562,63 @@ function rIcon(nt, t0, n0){
   rConfirm("Poso la icona de «" + id + "»: " + LOCICONS[cur].n + " → " + LOCICONS[target].n + (auto ? " (automàtica)" : "") + ". Confirmes?", () => { locIconSet(id, auto ? "" : key); return "✓ Fet. Es veu a tots els dispositius."; });
   return true;
 }
+
+/* =====================================================================
+   v5.2 · Formulari d'article ajustat a la pantalla (sense scroll, també a l'iPhone)
+   - Disseny compacte: tot el contingut hi cap sense fer scroll.
+   - «Més ubicacions» i «Més zones» s'escullen en un petit selector (no ocupen espai).
+   - No es fa servir CSS zoom (a l'iPhone falla): si algun dia no hi cap, s'escala amb transform.
+   - Amb el teclat obert, el formulari se subjecta a l'àrea visible.
+   ===================================================================== */
+function fitForm(){
+  const d = $("fdlg"); if(!d || !d.open) return;
+  const vv = window.visualViewport, ih = window.innerHeight;
+  const kb = !!vv && vv.height < ih - 120;                       /* teclat obert */
+  const H = (kb ? vv.height : ih) - 16;
+  d.classList.remove("scaled", "kb");
+  d.style.removeProperty("--fk"); d.style.top = d.style.bottom = d.style.margin = d.style.zoom = "";
+  d.style.maxHeight = "none"; d.style.overflow = "hidden";
+  const nh = d.scrollHeight;
+  if(kb){
+    d.classList.add("kb");
+    d.style.maxHeight = H + "px"; d.style.overflowY = "auto";
+    d.style.top = ((vv ? vv.offsetTop : 0) + 8) + "px"; d.style.bottom = "auto"; d.style.margin = "0 auto";
+    return;
+  }
+  if(nh <= H){ d.style.maxHeight = H + "px"; d.style.overflow = "hidden"; return; }
+  const k = Math.max(.6, H / nh);
+  d.classList.add("scaled"); d.style.setProperty("--fk", k.toFixed(3));
+  if(H / nh < .6){ d.style.maxHeight = (H / k) + "px"; d.style.overflowY = "auto"; }   /* només en pantalles diminutes */
+  else { d.style.maxHeight = "none"; d.style.overflow = "hidden"; }
+}
+if(window.visualViewport){ visualViewport.addEventListener("resize", () => { if($("fdlg").open) fitForm(); }); visualViewport.addEventListener("scroll", () => { if($("fdlg").open && $("fdlg").classList.contains("kb")) fitForm(); }); }
+addEventListener("orientationchange", () => setTimeout(() => { if($("fdlg").open) fitForm(); }, 250));
+$("fdlg").addEventListener("focusin", e => { const t = e.target; if(t && t.scrollIntoView && /INPUT|TEXTAREA|SELECT/.test(t.tagName)) setTimeout(() => { try { t.scrollIntoView({block:"nearest"}); } catch(_){} }, 320); });
+
+/* ---- «Més ubicacions» / «Més zones»: selector petit ---- */
+function pkUpdate(){
+  const L = checkedOf("fLocs2"), Z = checkedOf("fCats2").map(id => (CATS.find(z => z.id === id) || {}).label).filter(Boolean);
+  const set = (btn, txt, list) => { $(txt).textContent = list.length ? list.join(", ") : "Cap altra"; $(btn).classList.toggle("has", !!list.length); };
+  set("fLocsBtn", "fLocsTxt", L); set("fCatsBtn", "fCatsTxt", Z);
+}
+const __fillMulti52 = fillMulti;
+fillMulti = function(a, b){ __fillMulti52(a, b); pkUpdate(); };
+let mpKind = "";
+function mpOpen(kind){
+  mpKind = kind;
+  $("mpTitle").textContent = kind === "loc" ? "📍 Més ubicacions" : "🏠 Més zones";
+  $("mpHint").textContent = kind === "loc" ? "L'article també comptarà a aquestes ubicacions." : "L'article també comptarà i es veurà a aquestes zones.";
+  $("mpBody").appendChild($(kind === "loc" ? "fLocs2" : "fCats2"));
+  $("mpdlg").showModal();
+}
+function mpBack(){ const c = $("mpBody").firstElementChild; if(c) $("fHold").appendChild(c); pkUpdate(); }
+$("fLocsBtn").onclick = () => mpOpen("loc");
+$("fCatsBtn").onclick = () => mpOpen("cat");
+$("mpOk").onclick = () => $("mpdlg").close();
+$("mpNone").onclick = () => { $("mpBody").querySelectorAll("input:checked").forEach(i => { i.checked = false; }); pkUpdate(); };
+$("mpdlg").addEventListener("close", mpBack);
+["fLocs2", "fCats2"].forEach(id => $(id).addEventListener("change", pkUpdate));
+pkUpdate();
 
 gate("wait", "Connectant…");
 cloudSetStatus();
