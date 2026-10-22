@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v6.3">
+<meta name="generator" content="Inventari de casa v6.4">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -19,7 +19,7 @@
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js" crossorigin="">
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6.3">
+<link rel="stylesheet" href="style.css?v=6.4">
 </head><body>
 <header class="top">
   <div class="toprow">
@@ -33,7 +33,7 @@
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v6.3</span></h1>
+      <h1>Inventari de casa <span class="ver">v6.4</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -239,7 +239,7 @@
         <dl class="row">
           <dt>Quantitat</dt><dd id="dQty"></dd>
           <dt>Zona</dt><dd id="dZone"></dd>
-          <dt id="dTipusT">Tipus</dt><dd id="dTipus"></dd>
+          <dt id="dTipusT">Tipus</dt><dd><button type="button" class="dtip" id="dTipus" title="Toca per canviar el tipus"></button></dd>
           <dt id="dDateT">Data de creació</dt><dd id="dDate"></dd>
         </dl>
         <p id="dDesc"></p>
@@ -276,6 +276,26 @@
       <button type="button" class="copt" id="sOut"><span class="cico" aria-hidden="true">🚪</span><span class="ctxt"><b>Tanca la sessió</b><small>En aquest dispositiu</small></span><span class="carr" aria-hidden="true">›</span></button>
     </div>
     <div class="factions"><button type="button" class="btn" id="sClose">Tanca</button></div>
+  </div>
+</dialog>
+<dialog id="tpdlg" class="fdlg" aria-labelledby="tpTitle">
+  <div class="cform">
+    <h2 id="tpTitle">🏷️ Tipus d'article</h2>
+    <p class="hcl" id="tpName"></p>
+    <div id="tpList" class="tplist"></div>
+    <div class="lpnew"><input id="tpNew" maxlength="40" placeholder="Un altre tipus…" aria-label="Tipus nou" autocomplete="off"><button type="button" class="btn" id="tpAdd">＋ Posa</button></div>
+    <div class="factions"><button type="button" class="btn" id="tpCancel">Cancel·la</button></div>
+  </div>
+</dialog>
+<dialog id="datdlg" class="fdlg chdlg datdlg nofit" aria-labelledby="datTitle">
+  <div class="chwrap">
+    <div class="chhead">
+      <span class="chico" aria-hidden="true">📅</span>
+      <div class="chtt"><h2 id="datTitle">Recupera dates</h2><small id="datSub">Des de les fotos originals de la galeria</small></div>
+      <button type="button" class="btn" id="datClose">Tanca</button>
+    </div>
+    <div id="datBody" class="basbody"></div>
+    <input id="datIn" type="file" accept="image/*" multiple hidden>
   </div>
 </dialog>
 <dialog id="basdlg" class="fdlg chdlg basdlg nofit" aria-labelledby="basTitle">
@@ -399,6 +419,6 @@
 </div>
 <div id="dial" class="dial" role="group" aria-label="Tria un filtre" hidden></div>
 <div id="fx" popover="manual" aria-hidden="true"><canvas id="fxc"></canvas><div id="fxflash"></div><div id="fxban" hidden></div></div>
-<script src="app.js?v=6.3"></script>
-<script type="module" src="cloud.js?v=6.3"></script>
+<script src="app.js?v=6.4"></script>
+<script type="module" src="cloud.js?v=6.4"></script>
 </body></html>

@@ -733,6 +733,16 @@ function tiffDate(v, t){
   return ts > 946684800000 && ts < Date.now() + 864e5 ? ts : 0;
 }
 const fmtDate = ts => new Date(ts).toLocaleDateString("ca", {day:"numeric", month:"long", year:"numeric"});
+/* v6.4: quina data es mostra a la fitxa
+   1) dt  = data de la foto original (exacta: metadades del fitxer, o recuperada de la galeria)
+   2) ord = quan es va afegir a l'inventari (exacta, articles creats des de la v4.0)
+   3) la resta es van registrar a les primeres versions de l'inventari: entre el 18 i el 21 d'octubre de 2026 (aproximada) */
+const INV_FROM = new Date(2026, 9, 18).getTime(), INV_TO = new Date(2026, 9, 21).getTime();
+function dateInfo(c){
+  if(c.dt) return {label:"Data de creació", text:fmtDate(c.dt), exact:true};
+  if(typeof c.ord === "number" && c.ord > 1e12) return {label:"Afegit a l'inventari", text:fmtDate(c.ord), exact:true};
+  return {label:"Afegit a l'inventari", text:"entre el 18 i el 21 d'octubre de 2026 (aprox.)", exact:false};
+}
 function tipusFill(){ $("tipusList").innerHTML = [...new Set(TYPES.map(t => t[0]).concat(DATA.filter(c => live(c) && c.tipus).map(c => c.tipus)))].map(t => '<option value="' + esc(t) + '">').join(""); }
 function tipusHint(){ const g = typeGuess($("fName").value) || typeGuess($("fDesc").value); $("fTipus").placeholder = g ? "Automàtic: " + typeIco(g) + " " + g : "Es tria sol segons el nom"; }
 $("fName").addEventListener("input", () => { clearTimeout(tipusHint.t); tipusHint.t = setTimeout(tipusHint, 250); });
@@ -967,9 +977,13 @@ function showDlg(){
   $("dQty").textContent = c.qty;
   $("dZone").textContent = zonesTxt(c);
   /* v6.2: tipus d'article i data de creació (de la foto); si no se sap, el camp no surt */
+  /* v6.4: el tipus sempre es veu i es pot tocar per canviar-lo */
   const ty = typeOf(c);
-  $("dTipus").textContent = ty ? typeIco(ty) + " " + ty : ""; $("dTipus").hidden = $("dTipusT").hidden = !ty;
-  $("dDate").textContent = c.dt ? fmtDate(c.dt) : ""; $("dDate").hidden = $("dDateT").hidden = !c.dt;
+  $("dTipus").innerHTML = (ty ? esc(typeIco(ty) + " " + ty) + (c.tipus ? "" : ' <small>auto</small>') : '❔ Sense tipus <small>posa-n\'hi un</small>') + ' <span aria-hidden="true">✎</span>';
+  $("dTipus").classList.toggle("none", !ty);
+  const dd = dateInfo(c);
+  $("dDateT").textContent = dd ? dd.label : ""; $("dDate").textContent = dd ? dd.text : "";
+  $("dDate").hidden = $("dDateT").hidden = !dd;
   $("dDesc").textContent = c.desc || ""; $("dDesc").style.display = c.desc ? "" : "none";
   $("dNote").textContent = c.note || "";  $("dNote").style.display = c.note ? "" : "none";
   const why = needsReview(c) ? reasons(c) : [];
@@ -1827,6 +1841,7 @@ function partLabel(p){
     if(b.cat !== a.cat || stable(b.cats) !== stable(a.cats)) ch.push("zona → " + (a.cats || [a.cat]).map(catName).join(", "));
     if((b.desc || "") !== (a.desc || "")) ch.push("descripció");
     if((b.tipus || "") !== (a.tipus || "")) ch.push("tipus → " + (a.tipus || "automàtic"));
+    if((b.dt || 0) !== (a.dt || 0)) ch.push(a.dt ? "data de la foto → " + fmtDate(a.dt) : "data de la foto treta");
     if((b.note || "") !== (a.note || "") && !/Revisat i correcte$/.test(a.note || "")) ch.push("nota");
     const nb = (b.ph || []).length, na = (a.ph || []).length;
     if(na > nb) ch.push("+" + (na - nb) + (na - nb > 1 ? " fotos" : " foto"));
@@ -2775,7 +2790,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "6.3";
+const APP_VER = "6.4";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null;
 const bkWhen = ts => { const d = new Date(ts); return d.toLocaleDateString("ca", {day:"2-digit", month:"2-digit", year:"numeric"}) + " " + d.toLocaleTimeString("ca", {hour:"2-digit", minute:"2-digit"}); };
@@ -4825,6 +4840,7 @@ function basicRender(){
     + '<div class="brow"><span>Veu de WALL-E</span>' + seg("cfg:wvol", [[60, "Sí"], [0, "No"]], cfgGet("wvol") > 0 ? 60 : 0) + '</div>');
   h += sec("🧰", "Més", "", '<div class="bacts">'
     + (isStandalone() ? '' : '<button type="button" class="bbig" data-k="install">📲 Instal·la l\'app</button>')
+    + '<button type="button" class="bbig" data-k="dates">📅 Recupera les dates de les fotos</button>'
     + '<button type="button" class="bbig" data-k="backup">💾 Còpies de seguretat</button>'
     + '<button type="button" class="bbig" data-k="cloud">☁️ Núvol, exportar i sessió</button></div>');
   $("basSub").textContent = (cloudUser ? whoName(cloudUser.email) + " · " : "") + "v" + APP_VER;
@@ -4839,12 +4855,157 @@ $("basBody").addEventListener("click", e => {
   else if(k.startsWith("cfg:")){ const n = k.slice(4), val = +v; if(cfgGet(n) !== val) cfgCommit(c => { c[n] = val; }); }
   else if(k === "theme"){ const p = THEME_PRESETS[v]; const err = p && themeCommit({accent:p.accent, bg:p.bg}); if(err) toast("⚠️ " + err); }
   else if(k === "install"){ $("basdlg").close(); $("instBtn").click(); return; }
+  else if(k === "dates"){ $("basdlg").close(); datOpen(); return; }
   else if(k === "backup"){ $("basdlg").close(); bkRender(); bkLock(); $("bkdlg").showModal(); return; }
   else if(k === "cloud"){ $("basdlg").close(); $("saveBtn").click(); return; }
   basicRender();
 });
 const __cfgApply63 = cfgApply;
 cfgApply = function(){ __cfgApply63(); if($("basdlg").open) basicRender(); };
+
+/* =====================================================================
+   v6.4 · 🏷️ canviar el tipus des de la fitxa (toca el tipus)
+   Truc per posar tipus ràpid: filtra per «❔ Sense tipus», obre el primer article, tria'n el tipus i passarà sol al següent.
+   ===================================================================== */
+let tpId = null;
+function tpOpen(){
+  const c = DATA[cur]; if(!c) return;
+  tpId = c.id;
+  const auto = typeGuess(c.item) || typeGuess(c.desc || ""), curT = c.tipus || "";
+  const names = [...new Set(TYPES.map(t => t[0]).concat(DATA.filter(x => live(x) && x.tipus).map(x => x.tipus)))].sort((a, b) => a.localeCompare(b, "ca"));
+  $("tpName").textContent = c.item;
+  $("tpList").innerHTML = '<button type="button" class="tpi' + (!curT ? ' on' : '') + '" data-t="">✨ Automàtic' + (auto ? ': ' + esc(typeIco(auto) + " " + auto) : ' (no en sé cap)') + '</button>'
+    + names.map(t => '<button type="button" class="tpi' + (curT === t ? ' on' : '') + '" data-t="' + esc(t) + '">' + esc(typeIco(t) + " " + t) + '</button>').join("");
+  $("tpNew").value = "";
+  $("tpdlg").showModal();
+}
+function tpSave(t){
+  const i = DATA.findIndex(x => x.id === tpId && live(x)); $("tpdlg").close();
+  if(i < 0){ toast("Aquest article ja no existeix."); return; }
+  const c = DATA[i];
+  if((c.tipus || "") === t) return;
+  saveItem(i, {tipus:t || null});
+  toast(t ? typeIco(t) + " «" + c.item + "» ara és " + t + "." : "«" + c.item + "» torna al tipus automàtic.");
+  if(order.includes(i)){ pos = order.indexOf(i); cur = i; idx = 0; showDlg(); }
+  else afterReview();   /* p. ex. amb el filtre «Sense tipus»: passa al següent */
+}
+$("dTipus").onclick = tpOpen;
+$("tpList").addEventListener("click", e => { const b = e.target.closest(".tpi"); if(b) tpSave(b.dataset.t); });
+$("tpAdd").onclick = () => { const t = $("tpNew").value.trim().replace(/\s+/g, " "); if(!t){ $("tpNew").focus(); return; } tpSave(t.charAt(0).toUpperCase() + t.slice(1)); };
+$("tpNew").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); $("tpAdd").click(); } });
+$("tpCancel").onclick = () => $("tpdlg").close();
+
+/* =====================================================================
+   v6.4 · 📅 Recupera dates des de les fotos originals de la galeria
+   Les fotos de la web no tenen data (es van reduir sense metadades), però les originals del mòbil sí.
+   Tries moltes fotos de la galeria; la web en llegeix la data i les compara visualment (empremta dHash de 64 bits)
+   amb les fotos dels articles. No es puja cap foto: només es desa la data als articles que coincideixen.
+   ===================================================================== */
+/* Empremta de cada foto: forma (dHash de 16×16 = 256 bits) + colors (mitjana RGB en una graella de 6×6).
+   Perquè es consideri la mateixa foto han de coincidir totes dues coses i les proporcions. */
+const DAT_MAX = 36, DAT_COL = 14;
+function imgHash(src){
+  return new Promise(res => {
+    const im = new Image();
+    im.onload = () => {
+      try {
+        const cv = document.createElement("canvas"); cv.width = 17; cv.height = 16;
+        const x = cv.getContext("2d", {willReadFrequently:true}); x.imageSmoothingQuality = "high"; x.drawImage(im, 0, 0, 17, 16);
+        const p = x.getImageData(0, 0, 17, 16).data, g = [], h = new Uint8Array(256);
+        for(let k = 0; k < 272; k++) g.push(p[k * 4] * .299 + p[k * 4 + 1] * .587 + p[k * 4 + 2] * .114);
+        for(let y = 0; y < 16; y++) for(let c = 0; c < 16; c++) h[y * 16 + c] = g[y * 17 + c] > g[y * 17 + c + 1] ? 1 : 0;
+        const cc = document.createElement("canvas"); cc.width = 6; cc.height = 6;
+        const y2 = cc.getContext("2d", {willReadFrequently:true}); y2.imageSmoothingQuality = "high"; y2.drawImage(im, 0, 0, 6, 6);
+        const col = Uint8Array.from(y2.getImageData(0, 0, 6, 6).data.filter((_, k) => k % 4 !== 3));
+        res({h, col, ar:(im.naturalWidth || 1) / (im.naturalHeight || 1)});
+      } catch(e){ res(null); }
+    };
+    im.onerror = () => res(null); im.src = src;
+  });
+}
+const hamming = (a, b) => { let d = 0; for(let k = 0; k < a.length; k++) if(a[k] !== b[k]) d++; return d; };
+const colDist = (a, b) => { let s = 0; for(let k = 0; k < a.length; k++) s += Math.abs(a[k] - b[k]); return s / a.length; };
+let DAT = null;   /* {arts:[{i, id, h, ar}], found:Map(id -> {dt, d}), seen, noDate} */
+function datOpen(){
+  if(!cloudUser){ toast("Cal iniciar sessió."); return; }
+  DAT = null; datRender(); $("datdlg").showModal();
+}
+function datRender(prog){
+  const none = DATA.filter(c => live(c) && c._ph && c._ph.length && !c.dt).length;
+  let h = "";
+  if(prog){ h = '<div class="datprog"><b>' + esc(prog.t) + '</b><span class="ibar"><i style="width:' + Math.round(prog.p * 100) + '%"></i></span></div>'; }
+  else if(!DAT || !DAT.found){
+    h = '<p class="bnote" style="font-size:14px">Tria les fotos <b>originals</b> de la galeria del mòbil (pots seleccionar-ne moltes de cop, per exemple tot un mes). La web les compara amb les fotos dels articles i, si coincideixen, hi posa la data en què es va fer la foto.</p>'
+      + '<p class="bnote">🔒 No es puja cap foto: només es llegeix la data. Les fotos rebudes o enviades per WhatsApp no tenen data i no serviran.</p>'
+      + '<p class="bnote"><b>' + none + '</b> articles amb foto encara no tenen la data de la foto.</p>'
+      + '<button type="button" class="bbig on" id="datPick">🖼️ Tria fotos de la galeria</button>';
+  } else {
+    const L = [...DAT.found].map(([id, f]) => ({c:DATA.find(x => x.id === id), f})).filter(x => x.c && live(x.c)).sort((a, b) => a.f.s - b.f.s);
+    h = '<p class="bnote" style="font-size:14px">He mirat <b>' + DAT.seen + '</b> fotos (' + DAT.noDate + ' sense data). ' + (L.length ? 'He trobat <b>' + L.length + '</b> articles. Revisa-ho i desa:' : 'No n\'he trobat cap que coincideixi.') + '</p>'
+      + (L.length ? '<ul class="datlist">' + L.map(({c, f}) => '<li><label><input type="checkbox" data-id="' + esc(c.id) + '"' + (f.s <= 30 ? ' checked' : '') + '><span class="dth">' + (c.photos.length ? '<img alt="" src="' + thumbSrc(c) + '">' : '📦') + '</span><span class="dtx"><b>' + esc(c.item) + '</b><small>📅 ' + esc(fmtDate(f.dt)) + ' · ' + (f.s <= 15 ? 'mateixa foto' : f.s <= 30 ? 'molt semblant' : 'semblant: comprova-ho') + ' (' + f.sim + '%)' + '</small></span></label></li>').join("") + '</ul>'
+        + '<button type="button" class="bbig on" id="datSave">💾 Desa les dates marcades</button>' : '')
+      + '<button type="button" class="bbig" id="datPick">🖼️ Tria més fotos</button>';
+  }
+  $("datBody").innerHTML = h;
+}
+async function datRun(files){
+  if(!DAT){
+    DAT = {arts:[], found:new Map(), seen:0, noDate:0};
+    const list = DATA.filter(c => live(c) && c._ph && c._ph.length && !c.dt);
+    for(let k = 0; k < list.length; k++){
+      const c = list[k];
+      if(k % 5 === 0) datRender({t:"Preparant les fotos dels articles… " + (k + 1) + " / " + list.length, p:.3 * k / list.length});
+      for(const pid of c._ph){
+        const src = PHT.get(pid) || await fullPhoto(pid);
+        const hs = src && await imgHash(src);
+        if(hs) DAT.arts.push({id:c.id, h:hs.h, col:hs.col, ar:hs.ar});
+      }
+    }
+  }
+  for(let k = 0; k < files.length; k++){
+    if(k % 2 === 0) datRender({t:"Comparant fotos de la galeria… " + (k + 1) + " / " + files.length, p:.3 + .7 * k / files.length});
+    const f = files[k]; DAT.seen++;
+    const dt = await exifDate(f);
+    if(!dt){ DAT.noDate++; continue; }
+    const url = URL.createObjectURL(f), hs = await imgHash(url); URL.revokeObjectURL(url);
+    if(!hs) continue;
+    /* puntuació: forma + colors; només compten les que passen tots dos llindars i tenen les mateixes proporcions */
+    const cands = [];
+    DAT.arts.forEach(a => {
+      if(Math.abs(Math.log(a.ar / hs.ar)) > .06) return;
+      const d = hamming(a.h, hs.h), cd = colDist(a.col, hs.col);
+      if(d <= DAT_MAX && cd <= DAT_COL) cands.push({a, d, cd, s:d + cd * 3});
+    });
+    if(!cands.length) continue;
+    cands.sort((p, q) => p.s - q.s);
+    const best = cands[0], second = cands.find(x => x.a.id !== best.a.id);
+    if(second && second.s - best.s < 8) continue;   /* s'assembla massa a dos articles: no se sap quin és */
+    const sim = Math.max(0, Math.round(100 - best.s / 1.5));
+    const old = DAT.found.get(best.a.id);
+    if(!old || best.s < old.s || (best.s === old.s && dt < old.dt)) DAT.found.set(best.a.id, {dt, d:best.d, s:best.s, sim});
+  }
+  datRender();
+}
+$("datBody").addEventListener("click", e => {
+  if(e.target.closest("#datPick")) $("datIn").click();
+  else if(e.target.closest("#datSave")){
+    const ids = [...$("datBody").querySelectorAll("input[data-id]:checked")].map(x => x.dataset.id);
+    if(!ids.length){ toast("No n'has marcat cap."); return; }
+    let n = 0;
+    HTAG = "📅 ";
+    try {
+      ids.forEach(id => { const c = DATA.find(x => x.id === id && live(x)), f = DAT.found.get(id); if(!c || !f) return; c.dt = f.dt; if(cloudSaveItem(c)) n++; });
+    } finally { HTAG = ""; }
+    toast("📅 Data recuperada a " + n + (n === 1 ? " article." : " articles."));
+    DAT = null; $("datdlg").close(); render();
+  }
+});
+$("datIn").onchange = async e => {
+  const files = [...e.target.files]; e.target.value = "";
+  if(!files.length) return;
+  try { await datRun(files); } catch(err){ console.error(err); toast("⚠️ No s'han pogut llegir les fotos."); datRender(); }
+};
+$("datClose").onclick = () => $("datdlg").close();
 
 /* ---- v6.0.1 · 📲 botó per instal·lar l'inventari com una app (només surt si encara no ho està) ---- */
 let instEvt = null;

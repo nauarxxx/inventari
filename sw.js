@@ -4,7 +4,7 @@
    - CSS, JS i icones: es mostren els guardats i s'actualitzen en segon pla.
    - Firebase (gstatic, versió fixa) i les fonts: es guarden la primera vegada i ja no es tornen a baixar.
    - Firestore, l'inici de sessió i l'àudio no passen per aquí. */
-const VER = "6.3";
+const VER = "6.4";
 const CACHE = "inv-" + VER;
 const SHELL = ["./", "index.html", "style.css?v=" + VER, "app.js?v=" + VER, "cloud.js?v=" + VER, "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
