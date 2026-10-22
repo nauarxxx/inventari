@@ -1,3 +1,3 @@
 # inventari
 web inventari casa
-v.6.1
+v.6.2
