@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v6.4">
+<meta name="generator" content="Inventari de casa v6.5">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -19,7 +19,7 @@
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js" crossorigin="">
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6.4">
+<link rel="stylesheet" href="style.css?v=6.5">
 </head><body>
 <header class="top">
   <div class="toprow">
@@ -33,7 +33,7 @@
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v6.4</span></h1>
+      <h1>Inventari de casa <span class="ver">v6.5</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -41,10 +41,6 @@
       <span>Xat</span><b id="chatN" class="hn cbadge" hidden aria-live="polite"></b>
     </button>
     <div class="hgrp">
-  <button id="buyBtn" class="hbtn buybtn" type="button" hidden aria-haspopup="dialog" aria-controls="buydlg" title="Llista de la compra">
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2L21 8H6.1"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg>
-    <span>Compra</span><b id="buyN" class="hn" hidden></b>
-  </button>
   <button id="dashBtn" class="hbtn" type="button" aria-haspopup="dialog" aria-controls="dash" title="Dashboard: estadístiques de l'inventari">
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-6M11 20V5M17 20v-9"/><path d="M3 20h18"/></svg>
     <span>Dashboard</span>
@@ -66,7 +62,7 @@
   <button id="reset" class="reset" type="button" hidden="">Treu tots els filtres</button>
 </div>
 <button id="totop" class="btn totop" type="button" hidden="">↑ Dalt</button>
-<button id="saveBtn" class="btn savebtn" type="button" aria-haspopup="dialog" aria-controls="sdlg">☁️ Connectant…</button>
+<button id="saveBtn" class="btn savebtn" type="button" title="Doble toc: comprova si tot està sincronitzat">☁️ Connectant…</button>
 <div id="toast" class="toast" role="status" aria-live="polite" popover="manual" hidden=""></div>
 <button id="aiFab" class="btn aifab flipbtn" type="button" aria-label="Obre l'assistent de productes" aria-expanded="false" aria-controls="aiPanel"><span class="persp"><span class="coin"><span class="face front"><svg viewBox="0 0 64 64" width="38" height="38" fill="currentColor" aria-hidden="true"><rect x="11" y="9" width="17" height="12" rx="5"></rect><rect x="36" y="9" width="17" height="12" rx="5"></rect>
 <circle cx="20" cy="15" r="3.2" fill="var(--accent)"></circle><circle cx="44" cy="15" r="3.2" fill="var(--accent)"></circle>
@@ -367,24 +363,6 @@
     </form>
   </div>
 </dialog>
-<dialog id="buydlg" class="fdlg chdlg buydlg nofit" aria-labelledby="buyTitle">
-  <div class="chwrap">
-    <div class="chhead">
-      <span class="chico" aria-hidden="true">🛒</span>
-      <div class="chtt"><h2 id="buyTitle">Llista de la compra</h2><small id="buySub"></small></div>
-      <button type="button" class="btn" id="buyClose">Tanca</button>
-    </div>
-    <form id="buyForm" class="buyadd" autocomplete="off">
-      <input id="buyIn" maxlength="80" placeholder="Afegeix alguna cosa a comprar…" aria-label="Què cal comprar">
-      <button type="submit" class="btn primary">＋</button>
-    </form>
-    <div id="buyList" class="buylist" aria-live="polite"></div>
-    <div class="buyfoot">
-      <button type="button" class="btn" id="buyFromPend" title="Afegeix els pendents d'una zona">📋 Des de pendents</button>
-      <button type="button" class="btn" id="buyShare">📤 Comparteix</button>
-    </div>
-  </div>
-</dialog>
 <dialog id="hdlg" class="fdlg hdlg nofit" aria-labelledby="hTitle">
   <div class="hwrap">
     <div class="hhead"><h2 id="hTitle">↶ Historial de canvis</h2><button type="button" class="btn" id="hClose">Tanca</button></div>
@@ -419,6 +397,18 @@
 </div>
 <div id="dial" class="dial" role="group" aria-label="Tria un filtre" hidden></div>
 <div id="fx" popover="manual" aria-hidden="true"><canvas id="fxc"></canvas><div id="fxflash"></div><div id="fxban" hidden></div></div>
-<script src="app.js?v=6.4"></script>
-<script type="module" src="cloud.js?v=6.4"></script>
+<script src="js/core.js?v=6.5"></script>
+<script src="js/data.js?v=6.5"></script>
+<script src="js/photos.js?v=6.5"></script>
+<script src="js/list.js?v=6.5"></script>
+<script src="js/item.js?v=6.5"></script>
+<script src="js/sync.js?v=6.5"></script>
+<script src="js/chat.js?v=6.5"></script>
+<script src="js/fx.js?v=6.5"></script>
+<script src="js/assistants.js?v=6.5"></script>
+<script src="js/dashboard.js?v=6.5"></script>
+<script src="js/settings.js?v=6.5"></script>
+<script src="js/tools.js?v=6.5"></script>
+<script src="js/main.js?v=6.5"></script>
+<script type="module" src="cloud.js?v=6.5"></script>
 </body></html>

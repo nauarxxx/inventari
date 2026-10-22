@@ -1,12 +1,13 @@
-/* Inventari de casa · service worker (v6.0)
+/* Inventari de casa · service worker
    - La web s'obre a l'instant i funciona sense connexió (les dades ja les guarda Firebase al dispositiu).
    - La pàgina es demana primer a internet (així sempre tens l'última versió) i, si no hi ha connexió, es fa servir la guardada.
    - CSS, JS i icones: es mostren els guardats i s'actualitzen en segon pla.
    - Firebase (gstatic, versió fixa) i les fonts: es guarden la primera vegada i ja no es tornen a baixar.
    - Firestore, l'inici de sessió i l'àudio no passen per aquí. */
-const VER = "6.4";
+const VER = "6.5";
 const CACHE = "inv-" + VER;
-const SHELL = ["./", "index.html", "style.css?v=" + VER, "app.js?v=" + VER, "cloud.js?v=" + VER, "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
+const JS = ["core", "data", "photos", "list", "item", "sync", "chat", "fx", "assistants", "dashboard", "settings", "tools", "main"].map(f => "js/" + f + ".js?v=" + VER);
+const SHELL = ["./", "index.html", "style.css?v=" + VER, "cloud.js?v=" + VER, ...JS, "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
