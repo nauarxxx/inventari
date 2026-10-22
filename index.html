@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v6.1">
+<meta name="generator" content="Inventari de casa v6.3">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -19,7 +19,7 @@
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js" crossorigin="">
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6.1">
+<link rel="stylesheet" href="style.css?v=6.3">
 </head><body>
 <header class="top">
   <div class="toprow">
@@ -33,7 +33,7 @@
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v6.1</span></h1>
+      <h1>Inventari de casa <span class="ver">v6.3</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -87,12 +87,12 @@
 <div id="rPanel" class="aipanel rpanel" role="dialog" aria-label="Assistent d'ordres" hidden>
   <div class="aihead"><h2>🤖 Assistent d'ordres</h2><button type="button" class="sbtn" id="rClose" aria-label="Tanca l'assistent d'ordres">✕</button></div>
   <div id="rMsgs" class="aimsgs" aria-live="polite"></div>
-  <form id="rForm" class="aiform"><textarea id="rIn" rows="1" placeholder="Ex.: resum de l'inventari" aria-label="Ordre per a l'assistent"></textarea><button class="btn primary" type="submit" id="rSend">Envia</button></form>
+  <form id="rForm" class="aiform"><textarea id="rIn" rows="1" placeholder="Ex.: resum de l'inventari" aria-label="Ordre per a l'assistent"></textarea><button type="button" class="aimic" data-for="r" aria-label="Parla amb l'assistent d'ordres" title="Parla (en català)" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><button class="btn primary" type="submit" id="rSend">Envia</button></form>
 </div>
 <div id="aiPanel" class="aipanel" role="dialog" aria-label="Assistent" hidden="">
   <div class="aihead"><h2>Pregunta'm pels productes</h2><button type="button" class="sbtn" id="aiClose" aria-label="Tanca l'assistent">✕</button></div>
   <div id="aiMsgs" class="aimsgs" aria-live="polite"></div>
-  <form id="aiForm" class="aiform"><textarea id="aiIn" rows="1" placeholder="Ex.: on és la raclette?" aria-label="Pregunta sobre els productes"></textarea><button class="btn primary" type="submit" id="aiSend">Envia</button></form>
+  <form id="aiForm" class="aiform"><textarea id="aiIn" rows="1" placeholder="Ex.: on és la raclette?" aria-label="Pregunta sobre els productes"></textarea><button type="button" class="aimic" data-for="ai" aria-label="Parla amb l'assistent" title="Parla (en català)" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><button class="btn primary" type="submit" id="aiSend">Envia</button></form>
 </div>
 <main>
 <div id="emptyCloud" class="empty-msg ecloud" hidden><p><b>L'inventari del núvol és buit.</b><br>Importa un fitxer (.html o .json) per pujar-hi tots els articles i fotos.</p><button class="btn primary" id="eImp" type="button">⬆️ Importa el fitxer</button></div>
@@ -110,6 +110,7 @@
       <label class="fnm">Nom<input id="fName" required="" maxlength="80" autocomplete="off"></label>
       <label class="fqt">Quantitat<input id="fQty" type="number" min="1" value="1" inputmode="numeric"></label>
     </div>
+    <label class="ftp">Tipus d'article<input id="fTipus" list="tipusList" maxlength="40" autocomplete="off" placeholder="Es tria sol segons el nom"></label><datalist id="tipusList"></datalist>
     <label class="fds">Informació<textarea id="fDesc" rows="2" maxlength="300" placeholder="Marca, model, mida, color…"></textarea></label>
     <div class="fsel2">
       <label>Ubicació principal<select id="fLoc"></select></label>
@@ -238,8 +239,8 @@
         <dl class="row">
           <dt>Quantitat</dt><dd id="dQty"></dd>
           <dt>Zona</dt><dd id="dZone"></dd>
-          <dt>Fiabilitat</dt><dd id="dFiab"></dd>
-          <dt>Estat</dt><dd id="dEstat"></dd>
+          <dt id="dTipusT">Tipus</dt><dd id="dTipus"></dd>
+          <dt id="dDateT">Data de creació</dt><dd id="dDate"></dd>
         </dl>
         <p id="dDesc"></p>
         <p id="dNote" class="note"></p>
@@ -275,6 +276,16 @@
       <button type="button" class="copt" id="sOut"><span class="cico" aria-hidden="true">🚪</span><span class="ctxt"><b>Tanca la sessió</b><small>En aquest dispositiu</small></span><span class="carr" aria-hidden="true">›</span></button>
     </div>
     <div class="factions"><button type="button" class="btn" id="sClose">Tanca</button></div>
+  </div>
+</dialog>
+<dialog id="basdlg" class="fdlg chdlg basdlg nofit" aria-labelledby="basTitle">
+  <div class="chwrap">
+    <div class="chhead">
+      <span class="chico" aria-hidden="true">⚙️</span>
+      <div class="chtt"><h2 id="basTitle">Configuració</h2><small id="basSub"></small></div>
+      <button type="button" class="btn" id="basClose">Tanca</button>
+    </div>
+    <div id="basBody" class="basbody"></div>
   </div>
 </dialog>
 <dialog id="cfdlg" class="fdlg cfdlg nofit" aria-labelledby="cfTitle">
@@ -388,6 +399,6 @@
 </div>
 <div id="dial" class="dial" role="group" aria-label="Tria un filtre" hidden></div>
 <div id="fx" popover="manual" aria-hidden="true"><canvas id="fxc"></canvas><div id="fxflash"></div><div id="fxban" hidden></div></div>
-<script src="app.js?v=6.1"></script>
-<script type="module" src="cloud.js?v=6.1"></script>
+<script src="app.js?v=6.3"></script>
+<script type="module" src="cloud.js?v=6.3"></script>
 </body></html>

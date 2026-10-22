@@ -26,7 +26,7 @@ function refreshLocs(){
     return (ia<0?99:ia)-(ib<0?99:ib) || a.localeCompare(b);
   });
 }
-const state = {q:"", cat:"all", loc:"all", review:false};
+const state = {q:"", cat:"all", loc:"all", review:false, tip:"all"};
 let order = [];
 const $ = id => document.getElementById(id);
 const norm = s => (s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -62,7 +62,7 @@ function fixItem(c){
   return c;
 }
 DATA.forEach(fixItem);
-const searchText = c => norm(c.item+" "+c.desc+" "+c.note+" "+locsOf(c).join(" ")+" "+zonesOf(c).join(" "));
+const searchText = c => norm(c.item+" "+c.desc+" "+c.note+" "+locsOf(c).join(" ")+" "+zonesOf(c).join(" ")+" "+typeOf(c));
 const SEARCH = DATA.map(searchText);
 const live = c => !c.deleted;
 
@@ -179,6 +179,7 @@ const matches = (c,i,skip) => live(c)
   && (skip==="cat" || state.cat==="all" || catsOf(c).includes(state.cat))
   && (skip==="loc" || state.loc==="all" || c.locs.includes(state.loc))
   && (skip==="review" || !state.review || needsReview(c))
+  && (skip==="tip" || state.tip==="all" || (typeOf(c) || "Sense tipus")===state.tip)
   && (!state.q || qHit(i));
 const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c)).length;
 
@@ -186,8 +187,8 @@ const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c))
 const totAll = () => DATA.filter(live).length;
 const pctOf = (n, tot) => (!tot || !n) ? 0 : Math.max(1, Math.min(100, Math.round(n / tot * 100)));
 /* v3.3: valors per defecte (els de la v3.2) i límits dels ajustos */
-const CFGD = {fxOn:1, fxN:160, fxT:3500, fxPal:0, fxVol:0, houseOn:1, houseShow:1, houseN:420, houseT:7000, houseR:34, houseBan:1, dialHold:350, dialS:46, dialR:140, dialMax:175, dialTap:1, dialVib:1, dashOn:1, dashDays:14, dashTop:5, dashAnim:1, sortMode:0, lph:76, rad:14, aiwait:450, smartbar:1, vib:0, toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:3, hold:1000, dbl:600, tap:1200, histMax:100, histDays:3, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
-const CFGR = {fxOn:[0, 1], fxN:[20, 600], fxT:[1000, 12000], fxPal:[0, 3], fxVol:[0, 100], houseOn:[0, 1], houseShow:[0, 1], houseN:[50, 900], houseT:[2000, 15000], houseR:[0, 80], houseBan:[0, 1], dialHold:[150, 1500], dialS:[34, 64], dialR:[90, 220], dialMax:[110, 260], dialTap:[0, 1], dialVib:[0, 1], dashOn:[0, 1], dashDays:[7, 60], dashTop:[3, 15], dashAnim:[0, 1], sortMode:[0, 2], lph:[40, 120], rad:[4, 28], aiwait:[200, 1000], smartbar:[0, 1], vib:[0, 1], toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], histDays:[1, 90], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
+const CFGD = {fxOn:1, fxN:160, fxT:3500, fxPal:0, fxVol:0, houseOn:1, houseShow:1, houseN:420, houseT:7000, houseR:34, houseBan:1, dialHold:350, dialS:46, dialR:140, dialMax:175, dialTap:1, dialVib:1, dashOn:1, dashDays:14, dashTop:5, dashAnim:1, sortMode:0, lph:76, rad:14, aiwait:450, smartbar:1, vib:0, toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:3, hold:1000, dbl:600, tap:1200, histMax:100, histDays:3, aiMode:2, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
+const CFGR = {fxOn:[0, 1], fxN:[20, 600], fxT:[1000, 12000], fxPal:[0, 3], fxVol:[0, 100], houseOn:[0, 1], houseShow:[0, 1], houseN:[50, 900], houseT:[2000, 15000], houseR:[0, 80], houseBan:[0, 1], dialHold:[150, 1500], dialS:[34, 64], dialR:[90, 220], dialMax:[110, 260], dialTap:[0, 1], dialVib:[0, 1], dashOn:[0, 1], dashDays:[7, 60], dashTop:[3, 15], dashAnim:[0, 1], sortMode:[0, 2], lph:[40, 120], rad:[4, 28], aiwait:[200, 1000], smartbar:[0, 1], vib:[0, 1], toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], histDays:[1, 90], aiMode:[0, 2], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
 function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
 function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
 const totLoc = l => DATA.filter(c => live(c) && c.locs.includes(l)).length;
@@ -210,7 +211,7 @@ function card(c,i){
   if(c.estado==="conf") tags += '<span class="tag conf">Quantitat per confirmar</span>';
   if(c.estado==="sin") tags += '<span class="tag sin">Sense foto</span>';
   if(c.pend>0) tags += '<span class="tag pend">Foto pendent</span>';
-  return '<li class="card" data-i="'+i+'"><button class="card-btn" type="button" data-i="'+i+'" aria-label="Detalls de '+esc(c.item)+'">'+ph+'<div class="body"><h3>'+esc(c.item)+'</h3><p class="lmeta desc">Quantitat: <b>'+esc(c.qty)+'</b> · Fiabilitat: <b>'+esc(FIAB[c.fiab]||c.fiab)+'</b></p>'+(c.desc?'<p class="desc">'+esc(c.desc)+'</p>':'')+(c.note?'<p class="lnote">'+esc(c.note)+'</p>':'')+'<div class="tags">'+tags+'</div></div></button></li>';
+  return '<li class="card" data-i="'+i+'"><button class="card-btn" type="button" data-i="'+i+'" aria-label="Detalls de '+esc(c.item)+'">'+ph+'<div class="body"><h3>'+esc(c.item)+'</h3><p class="lmeta desc">Quantitat: <b>'+esc(c.qty)+'</b>'+(typeOf(c)?' · '+typeIco(typeOf(c))+' <b>'+esc(typeOf(c))+'</b>':'')+'</p>'+(c.desc?'<p class="desc">'+esc(c.desc)+'</p>':'')+(c.note?'<p class="lnote">'+esc(c.note)+'</p>':'')+'<div class="tags">'+tags+'</div></div></button></li>';
 }
 
 /* Les targetes es construeixen una sola vegada; filtrar només amaga/mostra */
@@ -301,7 +302,7 @@ function placeCards(i){
 }
 function saveItem(i, patch){
   const prevLocs50 = locsOf(DATA[i]).slice();
-  Object.assign(DATA[i], patch); if("cats" in patch && !patch.cats) delete DATA[i].cats; fixItem(DATA[i]); SEARCH[i] = searchText(DATA[i]);
+  Object.assign(DATA[i], patch); if("cats" in patch && !patch.cats) delete DATA[i].cats; if("tipus" in patch && !patch.tipus) delete DATA[i].tipus; fixItem(DATA[i]); SEARCH[i] = searchText(DATA[i]);
   const ok = cloudSaveItem(DATA[i]);
   if(!ok) toast("No s'ha pogut desar la foto.");
   refreshLocs();
@@ -455,7 +456,7 @@ buildNewSection();
 CATS.forEach(buildSection);
 
 /* ---- Formulari per crear un article des de Pendents ---- */
-let formCtx = null, formPhoto = null;
+let formCtx = null, formPhoto = null, formPhotoDt = 0;
 function fillFormSelects(catId){
   $("fLoc").innerHTML = LOCS.map(l=>'<option>'+esc(l)+'</option>').join("") + '<option value="__new">➕ Nova ubicació…</option>';
   $("fCat").innerHTML = CATS.map(c=>'<option value="'+c.id+'">'+c.icon+' '+esc(c.label)+'</option>').join("") + '<option value="__new">➕ Nova zona…</option>';
@@ -463,6 +464,7 @@ function fillFormSelects(catId){
   $("fNewLoc").hidden = true; $("fNewLoc").required = false;
   $("fNewCat").hidden = true; $("fCatName").required = false;
   $("fAuto").hidden = true;
+  tipusFill(); $("fTipus").value = ""; $("fTipus").placeholder = "Es tria sol segons el nom";
   setFormPhoto(null);
   fillMulti([], []);
 }
@@ -486,6 +488,7 @@ function openEdit(i){
   if(LOCS.includes(c.loc)) $("fLoc").value = c.loc;
   fillMulti(locsOf(c).slice(1), catsOf(c).slice(1));
   $("fNoteL").hidden = false; $("fNote").value = c.note || "";
+  $("fTipus").value = c.tipus || ""; tipusHint();
   formPhotoBase = c.photos.length ? '<img alt="" src="'+thumbSrc(c)+'">' : '<span>Sense foto</span>';
   $("fPrev").innerHTML = formPhotoBase;
   $("fOnly").hidden = true; $("fSave").textContent = "Desa i marca com a correcte"; $("fSave").classList.remove("go"); $("fHint").hidden = true;
@@ -547,12 +550,14 @@ function resizePhoto(file){
 let formPhotoBase = '<span>Sense foto</span>';
 function setFormPhoto(src){
   formPhoto = src || null;
+  if(!formPhoto) formPhotoDt = 0;
   if(formPhoto) $("fPrev").innerHTML = '<img alt="Foto de l\'article" src="'+formPhoto+'">';
   $("fPhDel").hidden = !formPhoto;
 }
 async function takeFile(e){
   const file = e.target.files[0]; e.target.value = ""; if(!file) return;
-  try { setFormPhoto(await resizePhoto(file)); }
+  /* v6.2: data de la foto (EXIF) abans de reduir-la, que és quan es perden les metadades. Si la fas amb la càmera ara, és avui */
+  try { const dt = await exifDate(file); setFormPhoto(await resizePhoto(file)); formPhotoDt = dt || (e.target.id === "fCam" ? Date.now() : 0); }
   catch(err){ setFormPhoto(null); $("fPrev").innerHTML = '<span>No s\'ha pogut llegir la foto (format no compatible?)</span>'; }
 }
 $("fPhoto").onchange = takeFile;
@@ -593,7 +598,7 @@ $("camShoot").onclick = () => {
 };
 $("camRetry").onclick = () => camStart();
 $("camSwap").onclick = () => { camFacing = camFacing === "environment" ? "user" : "environment"; camStart(); };
-$("camUse").onclick = () => { setFormPhoto(photoJpeg($("camShot"), $("camShot").width, $("camShot").height)); $("camdlg").close(); };
+$("camUse").onclick = () => { formPhotoDt = Date.now(); setFormPhoto(photoJpeg($("camShot"), $("camShot").width, $("camShot").height)); $("camdlg").close(); };
 $("camCancel").onclick = () => $("camdlg").close();
 $("camdlg").addEventListener("close", camStop);
 $("fCat").onchange = () => { const nw = $("fCat").value === "__new"; $("fNewCat").hidden = !nw; $("fCatName").required = nw; if(nw) $("fCatName").focus(); };
@@ -644,6 +649,94 @@ function zoneGuess(name){
   if(!r.length || r[0][1] < 1.5 || (r[1] && r[0][1] < r[1][1] * 1.3)) return null;
   return {z: CATS.find(z => z.id === r[0][0]), why: why.get(r[0][0])};
 }
+/* ---- v6.2 🏷️ tipus d'article (Alcohol, Vaixella, Eines…) ----
+   Si no l'has triat a mà (camp tipus), es dedueix del nom i la informació: així funciona amb tots els articles, vells i nous.
+   També aprèn dels tipus que poses a mà: els articles amb paraules semblants reben el mateix tipus. */
+const TYPES = [
+  ["Alcohol", "🍷", "vi vino vins cava xampany champagne cervesa cerveza birra rom ron rum vodka ginebra gin whisky whiskey licor licors tequila vermut vermouth sangria brandy conyac cognac orujo pacharan aperol campari bacardi havana barcelo legendario beefeater tanqueray hendricks smirnoff baileys jagermeister martini moet bumbu absolut ratafia mezcal sake sidra"],
+  ["Begudes", "🥤", "aigua agua refresc refresco cocacola fanta suc zumo llet leche cafe infusio cacau batut"],
+  ["Menjar", "🥫", "arros arroz pasta macarrons espaguetis oli aceite sucre azucar farina harina llauna conserva tonyina atun galetes galletas xocolata chocolate cereals especies vinagre salsa ketchup maionesa mel"],
+  ["Vaixella", "🍽️", "plat plats plato got gots vaso tassa taza bol copa copes gerra safata xupito chupito vaixella vajilla tetera ampolla ampolles"],
+  ["Coberts", "🍴", "cullera culleres cuchara forquilla tenedor ganivet ganivets cuchillo coberts cubiertos culleretes"],
+  ["Estris de cuina", "🍳", "paella sarten olla cassola casso colador ratllador obrellaunes llevataps cullerot varetes motlle tupper carmanyola tallar pelador premsa espremedor escorreplats manyopla bascula pizza"],
+  ["Electrodomèstic", "🔌", "nevera rentadora rentaplats forn microones placa campana torradora bullidor planxa fregidora batedora minipimer aspiradora ventilador estufa radiador cafetera nespresso thermomix raclette assecador assecadora humidificador"],
+  ["Electrònica", "💻", "monitor teclat ratoli impressora portatil ordinador usb hdmi cable auriculars webcam router wifi carregador pendrive altaveu tablet mobil televisor consola comandament bateria"],
+  ["Eines", "🧰", "martell tornavis tornavisos destornillador alicates anglesa trepant broca serra llima cuter nivell tenalles cargols tacs brida silicona llanterna escala soldador"],
+  ["Neteja", "🧽", "escombra recollidor fregona mopa galleda fregall esponja esponges baieta detergent lleixiu lejia fregar netejador netejavidres suavitzant rentavaixelles drap draps microfibra escombraries"],
+  ["Higiene", "🧴", "xampu champu gel sabo jabon crema raspall dents dentifric desodorant colonia perfum maquillatge afaitar maquineta coto bastonets tovalloletes"],
+  ["Tèxtil de la llar", "🧺", "tovallola tovalloles toalla llencol llencols sabana nordica edredo manta coixi coixins almohada cortina cortines catifa alfombra tovalles estovalles funda"],
+  ["Roba", "👕", "samarreta camiseta pantalo pantalon jersei jaqueta abric sabates zapatos mitjons calcetines gorra bufanda vestit faldilla"],
+  ["Mobles", "🛋️", "taula mesa cadira cadires silla sofa armari calaixera prestatgeria llit cama moble tauleta escriptori tamboret puf"],
+  ["Decoració", "🖼️", "quadre cuadro gerro jarron espelma vela mirall rellotge figura decoracio imans iman imant"],
+  ["Il·luminació", "💡", "llum lampara bombeta bombilla led"],
+  ["Papereria", "📎", "llibreta boligraf llapis retolador grapadora carpeta arxivador adhesiva calculadora"],
+  ["Jocs i oci", "🎮", "joc jocs juego puzle baralla cartes daus pilota escacs domino lego peluix"],
+  ["Festa", "🎉", "barret festa globus confeti disfressa guirnalda serpentina pinata"],
+  ["Medicaments", "💊", "medicament ibuprofe paracetamol farmaciola termometre tiretes esparadrap gases pastilles xarop"],
+  ["Esport", "⚽", "bicicleta bici raqueta peses manuella esterilla casc patins"],
+  ["Jardí", "🌿", "planta regadora manguera manega podar adob gespa"],
+  ["Organització", "🧷", "penjador penjadors perxa caixa caixes organitzador cistell capsa"]
+];
+const typeIco = t => { const x = TYPES.find(y => y[0] === t); return x ? x[1] : "🏷️"; };
+let TIDX = null, TIDX_N = -1;
+function typeIndex(){
+  const sig = DATA.length + DATA.filter(c => c.tipus).length * 1e6;
+  if(TIDX && TIDX_N === sig) return TIDX;
+  const idx = new Map();
+  const add = (t, text, w) => zWords(text).forEach(k => { let m = idx.get(k); if(!m){ m = new Map(); idx.set(k, m); } m.set(t, (m.get(t) || 0) + w); });
+  /* les begudes alcohòliques i les marques pesen més; «joc» és una paraula massa general */
+  TYPES.forEach(([t, , words]) => add(t, words, t === "Alcohol" ? 3.5 : t === "Jocs i oci" ? 1.5 : 2));
+  DATA.forEach(c => { if(live(c) && c.tipus) add(c.tipus, c.item, 4); });
+  TIDX = idx; TIDX_N = sig;
+  return idx;
+}
+function typeGuess(text){
+  const ws = zWords(text); if(!ws.length) return "";
+  const idx = typeIndex(), sc = new Map();
+  ws.forEach((t, n) => {
+    let m = idx.get(t), f = n === 0 ? 1.2 : 1;   /* la primera paraula del nom pesa una mica més */
+    if(!m && t.length >= 5){ for(const [k, v] of idx){ if(k.length >= 5 && (k.startsWith(t) || t.startsWith(k))){ m = v; f *= .6; break; } } }
+    if(m) m.forEach((v, ty) => sc.set(ty, (sc.get(ty) || 0) + v * f));
+  });
+  const r = [...sc].sort((a, b) => b[1] - a[1]);
+  return r.length && r[0][1] >= 1.5 && !(r[1] && r[0][1] < r[1][1] * 1.1) ? r[0][0] : "";
+}
+/* el tipus que es mostra: el triat a mà o el deduït del nom (si no, de la informació) */
+const typeOf = c => c.tipus || typeGuess(c.item) || typeGuess(c.desc || "");
+/* ---- v6.2 📅 data de creació: la data en què es va fer la foto (metadades EXIF del fitxer original) ---- */
+async function exifDate(file){
+  try {
+    if(!file || !/jpe?g|heic|heif/i.test(file.type || file.name || "")) return 0;
+    const v = new DataView(await file.slice(0, 262144).arrayBuffer());
+    if(v.getUint16(0) !== 0xFFD8) return 0;
+    let o = 2;
+    while(o + 4 < v.byteLength){
+      const m = v.getUint16(o), len = v.getUint16(o + 2);
+      if(m === 0xFFE1 && o + 10 < v.byteLength && v.getUint32(o + 4) === 0x45786966) return tiffDate(v, o + 10);
+      if((m & 0xFF00) !== 0xFF00 || m === 0xFFDA) break;
+      o += 2 + len;
+    }
+  } catch(e){}
+  return 0;
+}
+function tiffDate(v, t){
+  const le = v.getUint16(t) === 0x4949, u16 = p => v.getUint16(p, le), u32 = p => v.getUint32(p, le);
+  const ifd = p => { const n = u16(p), r = {}; for(let i = 0; i < n; i++){ const e = p + 2 + i * 12; r[u16(e)] = {cnt:u32(e + 4), val:e + 8}; } return r; };
+  const str = en => { const off = en.cnt > 4 ? t + u32(en.val) : en.val; let s = ""; for(let i = 0; i < en.cnt - 1 && off + i < v.byteLength; i++) s += String.fromCharCode(v.getUint8(off + i)); return s; };
+  const i0 = ifd(t + u32(t + 4));
+  let d = null;
+  if(i0[0x8769]){ const ex = ifd(t + u32(i0[0x8769].val)); d = ex[0x9003] || ex[0x9004]; }   /* DateTimeOriginal / DateTimeDigitized */
+  if(!d) d = i0[0x0132];                                                                       /* DateTime */
+  if(!d) return 0;
+  const m = /^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/.exec(str(d)); if(!m) return 0;
+  const ts = new Date(+m[1], m[2] - 1, +m[3], +m[4], +m[5], +m[6]).getTime();
+  return ts > 946684800000 && ts < Date.now() + 864e5 ? ts : 0;
+}
+const fmtDate = ts => new Date(ts).toLocaleDateString("ca", {day:"numeric", month:"long", year:"numeric"});
+function tipusFill(){ $("tipusList").innerHTML = [...new Set(TYPES.map(t => t[0]).concat(DATA.filter(c => live(c) && c.tipus).map(c => c.tipus)))].map(t => '<option value="' + esc(t) + '">').join(""); }
+function tipusHint(){ const g = typeGuess($("fName").value) || typeGuess($("fDesc").value); $("fTipus").placeholder = g ? "Automàtic: " + typeIco(g) + " " + g : "Es tria sol segons el nom"; }
+$("fName").addEventListener("input", () => { clearTimeout(tipusHint.t); tipusHint.t = setTimeout(tipusHint, 250); });
+$("fDesc").addEventListener("input", () => { clearTimeout(tipusHint.t); tipusHint.t = setTimeout(tipusHint, 250); });
 function zoneAuto(){
   if(!formCtx || !formCtx.auto || formCtx.catTouched) return;
   const g = zoneGuess($("fName").value);
@@ -697,12 +790,16 @@ $("fForm").onsubmit = e => {
     const patch = Object.assign({item:name, desc:$("fDesc").value.trim(), note:$("fNote").value.trim(), cat:Z[0], cats: Z.length > 1 ? Z : null,
       qty: qty>0 ? qty : c.qty, loc, locs: L}, CORRECTE);
     if(formPhoto) patch.photos = [formPhoto].concat(c.photos);
+    patch.tipus = $("fTipus").value.trim().replace(/\s+/g, " ") || null;
+    if(formPhotoDt && !c.dt) patch.dt = formPhotoDt;
     $("fdlg").close(); saveItem(i, patch); afterReview(); return;
   }
   const c = {item:name, cat:Z[0], desc:$("fDesc").value.trim(), qty: qty>0 ? qty : 1,
     estado: formPhoto ? "ok" : "sin", fiab:"alta", note: formCtx.free ? $("fNote").value.trim() : "Afegit des de Pendents", photos: formPhoto ? [formPhoto] : [],
     pend:0, inv:0, loc, locs:L, nou:true, pkey: formCtx.key || undefined};
   if(Z.length > 1) c.cats = Z;
+  const tp = $("fTipus").value.trim().replace(/\s+/g, " "); if(tp) c.tipus = tp;
+  if(formPhoto && formPhotoDt) c.dt = formPhotoDt;
   c.ord = Date.now();
   if(cloudUser) c.by = String(cloudUser.email).toLowerCase();
   if(!cloudSaveItem(c)){ toast("No s'ha pogut desar l'article."); return; }
@@ -762,6 +859,7 @@ function render(){
   if(view==="check") renderCheck();
   const actius = [];
   if(state.review) actius.push("Per revisar");
+  if(state.tip!=="all") actius.push(typeIco(state.tip)+" "+state.tip);
   if(state.loc!=="all") actius.push(state.loc);
   if(state.cat!=="all") actius.push(zoneOf({cat:state.cat}));
   if(state.q) actius.push("cerca «"+$("q").value.trim()+"»");
@@ -847,7 +945,7 @@ function toast(msg){
   toastT = setTimeout(()=>{ try { if(t.matches && t.matches(":popover-open")) t.hidePopover(); } catch(e){} t.hidden = true; }, cfgGet("toast"));
 }
 function resetFilters(){
-  state.q=""; state.cat="all"; state.loc="all"; state.review=false;
+  state.q=""; state.cat="all"; state.loc="all"; state.review=false; state.tip="all";
   $("q").value=""; render();
 }
 
@@ -868,8 +966,10 @@ function showDlg(){
   $("dTitle").textContent = c.item;
   $("dQty").textContent = c.qty;
   $("dZone").textContent = zonesTxt(c);
-  $("dFiab").textContent = FIAB[c.fiab] || c.fiab;
-  $("dEstat").textContent = ESTAT[c.estado] || "";
+  /* v6.2: tipus d'article i data de creació (de la foto); si no se sap, el camp no surt */
+  const ty = typeOf(c);
+  $("dTipus").textContent = ty ? typeIco(ty) + " " + ty : ""; $("dTipus").hidden = $("dTipusT").hidden = !ty;
+  $("dDate").textContent = c.dt ? fmtDate(c.dt) : ""; $("dDate").hidden = $("dDateT").hidden = !c.dt;
   $("dDesc").textContent = c.desc || ""; $("dDesc").style.display = c.desc ? "" : "none";
   $("dNote").textContent = c.note || "";  $("dNote").style.display = c.note ? "" : "none";
   const why = needsReview(c) ? reasons(c) : [];
@@ -898,11 +998,12 @@ $("dAddPh").onclick = () => $("dPhIn").click();
 $("dPhIn").onchange = async e => {
   const files = [...e.target.files]; e.target.value = "";
   if(!files.length || cur === null) return;
-  const i = cur, c = DATA[i], add = [];
-  for(const f of files){ try { add.push(await resizePhoto(f)); } catch(err){} }
+  const i = cur, c = DATA[i], add = []; let dt = 0;
+  for(const f of files){ try { const d = await exifDate(f); add.push(await resizePhoto(f)); if(d && (!dt || d < dt)) dt = d; } catch(err){} }
   if(!add.length){ toast("No s'ha pogut llegir cap foto (format no compatible?). Prova amb JPG o PNG."); return; }
   const first = c.photos.length;
   const patch = {photos: c.photos.concat(add), pend: 0};
+  if(dt && !c.dt) patch.dt = dt;   /* v6.2: la data de la foto més antiga, si l'article encara no en té */
   if(c.estado === "sin") patch.estado = "ok";
   saveItem(i, patch);
   toast(add.length === 1 ? "Foto afegida." : add.length + " fotos afegides.");
@@ -1342,7 +1443,13 @@ const cloudAllowed = e => ALLOWED.includes(String(e || "").toLowerCase());
 const BASE_CATS = CATS.length - userCats.length;
 /* ids de totes les fotos que fan servir els articles */
 const phIds = () => { const s = new Set(); RAW.forEach(d => (d.ph || []).forEach(p => s.add(p))); return s; };
-const PH_AVG = 180000;   /* mida mitjana estimada d'una foto completa (per als càlculs d'espai) */
+const PH_AVG = 100000;   /* mida mitjana estimada d'una foto completa (v6.1) si encara no s'ha mesurat */
+/* v6.1.1: mida real de les fotos. Es mesura cada vegada que es baixen totes (reduir, netejar, exportar) i es guarda en aquest dispositiu */
+function phStatSave(all){
+  let b = 0; all.forEach(d => { b += d.length; });
+  try { localStorage.setItem("inv_phstats", JSON.stringify({n:all.size, b, ts:Date.now()})); } catch(e){}
+}
+function phStat(){ try { const s = JSON.parse(localStorage.getItem("inv_phstats") || "null"); return s && s.n > 0 ? s : null; } catch(e){ return null; } }
 let RAW = new Map(), cloudLoaded = false, cloudUser = null, itemsCache = true, itemsPending = false, cloudFail = null, importing = false;
 let everServer = false, srvDown = false, inflight = 0, hadOfflinePending = false, connT = 0;
 /* sense connexió: el navegador ho diu, o Firebase només serveix dades guardades al dispositiu, o no ha arribat mai al servidor */
@@ -1719,6 +1826,7 @@ function partLabel(p){
     if(stable(b.locs) !== stable(a.locs) || b.loc !== a.loc) ch.push("ubicació → " + (a.locs || [a.loc]).join(", "));
     if(b.cat !== a.cat || stable(b.cats) !== stable(a.cats)) ch.push("zona → " + (a.cats || [a.cat]).map(catName).join(", "));
     if((b.desc || "") !== (a.desc || "")) ch.push("descripció");
+    if((b.tipus || "") !== (a.tipus || "")) ch.push("tipus → " + (a.tipus || "automàtic"));
     if((b.note || "") !== (a.note || "") && !/Revisat i correcte$/.test(a.note || "")) ch.push("nota");
     const nb = (b.ph || []).length, na = (a.ph || []).length;
     if(na > nb) ch.push("+" + (na - nb) + (na - nb > 1 ? " fotos" : " foto"));
@@ -2129,7 +2237,7 @@ chatBadge();
    Els ajustos es desen a Firestore (meta/state · camp inv_cfg) i surten a ↶ Desfés.
    ===================================================================== */
 let CHAT_MAX = 300;
-const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", histDays:"Dies que es guarden els canvis de Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «NEW»", sortMode:"Ordre dels articles", lph:"Foto a la vista llista", rad:"Cantonades arrodonides", aiwait:"Espera del toc simple a l'assistent", smartbar:"Barra de cerca intel·ligent", vib:"Vibració en tocar", fxOn:"Confeti en crear", fxN:"Quantitat de confeti", fxT:"Durada del confeti", fxPal:"Colors del confeti", fxVol:"So de la celebració", houseOn:"Celebració de Nau&Noa House", houseShow:"Mostra sempre Nau&Noa House", houseN:"Confeti de la casa", houseT:"Durada de la celebració de la casa", houseR:"Cintes de la casa", houseBan:"Cartell de la casa", dialHold:"Temps per obrir el dial", dialS:"Mida dels botons del dial", dialR:"Radi del dial", dialMax:"Ampliació màxima del dial", dialTap:"Dial amb un toc simple", dialVib:"Vibració del dial", dashOn:"Botó del dashboard", dashDays:"Dies d'activitat del dashboard", dashTop:"Articles als rànquings", dashAnim:"Animacions del dashboard"};
+const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", histDays:"Dies que es guarden els canvis de Desfés", aiMode:"Assistents: text i veu", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «NEW»", sortMode:"Ordre dels articles", lph:"Foto a la vista llista", rad:"Cantonades arrodonides", aiwait:"Espera del toc simple a l'assistent", smartbar:"Barra de cerca intel·ligent", vib:"Vibració en tocar", fxOn:"Confeti en crear", fxN:"Quantitat de confeti", fxT:"Durada del confeti", fxPal:"Colors del confeti", fxVol:"So de la celebració", houseOn:"Celebració de Nau&Noa House", houseShow:"Mostra sempre Nau&Noa House", houseN:"Confeti de la casa", houseT:"Durada de la celebració de la casa", houseR:"Cintes de la casa", houseBan:"Cartell de la casa", dialHold:"Temps per obrir el dial", dialS:"Mida dels botons del dial", dialR:"Radi del dial", dialMax:"Ampliació màxima del dial", dialTap:"Dial amb un toc simple", dialVib:"Vibració del dial", dashOn:"Botó del dashboard", dashDays:"Dies d'activitat del dashboard", dashTop:"Articles als rànquings", dashAnim:"Animacions del dashboard"};
 const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap" || k === "toast" || k === "coin" || k === "aiwait" || k === "fxT" || k === "houseT" || k === "dialHold";
 const cfgDeep = o => o == null ? null : JSON.parse(JSON.stringify(o));
 const fmtSec = ms => String(Math.round(ms / 10) / 100).replace(".", ",") + " s";
@@ -2166,7 +2274,7 @@ function cfgLabels(b, a){
 }
 function cfgClean(o){
   const r = {};
-  ["hold", "dbl", "tap", "histMax", "histDays", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays", "sortMode", "lph", "rad", "aiwait", "smartbar", "vib", "fxOn", "fxN", "fxT", "fxPal", "fxVol", "houseOn", "houseShow", "houseN", "houseT", "houseR", "houseBan", "dialHold", "dialS", "dialR", "dialMax", "dialTap", "dialVib", "dashOn", "dashDays", "dashTop", "dashAnim"].forEach(k => {
+  ["hold", "dbl", "tap", "histMax", "histDays", "aiMode", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays", "sortMode", "lph", "rad", "aiwait", "smartbar", "vib", "fxOn", "fxN", "fxT", "fxPal", "fxVol", "houseOn", "houseShow", "houseN", "houseT", "houseR", "houseBan", "dialHold", "dialS", "dialR", "dialMax", "dialTap", "dialVib", "dashOn", "dashDays", "dashTop", "dashAnim"].forEach(k => {
     const v = o && o[k];
     if(typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] && v !== CFGD[k]) r[k] = v;
   });
@@ -2217,12 +2325,16 @@ function cfgSetLock(lock){
   hop($("cfgBtn"));
   if(!lock) cfgLockT = setTimeout(() => cfgSetLock(true), cfgGet("coin"));
 }
+/* v6.3: un toc = configuració bàsica (s'espera un moment per si en fas 3) · 3 tocs = gira la moneda · 4t toc = configuració avançada (vermella) */
+let cfgOpenT = 0;
 $("cfgBtn").addEventListener("click", () => {
-  if(cfgUnlocked){ clearTimeout(cfgLockT); openCfg(); return; }
+  if(cfgUnlocked){ clearTimeout(cfgLockT); clearTimeout(cfgOpenT); openCfg(); return; }
   const now = Date.now(), win = cfgGet("tap");
   cfgTaps.push(now);
   while(cfgTaps.length && now - cfgTaps[0] > win) cfgTaps.shift();
-  if(cfgTaps.length >= 3){ cfgTaps.length = 0; cfgSetLock(false); }
+  clearTimeout(cfgOpenT);
+  if(cfgTaps.length >= 3){ cfgTaps.length = 0; cfgSetLock(false); return; }
+  cfgOpenT = setTimeout(() => { cfgTaps.length = 0; if(!cfgUnlocked) basicOpen(); }, cfgGet("aiwait"));
 });
 function openCfg(){
   if(!cloudUser){ toast("Cal iniciar sessió."); return; }
@@ -2254,6 +2366,9 @@ function cfgRender(){
   h += '</div><div class="cfg"><h3>💾 Còpies de seguretat</h3><p class="cfn">Per crear-ne o restaurar-ne, toca el botó «Còpies de seguretat» de dalt.</p>';
   h += row("Còpies que es guarden", "Entre 1 i 50 · per defecte " + CFGD.bkMax + " · s'esborra la més antiga", 'data-t="bkMax" min="1" max="50" step="1"', cfgGet("bkMax"), "còpies");
   h += row("Còpia automàtica cada…", "Entre 0 i 60 dies · 0 = desactivada · per defecte 0", 'data-t="bkAuto" min="0" max="60" step="1"', cfgGet("bkAuto"), "dies");
+  h += '</div><div class="cfg"><h3>🎤 Assistents per veu</h3><p class="cfn">Com parles amb els dos assistents (el de productes i el d\'ordres). Entenen el català; si els parles en castellà et demanaran que els parlis en català. ' + (voiceInfo()) + '</p>';
+  h += row("Text o veu", "0 = només escrivint · 1 = només amb la veu (micròfon i respostes dites en veu alta) · 2 = les dues coses · per defecte 2", 'data-t="aiMode" min="0" max="2" step="1"', cfgGet("aiMode"), "0–2");
+  h += '<button type="button" class="wtest" id="vTest">🔊 Prova la veu</button>';
   h += '</div><div class="cfg"><h3>🔊 So de WALL-E</h3><p class="cfn">Sona quan obres l\'assistent de productes (no en el mode d\'ordres). Fitxer: <b>Walle.mp3</b>.</p>';
   h += row("Volum de WALL-E", "Entre 0 i 100 · 0 = en silenci · per defecte " + CFGD.wvol, 'data-t="wvol" min="0" max="100" step="1"', cfgGet("wvol"), "%");
   h += row("Repetició mínima", "Entre 0,5 i 10 s · per defecte " + String(CFGD.wgap / 1000).replace(".", ","), 'data-t="wgap" min="0.5" max="10" step="0.1"', cfgGet("wgap") / 1000, "s");
@@ -2660,7 +2775,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "6.1";
+const APP_VER = "6.3";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null;
 const bkWhen = ts => { const d = new Date(ts); return d.toLocaleDateString("ca", {day:"2-digit", month:"2-digit", year:"numeric"}) + " " + d.toLocaleTimeString("ca", {hour:"2-digit", minute:"2-digit"}); };
@@ -3081,7 +3196,7 @@ async function cloudExport(){
   if(!DATA.filter(live).length){ toast("No hi ha cap article per exportar."); return; }
   toast("Preparant el fitxer… (baixant les fotos)");
   try {
-    const list = DATA.filter(live), all = await cloud.allPhotos();
+    const list = DATA.filter(live), all = await cloud.allPhotos(); phStatSave(all);
     const full = c => (c._ph || []).map(p => all.get(p) || PHF.get(p)).filter(Boolean);
     const items = list.map(c => { const o = cleanItem(c); o.photos = full(c); return o; });
     const keys = {}; KEYS_CLOUD.forEach(k => { if(STATE[k] !== undefined) keys[k] = STATE[k]; });
@@ -3133,11 +3248,13 @@ function invStats(){
   const units = L.reduce((s, c) => s + (typeof c.qty === "number" ? c.qty : 0), 0);
   /* v6: les fotos completes no són totes a la memòria; la mida es calcula amb la mitjana de les que s'han obert */
   const phN = phIds().size, seen = [...PHF.values()];
-  const avg = seen.length >= 5 ? seen.reduce((s, u) => s + u.length, 0) / seen.length : PH_AVG;
+  const st = phStat();
+  const avg = st ? st.b / st.n : seen.length >= 5 ? seen.reduce((s, u) => s + u.length, 0) / seen.length : PH_AVG;
   const thBytes = [...PHT.values()].reduce((s, u) => s + u.length, 0);
   const phBytes = phN * avg;
   /* v6.1: les còpies noves no dupliquen fotos; les antigues (v5/v6.0) sí */
-  const bkBytes = BK.reduce((s, b) => s + (b.phRef ? (b.phs || []).length * 24 : (b.nPh || 0) * avg) + (b.nItems || 0) * 700, 0);
+  /* còpies antigues: les fotos van en blocs de fins a 600 KB («_p»), així se'n sap la mida aproximada real */
+  const bkBytes = BK.reduce((s, b) => s + (b.phRef ? (b.phs || []).length * 24 : (b.chunks || []).filter(c => /_p\d+$/.test(c)).length * BK_SIZE * .92) + (b.nItems || 0) * 700, 0);
   const bytes = phBytes + thBytes + tot * 1500 + bkBytes + HIST.length * 1200 + CHAT.length * 200;
   return {
     tot, units,
@@ -3203,9 +3320,9 @@ async function photoShrinkAll(){
   shrinkBusy = true;
   try {
     toast("🔎 Revisant les fotos del núvol…");
-    const all = await cloud.allPhotos();
+    const all = await cloud.allPhotos(); phStatSave(all);
     const big = [...all].filter(([, d]) => d.length > PHOTO_MAX_CHARS * 1.2);
-    if(!big.length){ toast("✓ Totes les fotos ja tenen la mida nova."); return; }
+    if(!big.length){ toast("✓ Totes les fotos ja tenen la mida nova."); if($("cfdlg").open) cfgRender(); return; }
     const before = big.reduce((s, [, d]) => s + d.length, 0);
     if(!confirm("Reduir " + big.length + (big.length === 1 ? " foto" : " fotos") + " (≈ " + mbTxt(before) + " MB)?\n\nEs veuran igual a la web però ocuparan molt menys. Pot trigar una estona: deixa la web oberta.")) return;
     let after = 0, done = 0;
@@ -3213,13 +3330,14 @@ async function photoShrinkAll(){
       const ops = [];
       for(const [id, d] of big.slice(k, k + 10)){
         const nd = await shrinkData(d);
-        if(nd && nd.length < d.length * .9){ ops.push({t:"set", col:"photos", id, data:{d:nd}, fields:["d"]}); after += nd.length; if(PHF.has(id)) phSetFull(id, nd); }
+        if(nd && nd.length < d.length * .9){ ops.push({t:"set", col:"photos", id, data:{d:nd}, fields:["d"]}); after += nd.length; all.set(id, nd); if(PHF.has(id)) phSetFull(id, nd); }
         else after += d.length;
         done++;
       }
       if(ops.length) await cloud.batch(ops);
       toast("🗜️ Reduint fotos… " + done + " / " + big.length);
     }
+    phStatSave(all);
     toast("✓ Fotos reduïdes: " + mbTxt(before) + " MB → " + mbTxt(after) + " MB.");
     if($("cfdlg").open) cfgRender();
   } catch(e){ cloudErr(e); }
@@ -3238,7 +3356,7 @@ async function photoClean(){
   if(!cloudLoaded || itemsCache || !histLoaded){ toast("Espera que s'acabi de carregar tot i torna-ho a provar."); return; }
   toast("🔎 Revisant les fotos del núvol…");
   let all;
-  try { all = await cloud.allPhotos(); } catch(e){ cloudErr(e); return; }
+  try { all = await cloud.allPhotos(); phStatSave(all); } catch(e){ cloudErr(e); return; }
   const dead = orphanPhotos(all) || [];
   orphLast = dead;
   if(!dead.length){ toast("✓ No hi ha cap foto sense ús."); if($("cfdlg").open) cfgRender(); return; }
@@ -3446,10 +3564,10 @@ let FB = null;
 function buildFilters(){
   const box = $("chips"); box.innerHTML = "";
   const mk = (id, cls) => { const b = document.createElement("button"); b.type = "button"; b.id = id; b.className = "fbtn " + cls; box.appendChild(b); return b; };
-  FB = {loc:mk("fLocBtn", "floc"), cat:mk("fCatBtn", "fcat"), rev:mk("fRevBtn", "frev")};
-  FB.loc.setAttribute("aria-haspopup", "true"); FB.cat.setAttribute("aria-haspopup", "true");
-  bindDial(FB.loc, "loc"); bindDial(FB.cat, "cat");
-  FB.rev.onclick = () => { state.review = !state.review; state.cat = "all"; render(); };
+  /* v6.3: el tercer botó (petit) és el filtre de tipus d'article, amb dial. «Revisar» és ara a ⚙️ (configuració bàsica) */
+  FB = {loc:mk("fLocBtn", "floc"), cat:mk("fCatBtn", "fcat"), tip:mk("fTipBtn", "frev ftip")};
+  FB.loc.setAttribute("aria-haspopup", "true"); FB.cat.setAttribute("aria-haspopup", "true"); FB.tip.setAttribute("aria-haspopup", "true");
+  bindDial(FB.loc, "loc"); bindDial(FB.cat, "cat"); bindDial(FB.tip, "tip");
 }
 function renderFilters(){
   if(!FB) buildFilters();
@@ -3472,23 +3590,37 @@ function renderFilters(){
     + '<span class="fn">' + nc + '</span>';
   FB.cat.setAttribute("aria-label", ca ? "Totes les zones. Toca o mantén premut per triar una zona" : "Zona: " + (z ? z.label : "") + ". Toca per treure el filtre");
   FB.cat.title = ca ? "Mantén premut per triar una zona" : "Toca per treure el filtre · mantén premut per canviar";
-  /* revisar */
-  const nr = DATA.filter((c, i) => live(c) && (state.loc === "all" || c.locs.includes(state.loc)) && (!state.q || qHit(i)) && needsReview(c)).length;
-  FB.rev.setAttribute("aria-pressed", String(state.review));
-  FB.rev.innerHTML = '<span class="fic" aria-hidden="true">⚠️</span><span class="fn">' + nr + '</span><small>Revisar</small>';
-  FB.rev.setAttribute("aria-label", "Revisar: " + nr + " articles");
+  /* tipus d'article (botó petit) */
+  const ta = state.tip === "all", nt = ta ? DATA.filter((c, i) => matches(c, i, "tip")).length : DATA.filter((c, i) => matches(c, i)).length;
+  FB.tip.setAttribute("aria-pressed", String(!ta));
+  FB.tip.innerHTML = '<span class="fic" aria-hidden="true">' + (ta ? "🏷️" : typeIco(state.tip)) + '</span><span class="fn">' + nt + '</span><small>' + esc(ta ? "Tipus" : state.tip) + '</small>';
+  FB.tip.setAttribute("aria-label", ta ? "Tipus d'article. Toca o mantén premut per triar-ne un" : "Tipus: " + state.tip + ". Toca per treure el filtre");
+  FB.tip.title = ta ? "Mantén premut per triar un tipus d'article" : "Toca per treure el filtre · mantén premut per canviar";
+}
+/* tipus que hi ha a l'inventari, amb quants articles en té cadascun (els més comuns primer) */
+function typeCounts(filter){
+  const m = new Map();
+  DATA.forEach((c, i) => { if(!filter(c, i)) return; const t = typeOf(c) || "Sense tipus"; m.set(t, (m.get(t) || 0) + 1); });
+  return [...m].sort((a, b) => (a[0] === "Sense tipus") - (b[0] === "Sense tipus") || b[1] - a[1] || a[0].localeCompare(b[0], "ca"));
 }
 
 /* ---------- dial radial: mantén premut i llisca el dit ---------- */
 const DL = {open:false, kind:"", mode:"", items:[], els:[], pos:[], act:-1, S:46, ox:0, oy:0, cx:0, cy:0, R:0, inner:40, multi:false, moved:false, px:null, py:null, hubEl:null, ptrEl:null, btn:null, down:null, timer:0, moving:false};
 function dialItems(kind){
   const TOT = totAll(), out = [];
+  const tipOk = c => state.tip === "all" || (typeOf(c) || "Sense tipus") === state.tip;
+  if(kind === "tip"){
+    const all = new Map(typeCounts(live)), here = new Map(typeCounts((c, i) => matches(c, i, "tip")));
+    out.push({id:"all", icon:"🏷️", label:"Tots els tipus", n:DATA.filter((c, i) => matches(c, i, "tip")).length, g:TOT, p:100, sel:state.tip === "all", all:true});
+    [...all.keys()].forEach(t => { const g = all.get(t); out.push({id:t, icon:t === "Sense tipus" ? "❔" : typeIco(t), label:t, n:here.get(t) || 0, g, p:pctOf(g, TOT), sel:state.tip === t}); });
+    return out;
+  }
   if(kind === "loc"){
-    const base = (c, i) => live(c) && (!state.review || needsReview(c)) && (state.cat === "all" || catsOf(c).includes(state.cat)) && (!state.q || qHit(i));
+    const base = (c, i) => live(c) && tipOk(c) && (!state.review || needsReview(c)) && (state.cat === "all" || catsOf(c).includes(state.cat)) && (!state.q || qHit(i));
     out.push({id:"all", ik:"globe", label:"Tot el món", n:DATA.filter((c, i) => base(c, i)).length, g:TOT, p:100, sel:state.loc === "all", all:true});
     LOCS.forEach(l => { const g = totLoc(l); out.push({id:l, ik:locIconKey(l), label:l, n:DATA.filter((c, i) => base(c, i) && c.locs.includes(l)).length, g, p:pctOf(g, TOT), sel:state.loc === l, house:l === HOUSE}); });
   } else {
-    const base = (c, i) => live(c) && (state.loc === "all" || c.locs.includes(state.loc)) && (!state.q || qHit(i));
+    const base = (c, i) => live(c) && tipOk(c) && (state.loc === "all" || c.locs.includes(state.loc)) && (!state.q || qHit(i));
     out.push({id:"all", icon:"📦", label:"Totes", n:DATA.filter((c, i) => base(c, i)).length, g:TOT, p:100, sel:state.cat === "all" && !state.review, all:true});
     CATS.forEach(z => { const g = totCat(z.id); out.push({id:z.id, icon:z.icon, label:z.label, n:DATA.filter((c, i) => base(c, i) && catsOf(c).includes(z.id)).length, g, p:pctOf(g, TOT), sel:!state.review && state.cat === z.id}); });
   }
@@ -3540,7 +3672,7 @@ function dialHub(i, sticky){
   const h = DL.hubEl; if(!h) return;
   if(i < 0 || !DL.items[i]){
     h.className = "dhub hint";
-    h.innerHTML = '<div class="hi1">' + (DL.kind === "loc" ? locIconSvg("globe", 34) : "📦") + '</div><b>' + (DL.mode === "sticky" || sticky ? "Toca una opció" : "Llisca i deixa anar") + '</b><small>' + (DL.kind === "loc" ? "Filtra per ubicació" : "Filtra per zona") + '</small>';
+    h.innerHTML = '<div class="hi1">' + (DL.kind === "loc" ? locIconSvg("globe", 34) : DL.kind === "tip" ? "🏷️" : "📦") + '</div><b>' + (DL.mode === "sticky" || sticky ? "Toca una opció" : "Llisca i deixa anar") + '</b><small>' + (DL.kind === "loc" ? "Filtra per ubicació" : DL.kind === "tip" ? "Filtra per tipus" : "Filtra per zona") + '</small>';
     return;
   }
   const it = DL.items[i];
@@ -3637,7 +3769,7 @@ function dialKey(e){ if(e.key === "Escape" && DL.open){ e.preventDefault(); e.st
 function dialChoose(i){
   const it = DL.items[i], kind = DL.kind; if(!it) return;
   dialClose();
-  if(kind === "loc") state.loc = it.id; else { state.cat = it.id; state.review = false; }
+  if(kind === "loc") state.loc = it.id; else if(kind === "tip") state.tip = it.id; else { state.cat = it.id; state.review = false; }
   render();
   if(cfgGet("dialVib")) vib(14);
 }
@@ -3654,8 +3786,8 @@ function dialClose(){
   DL.down = null; DL.els = []; DL.hubEl = null; eatNextClick();
 }
 function dialTap(kind, btn, fromKey){
-  const active = kind === "loc" ? state.loc !== "all" : state.cat !== "all";
-  if(active){ if(kind === "loc") state.loc = "all"; else state.cat = "all"; render(); return; }
+  const active = kind === "loc" ? state.loc !== "all" : kind === "tip" ? state.tip !== "all" : state.cat !== "all";
+  if(active){ if(kind === "loc") state.loc = "all"; else if(kind === "tip") state.tip = "all"; else state.cat = "all"; render(); return; }
   if(cfgGet("dialTap") || fromKey) dialOpen(kind, btn, "sticky", null, null, fromKey);
 }
 function bindDial(btn, kind){
@@ -4026,8 +4158,14 @@ function dashHtml(d){
   h += sec("usuaris", "Usuaris", dsSec("usuaris", "👥", "Qui fa què", "Articles creats, canvis fets i missatges al xat.", '<div class="dsgrid u">' + U.list.map(u => '<div class="dcard"><div class="dsusr"><div class="av ' + u.name.toLowerCase() + '">' + esc(u.name) + '</div><div class="ut"><div class="nm"><b>' + esc(u.who) + '</b><small>Última activitat: ' + esc(when(u.last)) + '</small></div>'
     + '<div class="dsbar"><i style="--w:' + dsP(u.cr, maxcr) + '%"></i></div><div class="st"><div><b class="cu" data-v="' + u.cr + '">' + u.cr + '</b><small>articles creats</small></div><div><b class="cu" data-v="' + u.ch + '">' + u.ch + '</b><small>canvis</small></div><div><b class="cu" data-v="' + u.msgs + '">' + u.msgs + '</b><small>missatges</small></div></div></div></div></div>').join("")
     + '</div>' + (U.unk ? '<p class="ds-n" style="margin-top:8px">' + U.unk + ' articles anteriors no tenen autor registrat. A partir d\'ara es guarda qui crea cada article.</p>' : '')));
+  /* v6.3: tipus d'article */
+  const tc = typeCounts(live), tTop = tc.slice(0, 11), tRest = tc.slice(11).reduce((s, x) => s + x[1], 0);
+  const dt = tTop.map((x, k) => ({n:x[1], col:x[0] === "Sense tipus" ? "#555" : DSC[k % DSC.length], label:(x[0] === "Sense tipus" ? "❔" : typeIco(x[0])) + " " + x[0]})).concat(tRest ? [{n:tRest, col:"#888", label:"Altres tipus"}] : []);
+  h += sec("tipus", "Tipus", dsSec("tipus", "🏷️", "Tipus d'article", "Es dedueix del nom de cada article (o el que hi posis a mà). Toca'n un per filtrar.",
+    '<div class="dsgrid w"><div class="dcard"><div class="dl">Distribució</div><div class="dsdon">' + dsDonut(dt, tc.length, tc.length === 1 ? "tipus" : "tipus") + leg(dt) + '</div></div>'
+    + '<div class="dslist">' + tc.map(([t, n]) => '<button type="button" class="dsitem" data-a="tip" data-v="' + esc(t) + '"><span class="th">' + (t === "Sense tipus" ? "❔" : typeIco(t)) + '</span><span class="tx"><b>' + esc(t) + '</b><small>' + dsP(n, tot) + '% de l\'inventari · ' + dsN(d.L.filter(c => (typeOf(c) || "Sense tipus") === t).reduce((s, c) => s + dsU(c), 0)) + ' unitats</small></span><span class="rk">' + n + '</span></button>').join("") + '</div></div>'));
   /* estat */
-  const seg = (a, cols) => '<div class="dsbar">' + a.map((n, i) => '<i style="--w:' + dsP(n, tot) + '%;background:' + cols[i] + '"></i>').join("") + '</div>';
+  const seg =(a, cols) => '<div class="dsbar">' + a.map((n, i) => '<i style="--w:' + dsP(n, tot) + '%;background:' + cols[i] + '"></i>').join("") + '</div>';
   h += sec("estat", "Estat", dsSec("estat", "🩺", "Estat de l'inventari", "", '<div class="dsgrid w"><div class="dcard"><div class="dl">Verificació</div>' + seg([d.st.ok, d.st.conf, d.st.sin], ["#7ef0c4", "#ffd166", "#ff8a7a"])
     + '<div class="row2"><span>Verificat <b>' + d.st.ok + '</b></span><span>Per confirmar <b>' + d.st.conf + '</b></span><span>Sense foto <b>' + d.st.sin + '</b></span></div></div>'
     + '<div class="dcard"><div class="dl">Fiabilitat de la informació</div>' + seg([d.fi.alta, d.fi.mitjana, d.fi.baixa], ["#4fe3d2", "#ffd166", "#ff8a7a"])
@@ -4098,6 +4236,7 @@ function dashAct(t){
   if(a === "loc") dashGo(t.dataset.v, null);
   else if(a === "cat") dashGo(null, t.dataset.v);
   else if(a === "cell") dashGo(t.dataset.l, t.dataset.z);
+  else if(a === "tip"){ dashGo(null, null); state.tip = t.dataset.v; render(); }
   else if(a === "item"){ const i = +t.dataset.v; dashClose(); if(!order.includes(i)) resetFilters(); openDlg(i); }
   else if(a === "confh") fxHouse(null, true);
 }
@@ -4204,12 +4343,15 @@ function rFilter(nt, t0){
   if(!/^(filtra|filtre|mostra|ensenya|veure|vull veure|ves a|anem a|obre)\b/.test(nt)) return false;
   if(/ajust|configuraci|dashboard|estadistiq|copia|resum|vista|xat|historial|desfes/.test(nt)) return false;
   const {L, C} = rNames(), fl = rFind(t0, L), fz = rFind(t0, C);
-  if(!fl && !fz) return false;
+  /* v6.3: també per tipus d'article («filtra per alcohol») */
+  const ft = rFind(t0, typeCounts(live).map(([t]) => ({id:t, label:t, n:norm(t)})));
+  if(!fl && !fz && !ft) return false;
   resetFilters();
   if(fl) state.loc = fl.x.id;
   if(fz) state.cat = fz.x.id;
+  if(ft) state.tip = ft.x.id;
   render(); scrollTo({top:0, behavior:"auto"});
-  rMsg("bot", "✓ Filtre aplicat: " + [fl ? "📍 " + fl.x.label : "", fz ? "🏠 " + fz.x.label : ""].filter(Boolean).join(" · ") + ".");
+  rMsg("bot", "✓ Filtre aplicat: " + [fl ? "📍 " + fl.x.label : "", fz ? "🏠 " + fz.x.label : "", ft ? typeIco(ft.x.id) + " " + ft.x.label : ""].filter(Boolean).join(" · ") + ".");
   return true;
 }
 
@@ -4400,7 +4542,7 @@ function mpBack(){ const c = $("mpBody").firstElementChild; if(c) $("fHold").app
 $("fLocsBtn").onclick = () => mpOpen("loc");
 $("fCatsBtn").onclick = () => mpOpen("cat");
 $("mpOk").onclick = () => $("mpdlg").close();
-$("mpNone").onclick = () => { $("mpBody").querySelectorAll("input:checked").forEach(i => { i.checked = false; }); pkUpdate(); };
+$("mpNone").onclick = () => { $("mpBody").querySelectorAll("input:checked").forEach(i => { i.checked = false; }); pkUpdate(); $("mpdlg").close(); };
 $("mpdlg").addEventListener("close", mpBack);
 ["fLocs2", "fCats2"].forEach(id => $(id).addEventListener("change", pkUpdate));
 pkUpdate();
@@ -4533,6 +4675,176 @@ function openFromParam(){
 }
 const __cloudItems60 = cloudItems;
 cloudItems = function(d, m){ __cloudItems60(d, m); if(openParam) setTimeout(openFromParam, 300); };
+
+/* =====================================================================
+   v6.2 · 🎤 Assistents per veu, en català
+   - Escolta amb el reconeixement de veu del navegador (Chrome/Android i Safari/iPhone) en català (ca-ES).
+   - Respon en veu alta si el dispositiu té una veu catalana; si no, només amb text.
+   - Si li parles (o escrius) en castellà, et contesta «A mi parla'm en català».
+   - Ajust «aiMode»: 0 = només text · 1 = només veu · 2 = les dues coses.
+   ===================================================================== */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const TTS = "speechSynthesis" in window;
+const aiModeV = () => cfgGet("aiMode");
+let recog = null, recFor = "", caVoice = null;
+const voiceTurn = {ai:false, r:false};
+function voicePick(){ try { const vs = speechSynthesis.getVoices(); caVoice = vs.find(v => /^ca([-_]|$)/i.test(v.lang)) || null; } catch(e){ caVoice = null; } }
+if(TTS){ voicePick(); try { speechSynthesis.addEventListener("voiceschanged", voicePick); } catch(e){} }
+function voiceInfo(){
+  return (SR ? "🎤 Aquest navegador pot escoltar. " : "⚠️ Aquest navegador no pot escoltar (prova amb Chrome o Safari). ")
+    + (caVoice ? "🔊 Té veu catalana per respondre." : "🔇 No té cap veu catalana instal·lada: les respostes seran només text (a Android: Ajustos → Text a veu → instal·la el català).");
+}
+/* diu el text en veu alta, només si hi ha veu catalana i l'ajust ho permet */
+function say(text){
+  if(!TTS || aiModeV() === 0 || !caVoice) return false;
+  const t = String(text).replace(/\p{Extended_Pictographic}|️|‍/gu, "").replace(/[•·→]/g, ",").replace(/\n+/g, ". ").replace(/\s+/g, " ").trim();
+  if(!t) return false;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t.length > 420 ? t.slice(0, t.lastIndexOf(" ", 420)) + "…" : t);
+    u.voice = caVoice; u.lang = caVoice.lang; u.rate = 1.03;
+    speechSynthesis.speak(u); return true;
+  } catch(e){ return false; }
+}
+/* ---- castellà o català? es compten paraules que només són d'una de les dues llengües ---- */
+const ES_ONLY = new Set("donde cuantos cuantas cuanto tengo tenemos tienes hay quiero puedes dime pon pones anade borra quita mueve cocina bano habitacion salon los las con por favor gracias buenos buenas ahora tambien muy esto eso cual como cuando nuevo nueva articulo articulos cosas falta faltan necesito encuentra eres hazme".split(" "));
+const CA_ONLY = new Set("on quants quantes tinc tenim tens hi vull pots digues posa afegeix treu mou cuina bany habitacio els les amb per gracies bon ara tambe molt aixo aquest aquesta quin quina com quan nou nova article articles coses necessito troba ets fes".split(" "));
+function isSpanish(text){
+  const ws = norm(text).replace(/[^a-zñ ]/g, " ").split(/\s+/).filter(Boolean);
+  if(ws.length < 2) return false;
+  let es = 0, ca = 0;
+  ws.forEach(w => { if(ES_ONLY.has(w.replace(/ñ/g, "n")) && !CA_ONLY.has(w)) es++; else if(CA_ONLY.has(w) && !ES_ONLY.has(w)) ca++; });
+  return es >= 2 ? es > ca : (es === 1 && ca === 0 && (/ñ/i.test(text) || /\b(hay|donde|tengo|cuantos|cuantas|quiero|los|las|con|muy|anade|necesito|ahora)\b/.test(norm(text))));
+}
+const ES_REPLY = "A mi parla'm en català, si us plau. 😉";
+/* ---- micròfon ---- */
+function micApply(){
+  const m = aiModeV();
+  document.querySelectorAll(".aimic").forEach(b => { b.hidden = !SR || m === 0; });
+  [["aiIn", "aiSend"], ["rIn", "rSend"]].forEach(([i, s]) => {
+    const only = m === 1 && !!SR;
+    $(i).readOnly = only; $(i).placeholder = only ? "Toca el micròfon i parla…" : $(i).dataset.ph || $(i).placeholder;
+    $(s).hidden = only;
+  });
+}
+["aiIn", "rIn"].forEach(i => { $(i).dataset.ph = $(i).placeholder; });
+function micStop(){
+  if(recog){ const r = recog; recog = null; try { r.abort(); } catch(_){} }
+  document.querySelectorAll(".aimic.on").forEach(b => b.classList.remove("on"));
+}
+function micStart(which){
+  if(!SR){ toast("🎤 Aquest navegador no pot escoltar. Prova amb Chrome o Safari."); return; }
+  if(recog){ const was = recFor; micStop(); if(was === which) return; }
+  if(TTS) try { speechSynthesis.cancel(); } catch(_){}
+  if(typeof walleStop === "function") walleStop();
+  const r = new SR(), inp = $(which === "ai" ? "aiIn" : "rIn"), btn = document.querySelector('.aimic[data-for="' + which + '"]');
+  r.lang = "ca-ES"; r.interimResults = true; r.maxAlternatives = 1; r.continuous = false;
+  recog = r; recFor = which; btn.classList.add("on");
+  let final = "";
+  r.onresult = e => { let txt = ""; for(const res of e.results){ txt += res[0].transcript; if(res.isFinal) final = txt; } inp.value = txt; };
+  r.onerror = e => {
+    if(e.error === "not-allowed" || e.error === "service-not-allowed") toast("🎤 Cal donar permís al micròfon al navegador.");
+    else if(e.error === "no-speech") toast("🎤 No t'he sentit. Toca el micròfon i torna-ho a provar.");
+    else if(e.error === "network") toast("🎤 El reconeixement de veu necessita connexió a internet.");
+    else if(e.error !== "aborted") toast("🎤 Error del micròfon (" + e.error + ").");
+  };
+  r.onend = () => {
+    btn.classList.remove("on");
+    if(recog !== r) return;
+    recog = null;
+    const q = (final || inp.value).trim(); inp.value = "";
+    if(q) (which === "ai" ? aiAsk : rAsk)(q, true);
+  };
+  try { r.start(); } catch(e){ micStop(); toast("🎤 No s'ha pogut obrir el micròfon."); }
+}
+document.addEventListener("click", e => { const b = e.target.closest(".aimic"); if(b){ e.preventDefault(); micStart(b.dataset.for); } });
+/* ---- els assistents: castellà, confirmació per veu i respostes en veu ---- */
+const __aiMsg62 = aiMsg;
+aiMsg = function(kind, text){ const d = __aiMsg62(kind, text); if(kind === "bot" && (voiceTurn.ai || aiModeV() === 1)) say(text); return d; };
+const __rMsg62 = rMsg;
+rMsg = function(kind, text){ const d = __rMsg62(kind, text); if(kind === "bot" && (voiceTurn.r || aiModeV() === 1)) say(text); return d; };
+const __aiAsk62 = aiAsk;
+aiAsk = function(text, byVoice){
+  voiceTurn.ai = !!byVoice;
+  if(isSpanish(text)){ __aiMsg62("me", text); aiMsg("bot", ES_REPLY); return; }
+  __aiAsk62(text);
+};
+const __rAsk62 = rAsk;
+rAsk = function(text, byVoice){
+  voiceTurn.r = !!byVoice;
+  /* «sí» / «no» responen la darrera pregunta de confirmació que encara està oberta */
+  const box = [...$("rMsgs").querySelectorAll(".rconf")].pop(), open = box && !box.querySelector("button").disabled;
+  const n = norm(text).replace(/[^a-z' ]/g, " ").trim();
+  if(open && /^(si|confirma|confirmo|d'acord|dacord|endavant|fes-ho|fes ho|vale|ok|correcte)\b/.test(n)){ __rMsg62("me", text); box.querySelector(".rok").click(); return; }
+  if(open && /^(no|cancel|cancela|deixa-ho|deixa ho|para)\b/.test(n)){ __rMsg62("me", text); box.querySelector(".rno").click(); return; }
+  if(isSpanish(text)){ __rMsg62("me", text); rMsg("bot", ES_REPLY); return; }
+  __rAsk62(text);
+};
+$("cfBody").addEventListener("click", e => {
+  if(!e.target.closest("#vTest")) return;
+  if(!caVoice){ toast("🔇 Aquest dispositiu no té cap veu catalana. Les respostes seran només text."); return; }
+  const m = aiModeV(); if(m === 0){ toast("Ara els assistents estan en mode només text (0)."); return; }
+  say("Hola! Sóc l'assistent de l'inventari. Pregunta'm on és una cosa.");
+});
+const __cfgApply62 = cfgApply;
+cfgApply = function(){ __cfgApply62(); micApply(); };
+micApply();
+/* en tancar els panells, s'atura el micròfon i la veu */
+const __aiOpen62 = aiOpen;
+aiOpen = function(open){ if(!open){ micStop(); if(TTS) try { speechSynthesis.cancel(); } catch(_){} } __aiOpen62(open); };
+const __adminClose62 = adminClose;
+adminClose = function(){ micStop(); if(TTS) try { speechSynthesis.cancel(); } catch(_){} __adminClose62(); };
+$("rClose").onclick = () => adminClose();
+
+/* =====================================================================
+   v6.3 · ⚙️ Configuració bàsica (un toc al botó d'ajustos)
+   La configuració avançada (vermella) continua amagada: 3 tocs al botó fan girar la moneda i el 4t l'obre.
+   ===================================================================== */
+function basicOpen(){
+  if(!cloudUser){ toast("Cal iniciar sessió."); return; }
+  basicRender(); $("basdlg").showModal();
+}
+function basicRender(){
+  const seg = (k, opts, cur) => '<div class="bseg" role="group">' + opts.map(([v, l]) => '<button type="button" data-k="' + k + '" data-v="' + v + '" aria-pressed="' + (String(v) === String(cur)) + '">' + l + '</button>').join("") + '</div>';
+  const sec = (ico, title, note, body) => '<section class="bsec"><h3><span aria-hidden="true">' + ico + '</span>' + title + '</h3>' + (note ? '<p class="bnote">' + note + '</p>' : '') + body + '</section>';
+  const nr = DATA.filter(c => live(c) && needsReview(c)).length;
+  const th = themeVals();
+  let h = "";
+  h += sec("⚠️", "Revisar", nr ? nr + (nr === 1 ? " article té" : " articles tenen") + " alguna cosa per revisar (sense foto, quantitat per confirmar…)." : "Cap article per revisar. 👍",
+    '<button type="button" class="bbig' + (state.review ? ' on' : '') + '" data-k="review"' + (nr || state.review ? '' : ' disabled') + '>' + (state.review ? "✕ Treu el filtre «Revisar»" : "🔎 Mostra només els " + nr + " per revisar") + '</button>');
+  h += sec("👁️", "Vista", "Només en aquest dispositiu.", seg("view", [["grid", "▦ Imatges"], ["list", "☰ Llista"], ["check", "☑ Check"]], view));
+  h += sec("↕️", "Ordre dels articles", "Els NEW sempre surten a dalt.", seg("cfg:sortMode", [[0, "Original"], [1, "Nom A→Z"], [2, "Més recents"]], cfgGet("sortMode")));
+  h += sec("🔢", "Articles per fila (mòbil)", "", seg("cfg:cols", [[2, "2"], [3, "3"], [4, "4"], [5, "5"]], cfgGet("cols")));
+  h += sec("🎨", "Color", "Per a tots dos.", '<div class="thpre">' + Object.keys(THEME_PRESETS).map(id => '<button type="button" class="thsw" data-k="theme" data-v="' + id + '" title="' + THEME_PRESETS[id].name + '" aria-label="Tema ' + THEME_PRESETS[id].name + '" aria-pressed="' + (th.accent === THEME_PRESETS[id].accent) + '" style="--sw:' + THEME_PRESETS[id].accent + '"></button>').join("") + '</div>');
+  h += sec("🆕", "Cartell NEW als articles nous", "", seg("cfg:newDays", [[0, "No"], [3, "3 dies"], [7, "7 dies"], [14, "14 dies"]], cfgGet("newDays")));
+  h += sec("↶", "Desfés guarda els canvis", "En caducar, s'esborren també les fotos dels articles eliminats.", seg("cfg:histDays", [[1, "1 dia"], [3, "3 dies"], [7, "7 dies"], [30, "30 dies"]], cfgGet("histDays")));
+  h += sec("🎤", "Assistents", SR ? (caVoice ? "Escolten i responen en català." : "Escolten en català. Aquest dispositiu no té veu catalana: responen amb text.") : "Aquest navegador no pot escoltar: només text.",
+    seg("cfg:aiMode", [[0, "⌨️ Text"], [1, "🎤 Veu"], [2, "Tots dos"]], cfgGet("aiMode")));
+  h += sec("🎉", "Efectes i sons", "", '<div class="brow"><span>Confeti en crear articles</span>' + seg("cfg:fxOn", [[1, "Sí"], [0, "No"]], cfgGet("fxOn")) + '</div>'
+    + '<div class="brow"><span>So dels missatges del xat</span>' + seg("cfg:chatVol", [[60, "Sí"], [0, "No"]], cfgGet("chatVol") > 0 ? 60 : 0) + '</div>'
+    + '<div class="brow"><span>Veu de WALL-E</span>' + seg("cfg:wvol", [[60, "Sí"], [0, "No"]], cfgGet("wvol") > 0 ? 60 : 0) + '</div>');
+  h += sec("🧰", "Més", "", '<div class="bacts">'
+    + (isStandalone() ? '' : '<button type="button" class="bbig" data-k="install">📲 Instal·la l\'app</button>')
+    + '<button type="button" class="bbig" data-k="backup">💾 Còpies de seguretat</button>'
+    + '<button type="button" class="bbig" data-k="cloud">☁️ Núvol, exportar i sessió</button></div>');
+  $("basSub").textContent = (cloudUser ? whoName(cloudUser.email) + " · " : "") + "v" + APP_VER;
+  const st = $("basBody").scrollTop; $("basBody").innerHTML = h; $("basBody").scrollTop = st;
+}
+$("basClose").onclick = () => $("basdlg").close();
+$("basBody").addEventListener("click", e => {
+  const b = e.target.closest("[data-k]"); if(!b || b.disabled) return;
+  const k = b.dataset.k, v = b.dataset.v;
+  if(k === "review"){ state.review = !state.review; state.cat = "all"; $("basdlg").close(); render(); scrollTo({top:0, behavior:"auto"}); return; }
+  if(k === "view"){ setView(v); }
+  else if(k.startsWith("cfg:")){ const n = k.slice(4), val = +v; if(cfgGet(n) !== val) cfgCommit(c => { c[n] = val; }); }
+  else if(k === "theme"){ const p = THEME_PRESETS[v]; const err = p && themeCommit({accent:p.accent, bg:p.bg}); if(err) toast("⚠️ " + err); }
+  else if(k === "install"){ $("basdlg").close(); $("instBtn").click(); return; }
+  else if(k === "backup"){ $("basdlg").close(); bkRender(); bkLock(); $("bkdlg").showModal(); return; }
+  else if(k === "cloud"){ $("basdlg").close(); $("saveBtn").click(); return; }
+  basicRender();
+});
+const __cfgApply63 = cfgApply;
+cfgApply = function(){ __cfgApply63(); if($("basdlg").open) basicRender(); };
 
 /* ---- v6.0.1 · 📲 botó per instal·lar l'inventari com una app (només surt si encara no ho està) ---- */
 let instEvt = null;
