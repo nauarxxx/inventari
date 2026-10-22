@@ -76,7 +76,7 @@ const PHT = new Map();        /* id -> miniatura (data URL, la que es desa) */
 const PHB = new Map();        /* id -> miniatura en blob: URL curta per pintar les targetes */
 const THUMB_OF = new Map();   /* foto completa nova -> la seva miniatura (es fa en reduir-la) */
 const PHF_MAX = 60;           /* fotos completes que es guarden a la memòria */
-const THUMB_PX = 320, THUMB_Q = .62;
+const THUMB_PX = 260, THUMB_Q = .55;   /* ~7 KB per miniatura */
 function phHold(id){
   const u = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3"><!--' + id + '--><rect width="4" height="3" fill="#181818"/></svg>');
   PHR.set(u, id); return u;
@@ -186,8 +186,8 @@ const count = (skip, extra) => DATA.filter((c,i)=>matches(c,i,skip) && extra(c))
 const totAll = () => DATA.filter(live).length;
 const pctOf = (n, tot) => (!tot || !n) ? 0 : Math.max(1, Math.min(100, Math.round(n / tot * 100)));
 /* v3.3: valors per defecte (els de la v3.2) i límits dels ajustos */
-const CFGD = {fxOn:1, fxN:160, fxT:3500, fxPal:0, fxVol:0, houseOn:1, houseShow:1, houseN:420, houseT:7000, houseR:34, houseBan:1, dialHold:350, dialS:46, dialR:140, dialMax:175, dialTap:1, dialVib:1, dashOn:1, dashDays:14, dashTop:5, dashAnim:1, sortMode:0, lph:76, rad:14, aiwait:450, smartbar:1, vib:0, toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:3, hold:1000, dbl:600, tap:1200, histMax:100, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
-const CFGR = {fxOn:[0, 1], fxN:[20, 600], fxT:[1000, 12000], fxPal:[0, 3], fxVol:[0, 100], houseOn:[0, 1], houseShow:[0, 1], houseN:[50, 900], houseT:[2000, 15000], houseR:[0, 80], houseBan:[0, 1], dialHold:[150, 1500], dialS:[34, 64], dialR:[90, 220], dialMax:[110, 260], dialTap:[0, 1], dialVib:[0, 1], dashOn:[0, 1], dashDays:[7, 60], dashTop:[3, 15], dashAnim:[0, 1], sortMode:[0, 2], lph:[40, 120], rad:[4, 28], aiwait:[200, 1000], smartbar:[0, 1], vib:[0, 1], toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
+const CFGD = {fxOn:1, fxN:160, fxT:3500, fxPal:0, fxVol:0, houseOn:1, houseShow:1, houseN:420, houseT:7000, houseR:34, houseBan:1, dialHold:350, dialS:46, dialR:140, dialMax:175, dialTap:1, dialVib:1, dashOn:1, dashDays:14, dashTop:5, dashAnim:1, sortMode:0, lph:76, rad:14, aiwait:450, smartbar:1, vib:0, toast:4500, coin:3000, cardmin:205, chatVol:0, newDays:3, hold:1000, dbl:600, tap:1200, histMax:100, histDays:3, chatMax:300, bkMax:15, bkAuto:0, cols:3, wvol:60, wgap:2000, wver:1};
+const CFGR = {fxOn:[0, 1], fxN:[20, 600], fxT:[1000, 12000], fxPal:[0, 3], fxVol:[0, 100], houseOn:[0, 1], houseShow:[0, 1], houseN:[50, 900], houseT:[2000, 15000], houseR:[0, 80], houseBan:[0, 1], dialHold:[150, 1500], dialS:[34, 64], dialR:[90, 220], dialMax:[110, 260], dialTap:[0, 1], dialVib:[0, 1], dashOn:[0, 1], dashDays:[7, 60], dashTop:[3, 15], dashAnim:[0, 1], sortMode:[0, 2], lph:[40, 120], rad:[4, 28], aiwait:[200, 1000], smartbar:[0, 1], vib:[0, 1], toast:[2000, 15000], coin:[1000, 10000], cardmin:[140, 400], chatVol:[0, 100], newDays:[0, 60], hold:[300, 5000], dbl:[200, 3000], tap:[400, 3000], histMax:[10, 500], histDays:[1, 90], chatMax:[50, 1000], bkMax:[1, 50], bkAuto:[0, 60], cols:[2, 6], wvol:[0, 100], wgap:[500, 10000], wver:[1, 999]};
 function cfgRaw(){ const c = typeof STATE !== "undefined" ? STATE.inv_cfg : null; return c && typeof c === "object" && !Array.isArray(c) ? c : {}; }
 function cfgGet(k){ const v = cfgRaw()[k]; return typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] ? v : CFGD[k]; }
 const totLoc = l => DATA.filter(c => live(c) && c.locs.includes(l)).length;
@@ -510,8 +510,9 @@ function openForm(catId, name, key){
 /* v3.8: es pot pujar QUALSEVOL foto (càmera del mòbil, galeria o captura de pantalla, PNG o JPG, de qualsevol mida).
    Es redueix sola, sense que calgui configurar res, perquè càpiga al núvol (Firestore: menys d'1 MB per document).
    Es prova la millor qualitat primer i es va baixant només si cal. */
-const PHOTO_MAX_CHARS = 800000;
-const PHOTO_TIERS = [[8000, 5e6, .88], [6000, 4e6, .85], [4000, 3e6, .8], [3000, 2e6, .75], [2000, 1.3e6, .68], [1400, .8e6, .6], [1000, .5e6, .55], [700, .3e6, .5], [500, .2e6, .45], [320, .1e6, .4]];
+/* v6.1: fotes d'inventari, no de galeria: ~100 KB cadascuna (abans fins a 800 KB). Així hi caben milers al pla gratuït (1 GB). */
+const PHOTO_MAX_CHARS = 140000;
+const PHOTO_TIERS = [[1280, 1.3e6, .72], [1280, 1.3e6, .62], [1024, .8e6, .62], [900, .6e6, .58], [720, .4e6, .55], [560, .25e6, .5], [400, .14e6, .45]];
 function photoJpeg(src, sw, sh){
   const longest = Math.max(sw, sh), area = sw * sh;
   const draw = (w, h, q) => {
@@ -1647,9 +1648,9 @@ $("impIn").onchange = async e => {
   importing = true;
   try {
     impShow("Preparant…", 0);
-    const ops = [], old = await cloud.allPhotos();
+    /* les fotos antigues no s'esborren aquí (les poden fer servir les còpies): ho fa «Neteja les fotos sense ús» */
+    const ops = [];
     [...RAW.keys()].forEach(id => ops.push({t:"del", col:"items", id}));
-    [...old.keys()].forEach(id => ops.push({t:"del", col:"photos", id}));
     HIST.forEach(h => ops.push({t:"del", col:"hist", id:h.id}));
     for(let k = 0; k < pk.items.length; k++){
       impShow("Preparant les fotos… " + (k + 1) + " / " + pk.items.length, .3 * k / pk.items.length);
@@ -1848,21 +1849,37 @@ async function histUndo(h){
 /* Les fotos que ja no fa servir cap article ni cap canvi de l'historial s'esborren.
    v6: només es miren les fotos dels canvis que surten de l'historial (no cal baixar-les totes). */
 const histPh = list => { const s = new Set(); list.forEach(h => (h.parts || []).forEach(p => { if(p.k === "item") [p.before, p.after].forEach(o => o && (o.ph || []).forEach(x => s.add(x))); })); return s; };
-function histGC(keep, old){
-  if(!window.cloud || !cloudLoaded || itemsCache || !histLoaded || importing) return;
-  const ref = histPh(keep);
+/* v6.1: fotos que fan servir les còpies de seguretat noves (les còpies ja no dupliquen les fotos) */
+const bkPh = () => { const s = new Set(); BK.forEach(b => (b.phs || []).forEach(x => s.add(x))); return s; };
+/* tot el que encara necessita una foto: articles, historial, còpies i canvis per desar */
+function phRefs(keep){
+  const ref = histPh(keep || HIST);
   phIds().forEach(x => ref.add(x));
+  bkPh().forEach(x => ref.add(x));
   DATA.forEach(c => (c._ph || []).forEach(x => ref.add(x)));
-  const dead = [...histPh(old)].filter(x => !ref.has(x));
+  if(HG) HG.parts.forEach(p => { if(p.k === "item") [p.before, p.after].forEach(o => o && (o.ph || []).forEach(x => ref.add(x))); });
+  return ref;
+}
+/* esborra les fotos candidates que ja no necessita ningú */
+function photoGC(cands, keep){
+  if(!window.cloud || !cloudLoaded || itemsCache || !histLoaded || !bkLoaded || importing || bkBusy) return;
+  const ref = phRefs(keep);
+  const dead = [...cands].filter(x => !ref.has(x));
   if(dead.length) cloud.batch(dead.map(id => ({t:"del", col:"photos", id}))).catch(() => {});
+}
+function histGC(keep, old){ photoGC(histPh(old), keep); }
+/* v6.1: ↶ Desfés guarda els canvis dels últims N dies (per defecte 3) i com a màxim histMax */
+function histTrim(){
+  if(!histLoaded || importing || !window.cloud || !cloudUser) return;
+  const lim = Date.now() - cfgGet("histDays") * 864e5;
+  const keep = HIST.filter((h, i) => i < HIST_MAX && (h.ts || 0) >= lim), old = HIST.filter(h => !keep.includes(h));
+  if(!old.length) return;
+  cloud.batch(old.map(h => ({t:"del", col:"hist", id:h.id}))).then(() => histGC(keep, old)).catch(() => {});
 }
 function cloudHist(docs){
   HIST = docs.filter(h => h && Array.isArray(h.parts)).sort((a, b) => (b.ts || 0) - (a.ts || 0));
   histLoaded = true;
-  if(HIST.length > HIST_MAX && !importing){
-    const keep = HIST.slice(0, HIST_MAX), old = HIST.slice(HIST_MAX);
-    cloud.batch(old.map(h => ({t:"del", col:"hist", id:h.id}))).then(() => histGC(keep, old)).catch(() => {});
-  }
+  clearTimeout(cloudHist.t); cloudHist.t = setTimeout(histTrim, 1500);
   histBadge();
   if($("hdlg").open) histRender();
 }
@@ -1877,7 +1894,7 @@ let dayT = 0;
 function histDayTimer(){   /* a mitjanit el número torna a 0 */
   clearTimeout(dayT);
   const n = new Date(), next = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1, 0, 0, 2);
-  dayT = setTimeout(() => { histBadge(); histDayTimer(); }, Math.max(1000, next - n));
+  dayT = setTimeout(() => { histBadge(); histTrim(); histDayTimer(); }, Math.max(1000, next - n));
 }
 histDayTimer();
 document.addEventListener("visibilitychange", () => { if(!document.hidden) histBadge(); });
@@ -2112,7 +2129,7 @@ chatBadge();
    Els ajustos es desen a Firestore (meta/state · camp inv_cfg) i surten a ↶ Desfés.
    ===================================================================== */
 let CHAT_MAX = 300;
-const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «NEW»", sortMode:"Ordre dels articles", lph:"Foto a la vista llista", rad:"Cantonades arrodonides", aiwait:"Espera del toc simple a l'assistent", smartbar:"Barra de cerca intel·ligent", vib:"Vibració en tocar", fxOn:"Confeti en crear", fxN:"Quantitat de confeti", fxT:"Durada del confeti", fxPal:"Colors del confeti", fxVol:"So de la celebració", houseOn:"Celebració de Nau&Noa House", houseShow:"Mostra sempre Nau&Noa House", houseN:"Confeti de la casa", houseT:"Durada de la celebració de la casa", houseR:"Cintes de la casa", houseBan:"Cartell de la casa", dialHold:"Temps per obrir el dial", dialS:"Mida dels botons del dial", dialR:"Radi del dial", dialMax:"Ampliació màxima del dial", dialTap:"Dial amb un toc simple", dialVib:"Vibració del dial", dashOn:"Botó del dashboard", dashDays:"Dies d'activitat del dashboard", dashTop:"Articles als rànquings", dashAnim:"Animacions del dashboard"};
+const CFG_LABEL = {hold:"Temps de mantenir premut", dbl:"Temps del doble toc", tap:"Temps del triple toc", histMax:"Canvis que guarda Desfés", histDays:"Dies que es guarden els canvis de Desfés", chatMax:"Missatges que guarda el xat", bkMax:"Còpies de seguretat que es guarden", bkAuto:"Dies entre còpies automàtiques", cols:"Articles per fila (vista Imatges)", wvol:"Volum de WALL-E", wgap:"Repetició mínima del so de WALL-E", wver:"Versió de l'àudio de WALL-E", toast:"Segons que es veu l'avís", coin:"Segons abans de bloquejar la moneda", cardmin:"Mida de les targetes (PC)", chatVol:"Volum de l'avís del xat", newDays:"Dies que es marca «NEW»", sortMode:"Ordre dels articles", lph:"Foto a la vista llista", rad:"Cantonades arrodonides", aiwait:"Espera del toc simple a l'assistent", smartbar:"Barra de cerca intel·ligent", vib:"Vibració en tocar", fxOn:"Confeti en crear", fxN:"Quantitat de confeti", fxT:"Durada del confeti", fxPal:"Colors del confeti", fxVol:"So de la celebració", houseOn:"Celebració de Nau&Noa House", houseShow:"Mostra sempre Nau&Noa House", houseN:"Confeti de la casa", houseT:"Durada de la celebració de la casa", houseR:"Cintes de la casa", houseBan:"Cartell de la casa", dialHold:"Temps per obrir el dial", dialS:"Mida dels botons del dial", dialR:"Radi del dial", dialMax:"Ampliació màxima del dial", dialTap:"Dial amb un toc simple", dialVib:"Vibració del dial", dashOn:"Botó del dashboard", dashDays:"Dies d'activitat del dashboard", dashTop:"Articles als rànquings", dashAnim:"Animacions del dashboard"};
 const cfgSec = k => k === "hold" || k === "dbl" || k === "tap" || k === "wgap" || k === "toast" || k === "coin" || k === "aiwait" || k === "fxT" || k === "houseT" || k === "dialHold";
 const cfgDeep = o => o == null ? null : JSON.parse(JSON.stringify(o));
 const fmtSec = ms => String(Math.round(ms / 10) / 100).replace(".", ",") + " s";
@@ -2149,7 +2166,7 @@ function cfgLabels(b, a){
 }
 function cfgClean(o){
   const r = {};
-  ["hold", "dbl", "tap", "histMax", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays", "sortMode", "lph", "rad", "aiwait", "smartbar", "vib", "fxOn", "fxN", "fxT", "fxPal", "fxVol", "houseOn", "houseShow", "houseN", "houseT", "houseR", "houseBan", "dialHold", "dialS", "dialR", "dialMax", "dialTap", "dialVib", "dashOn", "dashDays", "dashTop", "dashAnim"].forEach(k => {
+  ["hold", "dbl", "tap", "histMax", "histDays", "chatMax", "bkMax", "bkAuto", "cols", "wvol", "wgap", "wver", "toast", "coin", "cardmin", "chatVol", "newDays", "sortMode", "lph", "rad", "aiwait", "smartbar", "vib", "fxOn", "fxN", "fxT", "fxPal", "fxVol", "houseOn", "houseShow", "houseN", "houseT", "houseR", "houseBan", "dialHold", "dialS", "dialR", "dialMax", "dialTap", "dialVib", "dashOn", "dashDays", "dashTop", "dashAnim"].forEach(k => {
     const v = o && o[k];
     if(typeof v === "number" && isFinite(v) && v >= CFGR[k][0] && v <= CFGR[k][1] && v !== CFGD[k]) r[k] = v;
   });
@@ -2165,6 +2182,7 @@ function cfgCommit(fn){
 function cfgApply(){
   HIST_MAX = cfgGet("histMax"); CHAT_MAX = cfgGet("chatMax");
   const hm = $("hMaxN"); if(hm) hm.textContent = HIST_MAX;
+  const hd = $("hDaysN"); if(hd) hd.textContent = cfgGet("histDays") + (cfgGet("histDays") === 1 ? " dia" : " dies");
   document.documentElement.style.setProperty("--hold", cfgGet("hold") + "ms");
   document.documentElement.style.setProperty("--cols", cfgGet("cols"));
   document.documentElement.style.setProperty("--cardmin", cfgGet("cardmin") + "px");
@@ -2224,7 +2242,8 @@ function cfgRender(){
   h += row("Mantenir premut per veure la foto", "Entre 0,3 i 5 s · per defecte " + String(CFGD.hold / 1000).replace(".", ","), 'data-t="hold" min="0.3" max="5" step="0.1"', cfgGet("hold") / 1000, "s");
   h += row("Doble toc per tancar finestres", "Entre 0,2 i 3 s · per defecte " + String(CFGD.dbl / 1000).replace(".", ","), 'data-t="dbl" min="0.2" max="3" step="0.1"', cfgGet("dbl") / 1000, "s");
   h += row("Triple toc (ajustos i assistent)", "Entre 0,4 i 3 s · per defecte " + String(CFGD.tap / 1000).replace(".", ","), 'data-t="tap" min="0.4" max="3" step="0.1"', cfgGet("tap") / 1000, "s");
-  h += row("Canvis que guarda ↶ Desfés", "Entre 10 i 500 · per defecte " + CFGD.histMax, 'data-t="histMax" min="10" max="500" step="1"', cfgGet("histMax"), "canvis");
+  h += row("Dies que es guarden els canvis de ↶ Desfés", "Entre 1 i 90 dies · per defecte " + CFGD.histDays + " · en caducar, també s'esborren les fotos dels articles eliminats (allibera espai)", 'data-t="histDays" min="1" max="90" step="1"', cfgGet("histDays"), "dies");
+  h += row("Canvis que guarda ↶ Desfés (màxim)", "Entre 10 i 500 · per defecte " + CFGD.histMax, 'data-t="histMax" min="10" max="500" step="1"', cfgGet("histMax"), "canvis");
   h += row("Missatges que guarda el xat", "Entre 50 i 1000 · per defecte " + CFGD.chatMax, 'data-t="chatMax" min="50" max="1000" step="1"', cfgGet("chatMax"), "missatges");
   h += cfgTimeRows(row);
   h += '</div><div class="cfg"><h3>🖼️ Aspecte</h3><p class="cfn">Com es veuen les targetes a la vista Imatges.</p>';
@@ -2435,6 +2454,7 @@ function rTimes(nt){
   else if(/columna|columnes|per fila/.test(nt)){ k = "cols"; name = "els articles per fila a la vista Imatges"; }
   else if(/\bcopi(?:a|es)\b|backup/.test(nt) && /autom|cada|dies/.test(nt)){ k = "bkAuto"; name = "els dies entre còpies automàtiques"; }
   else if(/\bcopi(?:a|es)\b|backup/.test(nt)){ k = "bkMax"; name = "les còpies de seguretat que es guarden"; }
+  else if(/historial|desfes/.test(nt) && /\bdies?\b/.test(nt)){ k = "histDays"; name = "els dies que es guarden els canvis de Desfés"; }
   else if(/historial|desfes/.test(nt) && /\d/.test(nt)){ k = "histMax"; name = "els canvis que guarda Desfés"; }
   else if(/\bxat\b|missatges/.test(nt) && /\d/.test(nt)){ k = "chatMax"; name = "els missatges que guarda el xat"; }
   else return false;
@@ -2640,7 +2660,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "6.0.1";
+const APP_VER = "6.1";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null;
 const bkWhen = ts => { const d = new Date(ts); return d.toLocaleDateString("ca", {day:"2-digit", month:"2-digit", year:"numeric"}) + " " + d.toLocaleTimeString("ca", {hour:"2-digit", minute:"2-digit"}); };
@@ -2657,40 +2677,39 @@ function bkPack(entries){
   if(cur.length) out.push(cur);
   return out;
 }
-/* Crea la còpia a partir de l'estat que hi ha ara a la memòria (articles, fotos, pendents, zones, ubicacions i ajustos) */
+/* Crea la còpia a partir de l'estat que hi ha ara a la memòria (articles, pendents, zones, ubicacions i ajustos).
+   v6.1: les fotos NO es copien: la còpia apunta a les fotos (phs) i aquestes no s'esborren mentre alguna còpia les faci servir.
+   Les fotos mai canvien de contingut (cada foto nova té un id nou), per això n'hi ha prou de guardar-ne l'id. */
 async function bkMake(name, o){
   o = o || {};
-  const items = [...RAW].map(([id, d]) => Object.assign({}, deep(d), {id}));
-  /* v6: les fotos completes es baixen ara, només per fer la còpia */
-  if(o.prog) o.prog(0, 1);
-  const all = o.photos || await cloud.allPhotos();
-  const phs = new Map();
-  /* si algun article apunta a una foto que ja no existeix, es treu la referència perquè la còpia sigui coherent */
-  items.forEach(c => {
-    if(Array.isArray(c.ph)) c.ph = c.ph.filter(p => { const u = all.get(p) || PHF.get(p); if(u) phs.set(p, u); return !!u; });
-    if(c.tm) Object.keys(c.tm).forEach(p => { if(!(c.ph || []).includes(p)) delete c.tm[p]; });
-  });
+  const items = [...RAW].map(([id, d]) => { const c = Object.assign({}, deep(d), {id}); delete c.tm; return c; });
+  const phs = new Set(); items.forEach(c => (c.ph || []).forEach(p => phs.add(p)));
   const keys = {};
   KEYS_CLOUD.forEach(k => { keys[k] = STATE[k] === undefined ? (k === "inv_cats" || k === "inv_locs" ? [] : {}) : deep(STATE[k]); });
   const bid = cloud.newId(), ops = [], chunks = [];
   bkPack(items.map(c => [c.id, c])).forEach((g, n) => { const id = bid + "_i" + n; chunks.push(id); ops.push({t:"set", col:"bkdata", id, data:{b:bid, k:"i", n, v:g.map(e => e[1])}}); });
-  bkPack([...phs]).forEach((g, n) => { const id = bid + "_p" + n; chunks.push(id); const v = {}; g.forEach(e => { v[e[0]] = e[1]; }); ops.push({t:"set", col:"bkdata", id, data:{b:bid, k:"p", n, v}}); });
-  const meta = {ts:Date.now(), name:name || "", who:cloudUser.email, ver:APP_VER, nItems:items.length, nPh:phs.size, keys, chunks, kind:o.kind || "manual"};
+  const meta = {ts:Date.now(), name:name || "", who:cloudUser.email, ver:APP_VER, nItems:items.length, nPh:phs.size, keys, chunks, kind:o.kind || "manual", phRef:true, phs:[...phs]};
   ops.push({t:"set", col:"bkmeta", id:bid, data:meta});
   await cloud.batch(ops, o.prog);
   return Object.assign({id:bid}, meta);
+}
+/* esborra unes còpies i després les fotos que només feien servir elles */
+async function bkDrop(list){
+  if(!list.length) return;
+  const ops = [], cands = new Set();
+  list.forEach(b => { (b.chunks || []).forEach(id => ops.push({t:"del", col:"bkdata", id})); ops.push({t:"del", col:"bkmeta", id:b.id}); (b.phs || []).forEach(p => cands.add(p)); });
+  await cloud.batch(ops);
+  const gone = new Set(list.map(b => b.id));
+  BK = BK.filter(b => !gone.has(b.id));
+  if(cands.size) setTimeout(() => photoGC(cands), 1500);
 }
 async function bkPrune(fresh, protect){
   const max = cfgGet("bkMax");
   const all = [fresh].concat(BK.filter(b => b.id !== fresh.id)).sort((a, b) => b.ts - a.ts);
   if(all.length <= max) return;
-  const del = all.slice(max).filter(b => b.id !== protect && b.id !== fresh.id);
-  if(!del.length) return;
-  const ops = [];
-  del.forEach(b => { (b.chunks || []).forEach(id => ops.push({t:"del", col:"bkdata", id})); ops.push({t:"del", col:"bkmeta", id:b.id}); });
-  await cloud.batch(ops);
+  await bkDrop(all.slice(max).filter(b => b.id !== protect && b.id !== fresh.id));
 }
-const bkErrTxt = e => e && e.code === "photos-loading" ? "Les fotos encara s'estan carregant. Torna-ho a provar d'aquí uns segons." : e && e.code === "backup-corrupt" ? "La còpia està incompleta o trencada: no s'ha tocat res." : "No s'ha pogut completar (" + (e && e.code || "error") + ").";
+const bkErrTxt = e => e && e.code === "backup-corrupt" ? "La còpia està incompleta o trencada: no s'ha tocat res." : "No s'ha pogut completar (" + (e && e.code || "error") + ").";
 async function bkCreate(name, o){
   o = o || {};
   if(bkBusy) return null;
@@ -2711,10 +2730,8 @@ async function bkCreate(name, o){
 async function bkDelete(id){
   const b = BK.find(x => x.id === id); if(!b || bkBusy) return;
   bkBusy = true; bkLock();
-  try {
-    const ops = (b.chunks || []).map(c => ({t:"del", col:"bkdata", id:c})); ops.push({t:"del", col:"bkmeta", id});
-    await cloud.batch(ops); toast("🗑️ Còpia eliminada.");
-  } catch(e){ cloudErr(e); }
+  try { await bkDrop([b]); toast("🗑️ Còpia eliminada."); }
+  catch(e){ cloudErr(e); }
   finally { bkBusy = false; bkLock(); }
 }
 async function bkRestore(id){
@@ -2730,13 +2747,14 @@ async function bkRestore(id){
     const byId = new Map(docs.map(d => [d.id, d.data]));
     const itemsArr = [], phObj = {}; let okc = true;
     (b.chunks || []).forEach(cid => { const d = byId.get(cid); if(!d){ okc = false; return; } if(d.k === "i") itemsArr.push(...(d.v || [])); else Object.assign(phObj, d.v || {}); });
-    if(!okc || itemsArr.length !== b.nItems || Object.keys(phObj).length !== b.nPh || itemsArr.some(c => !c.id || (c.ph || []).some(p => !phObj[p]))) throw {code:"backup-corrupt"};
-    /* còpia automàtica de l'estat actual, per poder tornar enrere */
+    /* còpies v6.1: les fotos són a la col·lecció photos (protegides); còpies antigues: les fotos són dins de la còpia */
+    if(!okc || itemsArr.length !== b.nItems || itemsArr.some(c => !c.id) || (!b.phRef && (Object.keys(phObj).length !== b.nPh || itemsArr.some(c => (c.ph || []).some(p => !phObj[p]))))) throw {code:"backup-corrupt"};
+    /* còpia automàtica de l'estat actual, per poder tornar enrere (ara és lleugera: no copia fotos) */
     bkShow("Guardant l'estat actual (còpia de seguretat)…", .1);
-    const all = await cloud.allPhotos();
-    const safe = await bkMake("Abans de restaurar «" + label + "»", {kind:"safe", photos:all});
+    const safe = await bkMake("Abans de restaurar «" + label + "»", {kind:"safe"});
+    BK.unshift(safe);
     await bkPrune(safe, id);
-    /* aplica la còpia: primer s'escriu tot el que cal, després s'esborra el que sobra */
+    /* aplica la còpia. Les fotos que sobrin no s'esborren aquí: les neteja la caducitat de Desfés i de les còpies */
     const owner = {}; itemsArr.forEach(c => (c.ph || []).forEach(p => { owner[p] = c.id; }));
     const ops = [], keep = new Set(itemsArr.map(c => c.id));
     itemsArr.forEach(c => {
@@ -2746,12 +2764,11 @@ async function bkRestore(id){
       if(Object.keys(tm).length) o.tm = tm;
       ops.push({t:"set", col:"items", id:c.id, data:o});
     });
-    Object.keys(phObj).forEach(pid => { if(all.get(pid) !== phObj[pid]) ops.push({t:"set", col:"photos", id:pid, data:{d:phObj[pid], it:owner[pid] || ""}}); });
+    Object.keys(phObj).forEach(pid => ops.push({t:"set", col:"photos", id:pid, data:{d:phObj[pid], it:owner[pid] || ""}}));
     /* la llista de la compra no és a les còpies antigues (v5): es manté la d'ara */
     const meta = {}; KEYS_CLOUD.forEach(k => { const v = b.keys && b.keys[k]; meta[k] = v != null ? v : k === "inv_compra" ? deep(STATE.inv_compra) || {} : (k === "inv_cats" || k === "inv_locs" ? [] : {}); });
     ops.push({t:"set", col:"meta", id:"state", data:meta});
     [...RAW.keys()].filter(i => !keep.has(i)).forEach(i => ops.push({t:"del", col:"items", id:i}));
-    [...all.keys()].filter(p => !(p in phObj)).forEach(p => ops.push({t:"del", col:"photos", id:p}));
     HIST.forEach(h => ops.push({t:"del", col:"hist", id:h.id}));
     await cloud.batch(ops, (d, t) => bkShow("Restaurant… " + d + " / " + t, .15 + .85 * d / t));
     bkShow("✓ Còpia restaurada", 1);
@@ -3119,7 +3136,8 @@ function invStats(){
   const avg = seen.length >= 5 ? seen.reduce((s, u) => s + u.length, 0) / seen.length : PH_AVG;
   const thBytes = [...PHT.values()].reduce((s, u) => s + u.length, 0);
   const phBytes = phN * avg;
-  const bkBytes = BK.reduce((s, b) => s + (b.nPh || 0) * avg + (b.nItems || 0) * 1500, 0);
+  /* v6.1: les còpies noves no dupliquen fotos; les antigues (v5/v6.0) sí */
+  const bkBytes = BK.reduce((s, b) => s + (b.phRef ? (b.phs || []).length * 24 : (b.nPh || 0) * avg) + (b.nItems || 0) * 700, 0);
   const bytes = phBytes + thBytes + tot * 1500 + bkBytes + HIST.length * 1200 + CHAT.length * 200;
   return {
     tot, units,
@@ -3170,18 +3188,49 @@ function cfgMoreHtml(row){
     + row("Volum de l'avís del xat", "Entre 0 i 100 · 0 = en silenci · per defecte " + CFGD.chatVol, 'data-t="chatVol" min="0" max="100" step="1"', cfgGet("chatVol"), "%")
     + '<button type="button" class="wtest" id="cTest">▶ Prova l\'avís</button>'
     + '</div><div class="cfg"><h3>🧹 Manteniment</h3><p class="cfn">Esborra les fotos que ja no fa servir cap article ni cap canvi de l\'historial. Ajuda a no omplir l\'espai gratuït del núvol.</p>'
-    + '<button type="button" class="wtest" id="cClean">🧹 Neteja les fotos sense ús</button>';
+    + '<button type="button" class="wtest" id="cClean">🧹 Neteja les fotos sense ús</button>'
+    + '<p class="cfn" style="margin-top:12px">Les fotos pujades abans de la v6.1 poden ocupar fins a 8 vegades més. Això les torna a desar a la mida nova (~100 KB), sense canviar-ne res més.</p>'
+    + '<button type="button" class="wtest" id="cShrink">🗜️ Redueix les fotos grans</button>';
+}
+/* ---- v6.1 · 🗜️ redueix les fotos antigues a la mida nova (mateix id: els articles, Desfés i les còpies no canvien) ---- */
+let shrinkBusy = false;
+function shrinkData(u){
+  return new Promise(res => { const im = new Image(); im.onload = () => { try { const out = photoJpeg(im, im.naturalWidth || im.width, im.naturalHeight || im.height); THUMB_OF.delete(out); res(out); } catch(e){ res(null); } }; im.onerror = () => res(null); im.src = u; });
+}
+async function photoShrinkAll(){
+  if(shrinkBusy) return;
+  if(!cloudUser || !window.cloud || netOffline()){ toast("Cal tenir connexió."); return; }
+  shrinkBusy = true;
+  try {
+    toast("🔎 Revisant les fotos del núvol…");
+    const all = await cloud.allPhotos();
+    const big = [...all].filter(([, d]) => d.length > PHOTO_MAX_CHARS * 1.2);
+    if(!big.length){ toast("✓ Totes les fotos ja tenen la mida nova."); return; }
+    const before = big.reduce((s, [, d]) => s + d.length, 0);
+    if(!confirm("Reduir " + big.length + (big.length === 1 ? " foto" : " fotos") + " (≈ " + mbTxt(before) + " MB)?\n\nEs veuran igual a la web però ocuparan molt menys. Pot trigar una estona: deixa la web oberta.")) return;
+    let after = 0, done = 0;
+    for(let k = 0; k < big.length; k += 10){
+      const ops = [];
+      for(const [id, d] of big.slice(k, k + 10)){
+        const nd = await shrinkData(d);
+        if(nd && nd.length < d.length * .9){ ops.push({t:"set", col:"photos", id, data:{d:nd}, fields:["d"]}); after += nd.length; if(PHF.has(id)) phSetFull(id, nd); }
+        else after += d.length;
+        done++;
+      }
+      if(ops.length) await cloud.batch(ops);
+      toast("🗜️ Reduint fotos… " + done + " / " + big.length);
+    }
+    toast("✓ Fotos reduïdes: " + mbTxt(before) + " MB → " + mbTxt(after) + " MB.");
+    if($("cfdlg").open) cfgRender();
+  } catch(e){ cloudErr(e); }
+  finally { shrinkBusy = false; }
 }
 /* ---- fotos sense ús ----
    v6: per saber-ho cal mirar totes les fotos del núvol; es fa només quan toques «Neteja». */
 let orphLast = null;
 function orphanPhotos(all){
-  if(!cloudLoaded || itemsCache || !histLoaded) return null;
-  const ref = phIds();
-  const hist = o => o && (o.ph || []).forEach(x => ref.add(x));
-  HIST.forEach(h => (h.parts || []).forEach(p => { if(p.k === "item"){ hist(p.before); hist(p.after); } }));
-  if(HG) HG.parts.forEach(p => { if(p.k === "item"){ hist(p.before); hist(p.after); } });
-  DATA.forEach(c => (c._ph || []).forEach(x => ref.add(x)));
+  if(!cloudLoaded || itemsCache || !histLoaded || !bkLoaded) return null;
+  const ref = phRefs();
   return [...all.keys()].filter(x => !ref.has(x));
 }
 async function photoClean(){
@@ -3201,6 +3250,7 @@ async function photoClean(){
 }
 $("cfBody").addEventListener("click", e => {
   if(e.target.closest("#cClean")) photoClean();
+  else if(e.target.closest("#cShrink")) photoShrinkAll();
   else if(e.target.closest("#cTest")) chatBeep(true);
 });
 

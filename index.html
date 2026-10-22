@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v6.0.1">
+<meta name="generator" content="Inventari de casa v6.1">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -19,7 +19,7 @@
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js" crossorigin="">
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6.0.1">
+<link rel="stylesheet" href="style.css?v=6.1">
 </head><body>
 <header class="top">
   <div class="toprow">
@@ -33,7 +33,7 @@
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v6.0.1</span></h1>
+      <h1>Inventari de casa <span class="ver">v6.1</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -357,7 +357,7 @@
 <dialog id="hdlg" class="fdlg hdlg nofit" aria-labelledby="hTitle">
   <div class="hwrap">
     <div class="hhead"><h2 id="hTitle">↶ Historial de canvis</h2><button type="button" class="btn" id="hClose">Tanca</button></div>
-    <p class="fhint">Els més recents a dalt. Toca <b>↶ Desfés</b> per tornar enrere un canvi. És el mateix historial a tots els dispositius (últims <b id="hMaxN">100</b>). El número del botó només compta els canvis d'avui.</p>
+    <p class="fhint">Els més recents a dalt. Toca <b>↶ Desfés</b> per tornar enrere un canvi. És el mateix historial a tots els dispositius. Es guarden els canvis dels últims <b id="hDaysN">3 dies</b> (com a màxim <b id="hMaxN">100</b>). El número del botó només compta els canvis d'avui.</p>
     <ul id="hList" class="hlist"></ul>
   </div>
 </dialog>
@@ -388,6 +388,6 @@
 </div>
 <div id="dial" class="dial" role="group" aria-label="Tria un filtre" hidden></div>
 <div id="fx" popover="manual" aria-hidden="true"><canvas id="fxc"></canvas><div id="fxflash"></div><div id="fxban" hidden></div></div>
-<script src="app.js?v=6.0.1"></script>
-<script type="module" src="cloud.js?v=6.0.1"></script>
+<script src="app.js?v=6.1"></script>
+<script type="module" src="cloud.js?v=6.1"></script>
 </body></html>
