@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Inventari">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inventari de casa</title>
-<meta name="generator" content="Inventari de casa v6.0">
+<meta name="generator" content="Inventari de casa v6.0.1">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -19,12 +19,13 @@
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js" crossorigin="">
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6.0">
+<link rel="stylesheet" href="style.css?v=6.0.1">
 </head><body>
 <header class="top">
   <div class="toprow">
     <div class="tl">
     <button id="cfgBtn" class="cfgbtn flipbtn" type="button" aria-label="Ajustos" aria-haspopup="dialog" aria-controls="cfdlg" title="Ajustos"><span class="persp"><span class="coin"><span class="face front"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="face back"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></span></span></button>
+    <button id="instBtn" class="hbtn instbtn" type="button" title="Instal·la l'inventari com una app" hidden><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 19h14"/></svg><span>Instal·la</span></button>
     <button id="vmBtn" class="vmsw" type="button" role="switch" aria-checked="false" aria-label="Canvia entre vista mòbil i vista PC" title="Vista mòbil / PC" data-m="pc">
       <span class="vmi" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span>
       <span class="vmi" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="12.5" rx="2"/><path d="M8.5 20.5h7M12 16.5v4"/></svg></span>
@@ -32,7 +33,7 @@
     </button>
     </div>
     <div class="ttl">
-      <h1>Inventari de casa <span class="ver">v6.0</span></h1>
+      <h1>Inventari de casa <span class="ver">v6.0.1</span></h1>
       <p id="sub"></p>
     </div>
     <button id="chatBtn" class="hbtn chbtn" type="button" aria-haspopup="dialog" aria-controls="chdlg" title="Xat entre NAU i NOA">
@@ -40,7 +41,7 @@
       <span>Xat</span><b id="chatN" class="hn cbadge" hidden aria-live="polite"></b>
     </button>
     <div class="hgrp">
-  <button id="buyBtn" class="hbtn buybtn" type="button" aria-haspopup="dialog" aria-controls="buydlg" title="Llista de la compra">
+  <button id="buyBtn" class="hbtn buybtn" type="button" hidden aria-haspopup="dialog" aria-controls="buydlg" title="Llista de la compra">
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2L21 8H6.1"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg>
     <span>Compra</span><b id="buyN" class="hn" hidden></b>
   </button>
@@ -387,6 +388,6 @@
 </div>
 <div id="dial" class="dial" role="group" aria-label="Tria un filtre" hidden></div>
 <div id="fx" popover="manual" aria-hidden="true"><canvas id="fxc"></canvas><div id="fxflash"></div><div id="fxban" hidden></div></div>
-<script src="app.js?v=6.0"></script>
-<script type="module" src="cloud.js?v=6.0"></script>
+<script src="app.js?v=6.0.1"></script>
+<script type="module" src="cloud.js?v=6.0.1"></script>
 </body></html>

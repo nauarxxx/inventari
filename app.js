@@ -201,7 +201,8 @@ function card(c,i){
   const qty = '<span class="qty">'+esc(qtyBadge(c.qty))+'</span>';
   const nw = isNew(c), NT = nw ? '<span class="newtag">NEW</span>' : '';
   if(c.photos.length){
-    ph = '<div class="ph'+(nw?' isnew':'')+'"><img loading="lazy" decoding="async" alt="'+esc(c.item)+'" src="'+thumbSrc(c)+'">'+qty+NT+(c.photos.length>1?'<span class="more">'+c.photos.length+' fotos</span>':'')+'</div>';
+    const p0 = c._ph && c._ph[0], lz = p0 && !PHT.has(p0) && !PHF.has(p0) ? ' data-ph="'+esc(p0)+'"' : '';
+    ph = '<div class="ph'+(nw?' isnew':'')+'"><img loading="lazy" decoding="async" alt="'+esc(c.item)+'" src="'+thumbSrc(c)+'"'+lz+'>'+qty+NT+(c.photos.length>1?'<span class="more">'+c.photos.length+' fotos</span>':'')+'</div>';
   } else {
     ph = '<div class="ph empty'+(nw?' isnew':'')+'">'+qty+NT+'<span>'+(c.pend>0?'Foto pendent de tornar a enviar':'Encara sense foto')+'</span></div>';
   }
@@ -258,6 +259,7 @@ function themeApply(){
 
 /* v3.0: les dades compartides es desen a Firestore (meta/state); la resta, al dispositiu (localStorage)
    v6.0: inv_compra = llista de la compra compartida */
+const BUY_ON = false;   /* 🛒 llista de la compra: desactivada (posa true per tornar-la a mostrar) */
 const KEYS_CLOUD = ["inv_tinc","inv_pend_extra","inv_pend_tret","inv_cats","inv_locs","inv_cfg","inv_theme","inv_locicons","inv_compra"];
 const STATE = {};
 try { const tc = JSON.parse(localStorage.getItem("inv_theme_cache") || "null"); if(tc && typeof tc === "object") STATE.inv_theme = tc; } catch(e){}
@@ -391,7 +393,7 @@ function renderPend(sec){
   const todo = rows.filter(r => !have[r.key]), done = rows.filter(r => have[r.key]);
   let h = todo.map(r => '<li><label><input type="checkbox" data-k="'+r.key+'"><span>'+esc(r.name)+'</span></label>'+buyBtnHtml(cat.id, r)+pdel(cat.id, r)+'</li>').join("");
   if(!todo.length) h += '<li class="pall">🎉 No queda res pendent a '+esc(cat.label)+'.</li>';
-  else if(todo.some(r => !buyHas(r.key))) h = '<li class="pbuyrow"><button type="button" class="sbtn pbuyall" data-cat="'+cat.id+'">🛒 Posa\'ls tots a la compra</button></li>' + h;
+  else if(BUY_ON && todo.some(r => !buyHas(r.key))) h = '<li class="pbuyrow"><button type="button" class="sbtn pbuyall" data-cat="'+cat.id+'">🛒 Posa\'ls tots a la compra</button></li>' + h;
   if(done.length){
     h += '<li class="pdonewrap"><details class="pdone"'+(sec.doneOpen?' open':'')+'><summary>Ja aconseguits ('+done.length+')</summary><ul>'
       + done.map(r => {
@@ -1015,7 +1017,7 @@ function aiAsk(text){
   const loc = LOCS.find(l => t.includes(norm(l)));
   const inScope = c => (!zone || catsOf(c).includes(zone.id)) && (!loc || locsOf(c).includes(loc));
   const all = DATA.map((c,i)=>i).filter(i=>live(DATA[i]) && inScope(DATA[i]));
-  if(/compr/.test(t) && buyOpen().length){
+  if(BUY_ON && /compr/.test(t) && buyOpen().length){
     const d = aiMsg("bot", buyText() + "\n\nObre 🛒 Compra per marcar-ho quan ho tinguis.");
     aiSuggest(d, ["Què falta a la cuina?", "Quants articles tinc?"]);
     return;
@@ -1456,27 +1458,53 @@ async function thumbMigrate(){
   tmBusy = true;
   const total = todo.reduce((n, [, d]) => n + tmMissing(d).length, 0); let done = 0;
   if(total > 6) toast("🖼️ Optimitzant " + total + " fotos perquè la web vagi més ràpida. Només es fa una vegada.");
+  let failed = 0, lastErr = null;
   try {
+    /* si el núvol no deixa desar-les, es continuen fent igualment en aquest dispositiu perquè es vegin les fotos */
     for(let k = 0; k < todo.length; k += 6){
       const ops = [];
-      for(const [id, d0] of todo.slice(k, k + 6)){
+      for(const [id] of todo.slice(k, k + 6)){
         const d = RAW.get(id); if(!d) continue;
         const tm = Object.assign({}, d.tm || {});
         Object.keys(tm).forEach(p => { if(!(d.ph || []).includes(p)) delete tm[p]; });
         for(const p of tmMissing(d)){
           let t = PHT.get(p);
-          if(!t){ const full = await fullPhoto(p); t = full ? await makeThumb(full) : ""; }
-          if(t){ tm[p] = t; phSetThumb(p, t); done++; } else tmFail.add(p);
+          if(!t){ try { const full = await fullPhoto(p); t = full ? await makeThumb(full) : ""; } catch(e){ t = ""; lastErr = e; } }
+          if(t){ tm[p] = t; phSetThumb(p, t); phShow(p); done++; } else tmFail.add(p);
         }
         if(RAW.has(id) && stable(tm) !== stable(d.tm || {})) ops.push({t:"upd", col:"items", id, data:{tm}});
       }
       if(netOffline() || importing) break;
-      scheduleRebuild();   /* les targetes ja mostren les miniatures noves, encara que no s'arribin a desar */
-      if(ops.length) await cloud.batch(ops);
+      if(ops.length && !tmBlocked){
+        try { await cloud.batch(ops); }
+        catch(e){ failed++; lastErr = e; console.warn("miniatures", e); if(e && e.code === "permission-denied") tmBlocked = true; }
+      }
     }
-    if(total > 6 && done) toast("✓ Fotos optimitzades (" + done + ").");
-  } catch(e){ console.warn("miniatures", e); }
+  } catch(e){ lastErr = e; console.warn("miniatures", e); }
   finally { tmBusy = false; }
+  if(tmBlocked){ if(tmWarned) return; tmWarned = true; toast("⚠️ Les miniatures no es poden desar al núvol (permís denegat a Firestore). Les fotos es veuran igualment, però carregaran més lentes."); }
+  else if(failed) toast("⚠️ Algunes miniatures no s'han pogut desar (" + (lastErr && lastErr.code || "error") + "). Es tornarà a provar en obrir la web.");
+  else if(total > 6 && done) toast("✓ Fotos optimitzades (" + done + ").");
+}
+let tmBlocked = false, tmWarned = false;
+
+/* ---- v6.0.1: cada targeta visible sense miniatura en fa una ella mateixa (no depèn de la migració) ---- */
+function phShow(id){
+  const src = thumbSrc({_ph:[id], photos:[phUrl(id)]});
+  document.querySelectorAll('img[data-ph="' + id + '"]').forEach(im => { im.src = src; im.removeAttribute("data-ph"); });
+}
+const lazyIO = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
+  if(!e.isIntersecting) return;
+  lazyIO.unobserve(e.target);
+  const im = e.target.matches("img[data-ph]") ? e.target : e.target.querySelector("img[data-ph]");
+  const id = im && im.dataset.ph; if(!id) return;
+  if(PHT.has(id)){ phShow(id); return; }
+  fullPhoto(id).then(full => full ? makeThumb(full) : "").then(t => { if(t){ phSetThumb(id, t); phShow(id); } }).catch(() => {});
+}), {rootMargin:"400px 0px"}) : null;
+function lazyScan(){
+  if(!lazyIO) return;
+  /* s'observa la targeta sencera: dins de content-visibility la imatge no té mida fins que es pinta */
+  document.querySelectorAll("img[data-ph]:not([data-obs])").forEach(im => { im.dataset.obs = "1"; lazyIO.observe(im.closest("li.card") || im); });
 }
 
 /* ---- reconstrucció de la pantalla amb les dades del núvol ---- */
@@ -2355,7 +2383,7 @@ const itemDesc = c => qtyBadge(c.qty) + " · " + zonesTxt(c) + " · 📍 " + loc
 /* ---- ordres ---- */
 function rHelp(nt){
   if(!/^(?:ajuda|help|ordres|comandes)\b|que puc fer|que saps fer|que pots fer|com funciones/.test(nt)) return false;
-  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• ordena per nom · ordena per recents · ordre original\n• cantonades a 20 · foto de la llista a 90\n• vibració activada · barra de cerca desactivada\n\n🎨 COLORS\n• posa el color principal a blau\n• color del fons blau fosc · color del text #ffeecc\n• color del cartell NEW taronja\n• tema verd (rosa, lila, groc, taronja, gris…)\n• restaura els colors\n\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n🎉 CONFETI I NAU&NOA HOUSE\n• prova el confeti · prova la celebració de la casa\n• confeti a 300 · durada del confeti a 5 segons\n• desactiva el confeti · colors del confeti a 2\n• confeti de la casa a 600 · cintes de la casa a 50\n• durada de la celebració de la casa a 9 segons\n• volum del confeti a 40\n\n🎛️ FILTRES I DIAL\n• icona de Cunit a platja · icona de Garatge iaios automàtica\n• quines icones hi ha?\n• filtra per Cunit · mostra la zona Cuina · treu els filtres\n• temps del dial a 0,5 segons · ampliació del dial a 200\n• radi del dial a 160 · mida del dial a 50\n\n📊 DASHBOARD\n• obre el dashboard · tanca el dashboard\n• dies del dashboard a 30 · top del dashboard a 8\n\n🛒 COMPRA\n• afegeix llet a la compra\n• treu llet de la compra\n• què he de comprar?\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina (si no dius la zona, la trio jo 🪄)\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
+  rMsg("bot", "Puc fer això (sempre et demano confirmació):\n\n⚙️ AJUSTOS\n• resum de l'inventari (% per ubicació i zona)\n• mantenir premut a 1,5 segons\n• doble toc a 0,8 · triple toc a 1\n• historial a 50 · xat a 200 missatges\n• volum de WALL-E a 30 (0 = silenci)\n• avisos a 6 segons · moneda a 4 segons\n• targetes a 250 (mida a PC) · nous durant 7 dies\n• volum del xat a 40\n• vista llista (en aquest dispositiu)\n• ordena per nom · ordena per recents · ordre original\n• cantonades a 20 · foto de la llista a 90\n• vibració activada · barra de cerca desactivada\n\n🎨 COLORS\n• posa el color principal a blau\n• color del fons blau fosc · color del text #ffeecc\n• color del cartell NEW taronja\n• tema verd (rosa, lila, groc, taronja, gris…)\n• restaura els colors\n\n• columnes a 2 (articles per fila)\n• còpies a 10 · còpia automàtica cada 7 dies\n• fes una còpia de seguretat\n• quines còpies hi ha?\n• restaura els ajustos\n• quins són els ajustos?\n\n🎉 CONFETI I NAU&NOA HOUSE\n• prova el confeti · prova la celebració de la casa\n• confeti a 300 · durada del confeti a 5 segons\n• desactiva el confeti · colors del confeti a 2\n• confeti de la casa a 600 · cintes de la casa a 50\n• durada de la celebració de la casa a 9 segons\n• volum del confeti a 40\n\n🎛️ FILTRES I DIAL\n• icona de Cunit a platja · icona de Garatge iaios automàtica\n• quines icones hi ha?\n• filtra per Cunit · mostra la zona Cuina · treu els filtres\n• temps del dial a 0,5 segons · ampliació del dial a 200\n• radi del dial a 160 · mida del dial a 50\n\n📊 DASHBOARD\n• obre el dashboard · tanca el dashboard\n• dies del dashboard a 30 · top del dashboard a 8\n\n📦 ARTICLES\n• posa la quantitat de la raclette a 3\n• posa 3 a la raclette\n• mou la raclette a Cunit\n• afegeix la raclette també a Garatge iaios\n• posa la raclette a la zona Cuina\n• canvia el nom de raclette a Raclette Klarstein\n• elimina la raclette\n• crea l'article Gots x6 a Cunit zona Cuina (si no dius la zona, la trio jo 🪄)\n• crea la zona Terrassa\n• crea la ubicació Pis\n\nTot el que canvio queda a ↶ Desfés (amb 🤖).");
   return true;
 }
 function rShow(nt){
@@ -2574,7 +2602,7 @@ function rPlace(nt, t0){
 }
 /* v6.0 · 🛒 «afegeix llet a la compra», «treu llet de la compra», «què he de comprar?» */
 function rBuy(nt, t0){
-  if(!/\bcompra\b|\bcomprar\b/.test(nt)) return false;
+  if(!BUY_ON || !/\bcompra\b|\bcomprar\b/.test(nt)) return false;
   const m = /^(?:afegeix|posa|apunta|anota|fica)\s+(.+?)\s+(?:a|al|en)\s+(?:la\s+)?(?:llista\s+de\s+la\s+)?compra$/.exec(nt);
   const x = /^(?:treu|elimina|esborra|borra)\s+(.+?)\s+(?:de|del)\s+(?:la\s+)?(?:llista\s+de\s+la\s+)?compra$/.exec(nt);
   if(m || x){
@@ -2612,7 +2640,7 @@ function rAsk(text){
    bkmeta/{id}  -> {ts, name, who, ver, nItems, nPh, keys, chunks[], kind}
    bkdata/{id}  -> {b: id còpia, k: "i"|"p", n, v}   (articles / fotos, en blocs < 600 KB)
    ===================================================================== */
-const APP_VER = "6.0";
+const APP_VER = "6.0.1";
 const BK_SIZE = 600000;
 let BK = [], bkLoaded = false, bkBusy = false, bkAutoDone = false, bkConfirm = null;
 const bkWhen = ts => { const d = new Date(ts); return d.toLocaleDateString("ca", {day:"2-digit", month:"2-digit", year:"numeric"}) + " " + d.toLocaleTimeString("ca", {hour:"2-digit", minute:"2-digit"}); };
@@ -4144,7 +4172,7 @@ cfgApply = function(){
   if(dashOpenF) dashSoon();
 };
 const __render50 = render;
-render = function(){ __render50(); if(dashOpenF) dashSoon(); };
+render = function(){ __render50(); if(dashOpenF) dashSoon(); lazyScan(); };
 $("dashBtn").hidden = !cfgGet("dashOn");
 
 /* ---- v5.1: icones minimalistes de les ubicacions (SVG de línia, agafen el color del tema) ---- */
@@ -4348,6 +4376,7 @@ function buyAdd(o, id, name, zone, pkey){
   if(pkey) o[id].k = pkey;
 }
 function buyBadge(){
+  $("buyBtn").hidden = !BUY_ON; if(!BUY_ON) return;
   const n = buyOpen().length;
   $("buyN").hidden = !n; $("buyN").textContent = n > 99 ? "99+" : n;
   $("buyBtn").title = n ? "Llista de la compra · " + n + (n > 1 ? " coses per comprar" : " cosa per comprar") : "Llista de la compra";
@@ -4433,7 +4462,7 @@ function buyPendZone(zid){
   toast("🛒 " + rows.length + (rows.length > 1 ? " pendents afegits" : " pendent afegit") + " a la compra.");
 }
 /* botó 🛒 al costat de cada pendent (panell de pendents i vista Check) */
-function buyBtnHtml(catId, r){ return '<button type="button" class="pbuy' + (buyHas(r.key) ? ' on' : '') + '" data-cat="' + catId + '" data-k="' + r.key + '" data-n="' + esc(r.name) + '" aria-pressed="' + buyHas(r.key) + '" title="' + (buyHas(r.key) ? 'És a la llista de la compra (toca per treure-ho)' : 'Afegeix a la llista de la compra') + '">🛒</button>'; }
+function buyBtnHtml(catId, r){ if(!BUY_ON) return ""; return '<button type="button" class="pbuy' + (buyHas(r.key) ? ' on' : '') + '" data-cat="' + catId + '" data-k="' + r.key + '" data-n="' + esc(r.name) + '" aria-pressed="' + buyHas(r.key) + '" title="' + (buyHas(r.key) ? 'És a la llista de la compra (toca per treure-ho)' : 'Afegeix a la llista de la compra') + '">🛒</button>'; }
 document.addEventListener("click", e => {
   const b = e.target.closest(".pbuy, .pbuyall"); if(!b) return;
   if(b.classList.contains("pbuyall")){ buyPendZone(b.dataset.cat); return; }
@@ -4450,10 +4479,25 @@ function openFromParam(){
   if(!openParam || !cloudUser || !cloudLoaded) return;
   const p = openParam; openParam = null;
   try { history.replaceState(null, "", location.pathname); } catch(_){}
-  if(p === "compra") $("buyBtn").click(); else if(p === "nou") openNewArticle();
+  if(p === "compra" && BUY_ON) $("buyBtn").click(); else if(p === "nou") openNewArticle();
 }
 const __cloudItems60 = cloudItems;
 cloudItems = function(d, m){ __cloudItems60(d, m); if(openParam) setTimeout(openFromParam, 300); };
+
+/* ---- v6.0.1 · 📲 botó per instal·lar l'inventari com una app (només surt si encara no ho està) ---- */
+let instEvt = null;
+const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+function instUpd(){ $("instBtn").hidden = isStandalone(); }
+addEventListener("beforeinstallprompt", e => { e.preventDefault(); instEvt = e; instUpd(); });
+addEventListener("appinstalled", () => { instEvt = null; instUpd(); toast("✓ Inventari instal·lat. Ja el tens a la pantalla d'inici."); });
+$("instBtn").onclick = async () => {
+  if(instEvt){ instEvt.prompt(); try { await instEvt.userChoice; } catch(_){} instEvt = null; instUpd(); return; }
+  if(isIOS) toast("📲 A l'iPhone: obre-la amb Safari, toca Compartir ⬆️ i després «Afegeix a la pantalla d'inici».");
+  else toast("📲 Obre el menú del navegador (⋮) i tria «Instal·la l'aplicació» o «Afegeix a la pantalla d'inici».");
+};
+instUpd();
+buyBadge();
 
 gate("wait", "Connectant…");
 cloudSetStatus();

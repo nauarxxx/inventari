@@ -14,7 +14,6 @@
     {"src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
   ],
   "shortcuts": [
-    {"name": "Llista de la compra", "short_name": "Compra", "url": "./?obre=compra", "icons": [{"src": "icon-192.png", "sizes": "192x192"}]},
     {"name": "Nou article", "short_name": "Nou", "url": "./?obre=nou", "icons": [{"src": "icon-192.png", "sizes": "192x192"}]}
   ]
 }

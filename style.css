@@ -1183,3 +1183,7 @@ body.list #out .card{contain-intrinsic-size:auto 96px}
 .fdlg.buydlg .bi label{flex-direction:row;align-items:center;font-size:16px;font-weight:500;color:var(--ink)}
 .fdlg.buydlg .bi input{width:22px;height:22px;padding:0}
 .fdlg.buydlg .buyadd input{width:auto}
+/* v6.0.1 */
+.hbtn[hidden]{display:none!important}
+.hbtn.instbtn{padding:7px 12px 7px 10px;font-size:13px}
+.hbtn.instbtn svg{color:var(--accent)}
